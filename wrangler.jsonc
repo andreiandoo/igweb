@@ -1,0 +1,36 @@
+{
+  // Configurare folosită DOAR în fluxul Workers (alternativa la Cloudflare Pages).
+  // Pe Pages, acest fișier este ignorat — acolo funcționează direct
+  // functions/api/lead.js, cloudflare/_headers și cloudflare/_redirects.
+  //
+  // Deploy: npx wrangler deploy   (după `npm run build`)
+
+  "$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+  "name": "sportiveducat",
+  "main": "worker.js",
+  "compatibility_date": "2026-01-01",
+
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+
+    // /parinti servit din parinti.html, fără slash final
+    "html_handling": "auto-trailing-slash",
+
+    // URL inexistent → 404.html cu status 404 real (nu 200, ca site-ul vechi)
+    "not_found_handling": "404-page",
+
+    // Worker-ul rulează pentru toate cererile, ca să poată pune antetele de
+    // securitate și redirectul www. La traficul unui site de prezentare,
+    // costul e neglijabil.
+    "run_worker_first": true
+  },
+
+  "observability": {
+    "enabled": true
+  }
+
+  // Variabile de mediu (LEAD_WEBHOOK, POSTMARK_TOKEN, IG_FORWARD…) și
+  // binding-ul KV `LEADS` se setează din dashboard, nu aici — ca să nu ajungă
+  // secrete în repo. Vezi docs/PLAN-DEPLOYMENT.md §6.
+}

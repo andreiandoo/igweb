@@ -111,7 +111,7 @@
       var v = el.getAttribute(monthly ? 'data-m' : 'data-y'); if (v) el.textContent = v;
     });
     var hidden = $('[name="billing_period"]');
-    if (hidden) hidden.value = monthly ? 'monthly' : 'yearly';
+    if (hidden) hidden.value = monthly ? 'month' : 'year';
   };
 
   /* --- selectoare din formulare (apelate din onclick in markup) --- */
@@ -199,16 +199,52 @@
     box.textContent = message;
   }
 
-  /** Valideaza campurile `required` dintr-un container. */
+  /**
+   * Valideaza campurile `required` dintr-un container si perechile de parole.
+   * Orice camp `x_confirm` trebuie sa fie identic cu campul `x` din acelasi
+   * formular (exceptie: `website_confirm`, care e honeypot-ul anti-spam).
+   */
   window.igValidate = function (pane) {
     if (!pane) return true;
+
     var fields = $$('input[required], select[required], textarea[required]', pane);
     for (var i = 0; i < fields.length; i++) {
       if (fields[i].offsetParent === null) continue; /* ascuns -> ignora */
       if (!fields[i].checkValidity()) { fields[i].reportValidity(); return false; }
     }
+
+    var confirms = $$('input[name$="_confirm"]', pane);
+    for (var j = 0; j < confirms.length; j++) {
+      var el = confirms[j];
+      var name = el.getAttribute('name');
+      if (name === 'website_confirm' || el.offsetParent === null) continue;
+      var origin = el.form && el.form.querySelector('[name="' + name.slice(0, -8) + '"]');
+      if (!origin) continue;
+      el.setCustomValidity(el.value === origin.value ? '' : 'Cele două parole nu coincid.');
+      if (!el.checkValidity()) { el.reportValidity(); return false; }
+    }
+
     return true;
   };
+
+  /**
+   * Ce facem cu raspunsul de la /api/lead.
+   * Daca planul ales e platit, functia intoarce `checkout_url` — ducem omul
+   * la Stripe in loc sa aratam ecranul de confirmare.
+   * Intoarce true daca fluxul continua in pagina (afisam „gata").
+   */
+  function handleLeadResult(res, onError) {
+    if (res && res.ok && res.checkout_url) {
+      window.location.assign(res.checkout_url);
+      return false;   /* pagina se schimba; nu mai atingem modalul */
+    }
+    if (!res || !res.ok) {
+      onError((res && res.error) || 'Nu am putut trimite formularul. Încearcă din nou.');
+      return false;
+    }
+    return true;
+  }
+  window.igHandleLeadResult = handleLeadResult;
 
   /* ======================================================================
      2. Initializari care depind de DOM si de datele din page-*.js
@@ -419,12 +455,15 @@
           if (fwd) { fwd.disabled = true; fwd.textContent = 'Se trimite…'; }
 
           window.igSubmitLead(modal.querySelector('form')).then(function (res) {
-            sending = false;
-            if (fwd) { fwd.disabled = false; fwd.textContent = label; }
-            if (!res || !res.ok) {
-              regError(modal, (res && res.error) || 'Nu am putut trimite formularul. Încearcă din nou.');
+            /* la plan platit se face redirect spre Stripe — lasam butonul blocat */
+            if (res && res.ok && res.checkout_url) {
+              if (fwd) fwd.textContent = 'Te ducem la plată…';
+              window.location.assign(res.checkout_url);
               return;
             }
+            sending = false;
+            if (fwd) { fwd.disabled = false; fwd.textContent = label; }
+            if (!handleLeadResult(res, function (m) { regError(modal, m); })) return;
             step = next;
             render();
           });

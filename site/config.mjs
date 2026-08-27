@@ -85,6 +85,18 @@ export const PAGES = {
     nav: 'Cookies', navLong: 'Politica de cookies', icon: 'i-settings',
     priority: '0.2', inNav: false, inFooter: false, noindex: true,
   },
+  /* Întoarcerea de la Stripe Checkout (success_url / cancel_url). */
+  'cont-creat': {
+    path: '/cont-creat', file: 'cont-creat.html',
+    nav: 'Cont creat', navLong: 'Cont creat', icon: 'i-check-circle',
+    priority: null, inNav: false, inFooter: false, noindex: true,
+  },
+  'plata-anulata': {
+    path: '/plata-anulata', file: 'plata-anulata.html',
+    nav: 'Plată anulată', navLong: 'Plată anulată', icon: 'i-card',
+    priority: null, inNav: false, inFooter: false, noindex: true,
+  },
+
   eroare: {
     path: '/404', file: '404.html',
     nav: '404', navLong: 'Pagina nu a fost găsită', icon: 'i-compass',

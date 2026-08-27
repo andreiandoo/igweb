@@ -49,7 +49,10 @@
           </div>
           <div class="field">
             <label for="regUser">Username <span class="hint">— dacă nu ai email</span></label>
-            <input type="text" id="regUser" name="username" autocomplete="username" placeholder="ex. david_campion">
+            <input type="text" id="regUser" name="username" autocomplete="username"
+                   pattern="[a-z0-9_.]{3,30}" minlength="3" maxlength="30"
+                   title="3–30 de caractere: litere mici, cifre, punct sau underscore"
+                   placeholder="ex. david_campion">
           </div>
           <div class="frow2">
             <div class="field">
@@ -99,6 +102,7 @@
         <div class="rstep" data-step="plan">
           <h3>Alege planul de start</h3>
           <p class="rs-sub">Poți începe gratuit și schimba oricând. Fără card la înscriere.</p>
+          <input type="hidden" name="billing_period" value="month">
           <div class="plan-pick" id="planPick" role="radiogroup" aria-label="Plan">
             <label class="plan-opt sel" data-plan="Free">
               <input type="radio" name="plan" value="free" class="visually-hidden" checked>
@@ -122,7 +126,7 @@
               <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
             </label>
             <label class="plan-opt" data-plan="Elită">
-              <input type="radio" name="plan" value="elita" class="visually-hidden">
+              <input type="radio" name="plan" value="elite" class="visually-hidden">
               <span class="po-ic" style="background:linear-gradient(135deg,#FFB020,#ff8f3c)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-gem"/></svg></span>
               <span class="po-t"><span class="n">Elită</span><span class="d">Tot, la nivel maxim, 60 vieți</span></span>
               <span class="po-price"><span class="pa">18,99 €</span><span class="pw">/lună</span></span>

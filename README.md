@@ -131,8 +131,7 @@ cd .. && npm run build
 - **Cifrele și testimonialele** din pagini, dacă nu sunt reale — `AggregateRating`
   inventat atrage penalizare manuală de la Google
 - **`window.IG_FOMO`** din `assets/js/page-*.js` — azi conține exemple fabricate
-- **Parolele din formulare** (părinți, sportivi) — vezi §6 din
-  [`docs/PLAN-FORMULARE-APP.md`](docs/PLAN-FORMULARE-APP.md); recomandarea e să fie scoase
-  până când există endpoint-urile din aplicație
+- **Variabilele pentru înscrieri** în Cloudflare (`REGISTRATION_API_SECRET`, `IG_API_URL`,
+  `IG_FORWARD`) — vezi [`docs/PLAN-FORMULARE-APP.md`](docs/PLAN-FORMULARE-APP.md) §3
 - **`assets/video/story.mp4`** (opțional — fără el se afișează o ilustrație de fundal)
 - **Imaginile Open Graph cu text** — vezi `_sursa/og-template.html`

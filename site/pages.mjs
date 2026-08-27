@@ -150,6 +150,46 @@ export const PAGE_DEFS = {
     },
   },
 
+  /* --------------------------------------------------------------------
+   * Întoarcerea de la Stripe Checkout. Sunt `success_url` și `cancel_url`
+   * trimise de functions/api/lead.js către /plan-checkout.
+   * ----------------------------------------------------------------- */
+  'cont-creat': {
+    title: 'Cont creat · iGROWth',
+    description: 'Contul tău iGROWth a fost creat. Verifică emailul pentru pașii de activare.',
+    css: ['/assets/css/theme.css'], sprite: 'stare', mobileCta: false,
+    status: {
+      tone: 'ok',
+      eyebrow: 'Gata',
+      h1: 'Contul tău e creat.',
+      lead: 'Ți-am trimis pe email pașii de activare. Deschide-l, confirmă adresa și îți alegi parola — apoi intri direct în aplicație.',
+      points: [
+        ['i-mail', 'Verifică emailul', 'Dacă nu-l găsești în câteva minute, uită-te și în Spam sau Promoții.'],
+        ['i-lock', 'Îți alegi parola', 'Linkul din email e valabil 24 de ore.'],
+        ['i-rocket', 'Intri în aplicație', 'De acolo urmărești tot: progres, prezență, plăți.'],
+      ],
+      cta: { label: 'Deschide aplicația', icon: 'i-rocket', href: '{app}/login' },
+    },
+  },
+
+  'plata-anulata': {
+    title: 'Plată anulată · iGROWth',
+    description: 'Plata a fost anulată. Contul tău iGROWth există deja și poate fi folosit gratuit.',
+    css: ['/assets/css/theme.css'], sprite: 'stare', mobileCta: false,
+    status: {
+      tone: 'warn',
+      eyebrow: 'Plată anulată',
+      h1: 'Nu-i nimic — contul tău există deja.',
+      lead: 'Nu s-a reținut nicio sumă. Contul a fost creat înainte de plată și poate fi folosit pe planul gratuit, cât timp vrei.',
+      points: [
+        ['i-check-circle', 'Contul e activ', 'Verifică emailul pentru pașii de activare, dacă n-ai făcut-o deja.'],
+        ['i-card', 'Plătești când vrei', 'Poți alege oricând un plan plătit din aplicație, de la Setări → Abonament.'],
+        ['i-mail', 'Ai nevoie de ajutor?', 'Scrie-ne și te ajutăm să alegi planul potrivit.'],
+      ],
+      cta: { label: 'Deschide aplicația', icon: 'i-rocket', href: '{app}/login' },
+    },
+  },
+
   eroare: {
     title: 'Pagina nu a fost găsită · iGROWth',
     description: 'Pagina căutată nu există. Mergi la pagina de start iGROWth sau alege secțiunea potrivită rolului tău.',

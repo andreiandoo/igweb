@@ -134,6 +134,8 @@ const SETS = {
   cluburi: [BODY.cluburi, readIf(path.join(WEB, 'content/overlay-cluburi.html')), readIf(path.join(WEB, 'assets/js/page-cluburi.js')), BRANDS],
   antrenori: [BODY.antrenori, readIf(path.join(WEB, 'content/overlay-antrenori.html')), readIf(path.join(WEB, 'assets/js/page-antrenori.js')), BRANDS],
   legal: ['i-file'],
+  // paginile de intoarcere de la Stripe (cont creat / plata anulata)
+  stare: ['i-card i-check-circle i-rocket i-home i-mail i-lock'],
   eroare: [readIf(path.join(WEB, 'build.mjs')), 'growie'],
 };
 

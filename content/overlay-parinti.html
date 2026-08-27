@@ -93,7 +93,10 @@
             </div>
             <div class="field" id="childUserField" style="display:none">
               <label for="childUser">Username <span class="hint">— dacă nu are email</span></label>
-              <input type="text" id="childUser" name="child_username" autocomplete="off" placeholder="ex. david_campion">
+              <input type="text" id="childUser" name="child_username" autocomplete="off"
+                     pattern="[a-z0-9_.]{3,30}" minlength="3" maxlength="30"
+                     title="3–30 de caractere: litere mici, cifre, punct sau underscore"
+                     placeholder="ex. david_campion">
             </div>
             <div class="field" style="margin-bottom:0">
               <label for="childPass">Parolă pentru copil <span class="hint">*</span></label>
@@ -146,7 +149,7 @@
             <button type="button" id="rBtnM" class="active" onclick="setRegPeriod('m')">Lunar</button>
             <button type="button" id="rBtnY" onclick="setRegPeriod('y')">Anual <span class="bill-save">−17%</span></button>
           </div>
-          <input type="hidden" name="billing_period" value="monthly">
+          <input type="hidden" name="billing_period" value="month">
 
           <div class="plan-pick" role="radiogroup" aria-label="Plan">
             <label class="plan-opt" onclick="pickPlan(this)">
@@ -171,7 +174,7 @@
               <span class="po-price"><span class="pa" data-m="9,99 €" data-y="99,99 €">9,99 €</span><span class="pw" data-m="≈ 2,31 €/săpt" data-y="≈ 1,92 €/săpt">≈ 2,31 €/săpt</span></span>
             </label>
             <label class="plan-opt" onclick="pickPlan(this)">
-              <input type="radio" name="plan" value="elita" class="visually-hidden">
+              <input type="radio" name="plan" value="elite" class="visually-hidden">
               <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
               <span class="po-ic" style="background:linear-gradient(135deg,#FFB020,#ff5d8f)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-gem"/></svg></span>
               <span class="po-t"><span class="n">Elită</span><span class="d">Tot ce oferim, la nivel maxim</span></span>

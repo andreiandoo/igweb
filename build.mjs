@@ -103,6 +103,45 @@ ${sections}
 </section>`;
 }
 
+/** Pagini de stare: întoarcerea de la Stripe (cont creat / plată anulată). */
+function statusBody(s) {
+  const ok = s.tone === 'ok';
+  const badge = ok
+    ? 'linear-gradient(135deg,#2FB673,#38c983)'
+    : 'linear-gradient(135deg,#FFB020,#ff8f3c)';
+
+  const points = s.points.map(([ic, title, text]) => `        <li class="vcard" style="list-style:none">
+          <div class="vic" style="background:${badge}">${icon(ic)}</div>
+          <h2 style="font-size:1.05rem;color:var(--navy);font-weight:800">${esc(title)}</h2>
+          <p style="color:var(--muted);font-size:.95rem;margin-top:6px">${esc(text)}</p>
+        </li>`).join('\n');
+
+  return `<section class="band" style="text-align:center">
+  <div class="wrap" style="max-width:760px">
+    <div style="width:88px;height:88px;border-radius:26px;margin:0 auto 22px;display:grid;place-items:center;color:#fff;font-size:2.4rem;background:${badge};box-shadow:0 16px 34px rgba(14,42,92,.2)">
+      ${icon(ok ? 'i-check' : 'i-card')}
+    </div>
+    <p class="eyebrow eg" style="margin-bottom:18px">${esc(s.eyebrow)}</p>
+    <h1 style="font-size:clamp(1.9rem,4vw,2.7rem);font-weight:900;color:var(--navy)">${esc(s.h1)}</h1>
+    <p style="margin-top:16px;color:var(--muted);font-size:1.08rem;max-width:52ch;margin-inline:auto">${esc(s.lead)}</p>
+
+    <div class="hero-cta" style="justify-content:center;margin-top:28px">
+      <a class="btn btn-primary btn-lg" href="${esc(url(s.cta.href.replace('{app}', SITE.app)))}" rel="noopener">${icon(s.cta.icon)} ${esc(s.cta.label)}</a>
+      <a class="btn btn-ghost btn-lg" href="${esc(url('/'))}">${icon('i-home')} Înapoi pe site</a>
+    </div>
+
+    <ul class="cards9" style="grid-template-columns:repeat(3,1fr);margin:44px 0 0;padding:0;text-align:left">
+${points}
+    </ul>
+
+    <p style="margin-top:28px;color:var(--dim);font-size:.9rem">
+      Ceva nu e în regulă? Scrie-ne la
+      <a href="mailto:${esc(SITE.email)}" style="color:var(--green-2);font-weight:600">${esc(SITE.email)}</a>.
+    </p>
+  </div>
+</section>`;
+}
+
 function errorBody() {
   const cards = Object.entries(PAGES).filter(([, m]) => m.inFooter).map(([k, m]) =>
     `        <a class="vcard" href="${esc(url(m.path))}">
@@ -160,7 +199,8 @@ for (const [key, meta] of Object.entries(PAGES)) {
   const def = PAGE_DEFS[key] ?? {};
   let body;
 
-  if (def.legal)            body = legalBody(def.legal);
+  if (def.legal)             body = legalBody(def.legal);
+  else if (def.status)       body = statusBody(def.status);
   else if (key === 'eroare') body = errorBody();
   else                       body = resolve(read(`content/${key}.html`));
 

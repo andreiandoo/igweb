@@ -187,26 +187,16 @@ vizibilitate și în căutarea AI, oprește funcția din **Security → Settings
 
 ## 6. Unde ajung înscrierile
 
-Funcția `/api/lead` validează formularele pe server (câmpuri obligatorii, email, acord
-pentru termeni, honeypot anti-spam) și apoi le pune în siguranță. **Nu creează încă
-conturi în aplicație** — vezi [PLAN-FORMULARE-APP.md](PLAN-FORMULARE-APP.md).
+Formularele creează conturi **direct în aplicație**, prin funcția `/api/lead`, iar
+planurile plătite trec prin Stripe Checkout.
 
-Fără nicio configurare, lead-ul e doar validat și confirmat utilizatorului. Ca să-l și
-primești, setează în **Settings → Environment variables** cel puțin una dintre variante:
+Variabilele obligatorii (`REGISTRATION_API_SECRET`, `IG_API_URL`, `IG_FORWARD`),
+binding-ul KV recomandat, verificarea configurării și testul obligatoriu de după
+activare sunt descrise în [PLAN-FORMULARE-APP.md](PLAN-FORMULARE-APP.md).
 
-| Variabile | Efect |
-|---|---|
-| `LEAD_WEBHOOK` | trimite lead-ul ca JSON către un URL (Zapier, Make, n8n, webhook Slack) |
-| `POSTMARK_TOKEN` + `LEAD_EMAIL_TO` + `LEAD_EMAIL_FROM` | trimite notificare pe email (Postmark e deja folosit de `igapp`) |
-
-Recomandat și un **KV namespace** pentru stocare și limitarea ratei:
-
-1. Workers & Pages → **KV** → *Create namespace* → nume `LEADS`
-2. Proiectul `sportiveducat` → **Settings → Bindings** → *Add* → **KV namespace**
-   → Variable name `LEADS`, namespace `LEADS`
-
-Fără KV, funcția merge, dar nu limitează numărul de trimiteri per IP. În acest caz pune
-o regulă de **Rate Limiting** pe zonă pentru calea `/api/lead` (10 cereri / 10 minute / IP).
+**Fă testul acela înainte de a muta domeniul.** Dacă secretul e greșit, oamenii primesc
+„Gata, contul e pregătit" fără să se creeze cont — datele nu se pierd (ajung în KV), dar
+nu vrei să afli asta de la primul client real.
 
 ---
 

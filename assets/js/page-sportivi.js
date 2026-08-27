@@ -137,13 +137,16 @@
         fwd.disabled = true;
         fwd.textContent = 'Se trimite…';
         window.igSubmitLead(form).then(function (res) {
+          /* la plan platit se face redirect spre Stripe — lasam butonul blocat */
+          if (res && res.ok && res.checkout_url) {
+            fwd.textContent = 'Te ducem la plată…';
+            window.location.assign(res.checkout_url);
+            return;
+          }
           sending = false;
           fwd.disabled = false;
           fwd.textContent = label;
-          if (!res || !res.ok) {
-            showError((res && res.error) || 'Nu am putut trimite formularul. Încearcă din nou.');
-            return;
-          }
+          if (!window.igHandleLeadResult(res, showError)) return;
           done();
         });
         return;

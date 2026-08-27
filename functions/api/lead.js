@@ -1,63 +1,190 @@
 /**
  * iGROWth · POST /api/lead — Cloudflare Pages Function
  *
- * Primește înscrierile din formularele site-ului (părinți, sportivi, cluburi,
- * antrenori), le validează pe server și le pune în siguranță.
+ * Primește înscrierile din formularele site-ului, le validează pe server și le
+ * trimite mai departe către API-ul aplicației (Railway), server-to-server.
+ * Secretul de înregistrare NU ajunge niciodată în browser.
  *
- * ┌─ ETAPA CURENTĂ ────────────────────────────────────────────────────────┐
- * │ NU creează conturi în app.sportiveducat.ro. Doar validează, salvează   │
- * │ lead-ul și trimite notificarea. Trimiterea către API-ul igapp este     │
- * │ scrisă mai jos, dar rulează DOAR dacă variabila IG_FORWARD = "on".     │
- * │ Vezi docs/PLAN-FORMULARE-APP.md.                                       │
- * └────────────────────────────────────────────────────────────────────────┘
+ * Traseu:
+ *   formular → /api/lead → validare + anti-spam
+ *                        → POST către API (cu X-Registration-Key)
+ *                        → [plan plătit] POST /plan-checkout
+ *                        → { ok: true, checkout_url? }
  *
- * Variabile de mediu (Cloudflare → Pages → Settings → Environment variables):
- *   LEAD_WEBHOOK     opțional  URL care primește lead-ul (Zapier / Make / Slack)
- *   POSTMARK_TOKEN   opțional  token Postmark pentru notificare pe email
- *   LEAD_EMAIL_TO    opțional  destinatarul notificării
- *   LEAD_EMAIL_FROM  opțional  expeditorul (adresă verificată în Postmark)
- *   IG_API_URL       opțional  ex. https://api.sportiveducat.ro
- *   IG_FORWARD       opțional  "on" ⇒ trimite mai departe către IG_API_URL
+ * Variabile de mediu (Cloudflare → Settings → Environment variables):
+ *   REGISTRATION_API_SECRET  obligatoriu  aceeași valoare ca în Railway (Encrypt!)
+ *   IG_API_URL               obligatoriu  https://igapp-production.up.railway.app
+ *   IG_FORWARD               "on" ⇒ trimite către API; altfel doar colectează
+ *   LEAD_WEBHOOK             opțional     copie a lead-ului (Zapier / Make / Slack)
+ *   POSTMARK_TOKEN + LEAD_EMAIL_TO + LEAD_EMAIL_FROM   opțional, notificare email
  *
- * Binding-uri (opțional, dar recomandat):
- *   LEADS            KV Namespace — stochează lead-urile și limitează rata
+ * Binding-uri (recomandat):
+ *   LEADS   KV Namespace — copie de siguranță a înscrierilor + limitare pe IP
  */
 
-const TYPES = ['parent', 'athlete', 'club', 'coach'];
-
-/** Câmpuri obligatorii pe tip de formular. */
-const REQUIRED = {
-  parent: ['child_first_name', 'child_age', 'parent_name', 'parent_email'],
-  athlete: ['first_name', 'age'],
-  club: ['legal_name', 'short_name', 'president_name', 'phone', 'email'],
-  coach: ['full_name', 'phone', 'email'],
-};
-
-/** Câmpuri care nu se stochează și nu se trimit nicăieri în afară de API. */
-const SECRET = /password|parola/i;
+/* ---------------------------------------------------------------- utilitare */
 
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), {
     status,
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'no-store',
-    },
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
   });
 
-const isEmail = (s) => typeof s === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
+const str = (v) => String(v ?? '').trim();
+const isEmail = (s) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str(s));
+const isUsername = (s) => /^[a-z0-9_.]{3,30}$/.test(str(s));
+const orNull = (v) => (str(v) === '' ? null : str(v));
 
-/** Elimină parolele și câmpurile tehnice dintr-un obiect. */
+/** Câmpurile care nu au voie să ajungă în stocare sau în notificări. */
+const SECRET_FIELD = /password|parola/i;
+
+/** Copie a datelor fără parole — doar asta se salvează sau se trimite pe email. */
 function scrub(data) {
   const out = {};
   for (const [k, v] of Object.entries(data)) {
-    if (SECRET.test(k) || k === 'website_confirm') continue;
+    if (SECRET_FIELD.test(k) || k === 'website_confirm') continue;
     out[k] = typeof v === 'string' ? v.trim().slice(0, 500) : v;
   }
   return out;
 }
 
-/** Limitare simplă pe IP, dacă există KV. Fără KV, se bazează pe regulile din zonă. */
+/* -------------------------------------------------- validare per formular */
+
+/**
+ * Fiecare tip știe: ce câmpuri sunt obligatorii, ce verificări în plus are, ce
+ * endpoint apelează și cum arată payload-ul. Un singur loc de modificat când se
+ * schimbă contractul cu backend-ul.
+ */
+const FORMS = {
+  parent: {
+    endpoint: '/auth/register-parent',
+    needsKey: true,
+    required: ['child_first_name', 'child_age', 'child_password', 'parent_name', 'parent_email', 'parent_password'],
+    check(d) {
+      if (!isEmail(d.parent_email)) return ['Adresa de email a părintelui nu pare validă.', ['parent_email']];
+      if (str(d.parent_password).length < 6) return ['Parola părintelui trebuie să aibă minim 6 caractere.', ['parent_password']];
+      if (str(d.child_password).length < 6) return ['Parola copilului trebuie să aibă minim 6 caractere.', ['child_password']];
+      if (!str(d.child_email) && !str(d.child_username)) {
+        return ['Copilul are nevoie de un email sau de un username.', ['child_email', 'child_username']];
+      }
+      if (str(d.child_email) && !isEmail(d.child_email)) return ['Adresa de email a copilului nu pare validă.', ['child_email']];
+      if (str(d.child_username) && !isUsername(d.child_username)) {
+        return ['Username-ul poate avea 3–30 de caractere: litere mici, cifre, punct sau underscore.', ['child_username']];
+      }
+      if (!str(d.plan)) return ['Alege un plan.', ['plan']];
+      return null;
+    },
+    payload: (d) => ({
+      parent: {
+        name: str(d.parent_name),
+        email: str(d.parent_email).toLowerCase(),
+        password: str(d.parent_password),
+        ...(str(d.parent_phone) ? { phone: str(d.parent_phone) } : {}),
+      },
+      child: {
+        first_name: str(d.child_first_name),
+        age: Number(d.child_age),
+        ...(str(d.child_sport) ? { sport: str(d.child_sport) } : {}),
+        ...(str(d.child_email) ? { email: str(d.child_email).toLowerCase() } : {}),
+        ...(str(d.child_username) ? { username: str(d.child_username).toLowerCase() } : {}),
+        password: str(d.child_password),
+      },
+      plan: str(d.plan),
+      billing_period: str(d.billing_period) || 'month',
+      terms_accepted: true,
+      privacy_accepted: true,
+      source: 'web:parinti',
+    }),
+    /** id-ul pe care îl cere /plan-checkout */
+    athleteId: (res) => res?.child?.id,
+  },
+
+  athlete: {
+    endpoint: '/auth/register-athlete',
+    needsKey: true,
+    required: ['first_name', 'age', 'password'],
+    check(d) {
+      if (str(d.password).length < 6) return ['Parola trebuie să aibă minim 6 caractere.', ['password']];
+      if (!str(d.email) && !str(d.username)) return ['Ai nevoie de un email sau de un username.', ['email', 'username']];
+      if (str(d.email) && !isEmail(d.email)) return ['Adresa de email nu pare validă.', ['email']];
+      if (str(d.username) && !isUsername(d.username)) {
+        return ['Username-ul poate avea 3–30 de caractere: litere mici, cifre, punct sau underscore.', ['username']];
+      }
+      const age = Number(d.age);
+      if (age < 18) {
+        if (!str(d.guardian_name) || !str(d.guardian_email) || !d.guardian_consent) {
+          return ['Pentru un sportiv minor sunt necesare datele părintelui și acordul lui.',
+            ['guardian_name', 'guardian_email', 'guardian_consent']];
+        }
+        if (!isEmail(d.guardian_email)) return ['Adresa de email a părintelui nu pare validă.', ['guardian_email']];
+      }
+      return null;
+    },
+    payload: (d) => ({
+      first_name: str(d.first_name),
+      age: Number(d.age),
+      ...(str(d.email) ? { email: str(d.email).toLowerCase() } : {}),
+      ...(str(d.username) ? { username: str(d.username).toLowerCase() } : {}),
+      password: str(d.password),
+      ...(str(d.sport) ? { sport: str(d.sport) } : {}),
+      ...(Number(d.age) < 18 ? {
+        guardian_name: str(d.guardian_name),
+        guardian_email: str(d.guardian_email).toLowerCase(),
+        guardian_phone: orNull(d.guardian_phone),
+        guardian_consent: true,
+      } : {}),
+      plan: str(d.plan) || 'free',
+      billing_period: str(d.billing_period) || 'month',
+      terms_accepted: true,
+      privacy_accepted: true,
+      source: 'web:sportivi',
+    }),
+    athleteId: (res) => res?.athlete?.id,
+  },
+
+  club: {
+    endpoint: '/auth/register-club-admin',
+    needsKey: false,          // endpoint public, nu cere secretul
+    required: ['legal_name', 'short_name', 'president_name', 'phone', 'email'],
+    check(d) {
+      if (!isEmail(d.email)) return ['Adresa de email nu pare validă.', ['email']];
+      if (!str(d.sports)) return ['Selectează cel puțin un sport.', ['sports']];
+      return null;
+    },
+    payload: (d) => ({
+      legal_name: str(d.legal_name),
+      short_name: str(d.short_name),
+      sports: str(d.sports).split(',').map((s) => s.trim()).filter(Boolean),
+      cui: orNull(d.cui),
+      cis_code: orNull(d.cis_code),
+      president_name: str(d.president_name),
+      phone: str(d.phone),
+      website: orNull(d.website),
+      email: str(d.email).toLowerCase(),
+      street: orNull(d.street),
+      city: orNull(d.city),
+      county: orNull(d.county),
+      heard_about_us: orNull(d.heard_about_us),
+      terms_accepted: true,
+      privacy_accepted: true,
+    }),
+    athleteId: () => null,     // cluburile nu trec prin /plan-checkout
+  },
+
+  /* Antrenorii nu au încă endpoint în aplicație — se colectează ca lead. */
+  coach: {
+    endpoint: null,
+    needsKey: false,
+    required: ['full_name', 'phone', 'email'],
+    check: (d) => (isEmail(d.email) ? null : ['Adresa de email nu pare validă.', ['email']]),
+    payload: null,
+    athleteId: () => null,
+  },
+};
+
+/* ------------------------------------------------- stocare și notificări */
+
+/** Limitare pe IP, dacă e legat un KV namespace. */
 async function rateLimited(env, ip) {
   if (!env.LEADS || !ip) return false;
   const key = `rl:${ip}`;
@@ -79,19 +206,15 @@ async function notify(env, lead) {
   }
 
   if (env.POSTMARK_TOKEN && env.LEAD_EMAIL_TO && env.LEAD_EMAIL_FROM) {
-    const rows = Object.entries(lead.data)
-      .map(([k, v]) => `${k}: ${v}`).join('\n');
+    const rows = Object.entries(lead.data).map(([k, v]) => `${k}: ${v}`).join('\n');
     tasks.push(fetch('https://api.postmarkapp.com/email', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Postmark-Server-Token': env.POSTMARK_TOKEN,
-      },
+      headers: { 'Content-Type': 'application/json', 'X-Postmark-Server-Token': env.POSTMARK_TOKEN },
       body: JSON.stringify({
         From: env.LEAD_EMAIL_FROM,
         To: env.LEAD_EMAIL_TO,
         Subject: `[sportiveducat.ro] Înscriere nouă — ${lead.type}`,
-        TextBody: `Tip: ${lead.type}\nData: ${lead.created_at}\nPagina: ${lead.page}\n\n${rows}`,
+        TextBody: `Tip: ${lead.type}\nData: ${lead.created_at}\nPagina: ${lead.page}\nStatus: ${lead.status}\n\n${rows}`,
         MessageStream: 'outbound',
       }),
     }).catch(() => {}));
@@ -100,45 +223,28 @@ async function notify(env, lead) {
   await Promise.allSettled(tasks);
 }
 
-/**
- * Trimiterea către API-ul aplicației. Rulează doar cu IG_FORWARD = "on".
- * Momentan există un singur endpoint public potrivit: cluburile.
- * Pentru părinți / antrenori / sportivi trebuie întâi create rutele în igapp —
- * vezi docs/PLAN-FORMULARE-APP.md, etapa 3.
- */
-async function forward(env, lead) {
-  if (env.IG_FORWARD !== 'on' || !env.IG_API_URL) return { forwarded: false };
-  if (lead.type !== 'club') return { forwarded: false, reason: 'endpoint inexistent' };
+/* ------------------------------------------------------------ apel API */
 
-  const d = lead.data;
-  const payload = {
-    legal_name: d.legal_name,
-    short_name: d.short_name,
-    sports: String(d.sports ?? '').split(',').map((s) => s.trim()).filter(Boolean),
-    cui: d.cui || null,
-    cis_code: d.cis_code || null,
-    president_name: d.president_name,
-    phone: d.phone,
-    website: d.website || null,
-    email: d.email,
-    street: d.street || null,
-    city: d.city || null,
-    county: d.county || null,
-    heard_about_us: d.heard_about_us || null,
-    terms_accepted: true,
-    privacy_accepted: true,
-  };
-
-  const res = await fetch(`${env.IG_API_URL}/auth/register-club-admin`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-
-  let body = null;
-  try { body = await res.json(); } catch { /* răspuns fără JSON */ }
-  return { forwarded: true, status: res.status, body };
+function apiHeaders(env, needsKey) {
+  const h = { 'Content-Type': 'application/json' };
+  if (needsKey && env.REGISTRATION_API_SECRET) {
+    h['X-Registration-Key'] = env.REGISTRATION_API_SECRET;
+  }
+  return h;
 }
+
+async function callApi(env, path, needsKey, body) {
+  const res = await fetch(env.IG_API_URL.replace(/\/$/, '') + path, {
+    method: 'POST',
+    headers: apiHeaders(env, needsKey),
+    body: JSON.stringify(body),
+  });
+  let data = null;
+  try { data = await res.json(); } catch { /* răspuns fără JSON */ }
+  return { status: res.status, data };
+}
+
+/* ------------------------------------------------------------ handler */
 
 export async function onRequestPost({ request, env }) {
   let payload;
@@ -150,67 +256,130 @@ export async function onRequestPost({ request, env }) {
 
   const type = payload?.type;
   const data = payload?.data;
+  const form = FORMS[type];
 
-  if (!TYPES.includes(type) || !data || typeof data !== 'object') {
+  if (!form || !data || typeof data !== 'object') {
     return json({ ok: false, error: 'Formular necunoscut.' }, 400);
   }
 
   /* honeypot: completat doar de boți — răspundem „ok" ca să nu învețe */
   if (data.website_confirm) return json({ ok: true });
 
-  const missing = REQUIRED[type].filter((f) => !String(data[f] ?? '').trim());
+  const missing = form.required.filter((f) => !str(data[f]));
   if (missing.length) {
     return json({ ok: false, error: 'Mai sunt câmpuri de completat.', fields: missing }, 422);
-  }
-
-  const email = data.email ?? data.parent_email ?? data.guardian_email ?? '';
-  if (email && !isEmail(email)) {
-    return json({ ok: false, error: 'Adresa de email nu pare validă.', fields: ['email'] }, 422);
   }
   if (!data.terms_accepted || !data.privacy_accepted) {
     return json({ ok: false, error: 'Trebuie să accepți termenii și politica de confidențialitate.' }, 422);
   }
+  const problem = form.check(data);
+  if (problem) return json({ ok: false, error: problem[0], fields: problem[1] }, 422);
 
   const ip = request.headers.get('CF-Connecting-IP') ?? '';
   if (await rateLimited(env, ip)) {
     return json({ ok: false, error: 'Prea multe încercări. Încearcă din nou în câteva minute.' }, 429);
   }
 
+  const origin = new URL(request.url).origin;
   const lead = {
     type,
     created_at: new Date().toISOString(),
     page: request.headers.get('Referer') ?? '',
     country: request.headers.get('CF-IPCountry') ?? '',
-    data: scrub(data),
+    status: 'colectat',
+    data: scrub(data),          // fără parole — asta se salvează
   };
 
-  if (env.LEADS) {
-    const id = `lead:${lead.created_at}:${crypto.randomUUID()}`;
-    await env.LEADS.put(id, JSON.stringify(lead));
+  /* --- fără forward: doar colectăm (antrenori, sau IG_FORWARD oprit) --- */
+  const configured = env.IG_FORWARD === 'on' && Boolean(env.IG_API_URL);
+  /* Un endpoint care cere secretul nu se apelează fără el: altfel backend-ul
+     ar răspunde 401 iar noi n-am ști de ce. Marcăm explicit în lead. */
+  const secretMissing = form.needsKey && !env.REGISTRATION_API_SECRET;
+  const canForward = configured && form.endpoint && !secretMissing;
+
+  if (!canForward) {
+    lead.status = secretMissing
+      ? 'NECONFIGURAT: lipsește REGISTRATION_API_SECRET'
+      : (form.endpoint ? 'colectat (forward oprit)' : 'colectat (fără endpoint în aplicație)');
+    await store(env, lead);
+    await notify(env, lead);
+    return json({ ok: true });
   }
 
+  /* --- înregistrare în aplicație --- */
+  let reg;
+  try {
+    reg = await callApi(env, form.endpoint, form.needsKey, form.payload(data));
+  } catch {
+    /* API indisponibil: păstrăm lead-ul, ca să nu pierdem omul */
+    lead.status = 'api indisponibil';
+    await store(env, lead);
+    await notify(env, lead);
+    return json({ ok: true });
+  }
+
+  if (reg.status >= 400) {
+    lead.status = `respins de API (${reg.status})`;
+    await store(env, lead);
+    await notify(env, lead);
+
+    /* 409 și 422 au mesaje utile pentru om — le trimitem mai departe */
+    if (reg.status === 409 || reg.status === 422 || reg.status === 400) {
+      return json({
+        ok: false,
+        error: reg.data?.error ?? 'Datele nu au putut fi înregistrate.',
+        conflict: reg.status === 409,
+      }, reg.status === 409 ? 409 : 422);
+    }
+    /* 401/5xx: e problema noastră, nu a lui — confirmăm, avem datele salvate */
+    return json({ ok: true });
+  }
+
+  lead.status = 'cont creat';
+  await store(env, lead);
   await notify(env, lead);
 
-  let result = { forwarded: false };
-  try {
-    result = await forward(env, lead);
-  } catch {
-    /* dacă API-ul e indisponibil, lead-ul e deja salvat — nu pierdem nimic */
-  }
-
-  /* erorile clare din API merg înapoi la utilizator */
-  if (result.forwarded && result.status === 409) {
-    return json({
-      ok: false,
-      error: result.body?.error ?? 'Există deja un cont cu aceste date.',
-      conflict: true,
-    }, 409);
+  /* --- plan plătit: pornim Stripe Checkout --- */
+  const athleteId = form.athleteId(reg.data);
+  if (reg.data?.plan?.requires_payment && athleteId) {
+    try {
+      const co = await callApi(env, '/plan-checkout', true, {
+        athlete_id: athleteId,
+        success_url: `${origin}/cont-creat`,
+        cancel_url: `${origin}/plata-anulata`,
+      });
+      if (co.status === 200 && co.data?.url) {
+        return json({ ok: true, checkout_url: co.data.url });
+      }
+    } catch {
+      /* contul există deja; plata se poate face din aplicație */
+    }
   }
 
   return json({ ok: true });
 }
 
-/** GET pe endpoint nu are sens — răspundem scurt, ca să nu pară o pagină. */
-export function onRequestGet() {
-  return json({ ok: false, error: 'Metodă neacceptată.' }, 405);
+async function store(env, lead) {
+  if (!env.LEADS) return;
+  try {
+    await env.LEADS.put(`lead:${lead.created_at}:${crypto.randomUUID()}`, JSON.stringify(lead));
+  } catch { /* stocarea nu trebuie să blocheze răspunsul */ }
+}
+
+/**
+ * GET pe endpoint nu trimite date, dar spune dacă e configurat — util imediat
+ * după deploy, ca să vezi din browser că variabilele au ajuns la funcție.
+ * Întoarce doar da/nu, niciodată valorile.
+ */
+export function onRequestGet({ env }) {
+  return json({
+    ok: false,
+    error: 'Metodă neacceptată.',
+    configurat: {
+      api: Boolean(env.IG_API_URL),
+      forward: env.IG_FORWARD === 'on',
+      secret: Boolean(env.REGISTRATION_API_SECRET),
+      stocare_kv: Boolean(env.LEADS),
+    },
+  }, 405);
 }

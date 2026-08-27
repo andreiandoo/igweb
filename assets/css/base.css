@@ -1,0 +1,294 @@
+/* ==========================================================================
+   iGROWth · base.css
+   Layout comun tuturor paginilor: reset, tokens, butoane, header, meniu
+   mobil, footer, bara de progres, utilitare.
+
+   Tokens prefixate cu --ig-* ca sa NU fie afectate de :root-ul fiecarei
+   pagini (paginile au sisteme de culoare diferite mostenite din design).
+   ========================================================================== */
+
+:root{
+  --ig-font:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  --ig-navy:#0E2A5C;
+  --ig-navy-deep:#0a1f45;
+  --ig-ink:#0c1730;
+  --ig-muted:#5b6b86;
+  --ig-dim:#8b98b8;
+  --ig-line:#e7ecf5;
+  --ig-line-2:#cfd8ea;
+  --ig-green:#2FB673;
+  --ig-green-2:#25a566;
+  --ig-green-soft:#e7f7ef;
+  --ig-purple:#5B4BD6;
+  --ig-sky:#38b6ff;
+  --ig-pink:#ff5d8f;
+  --ig-amber:#FFB020;
+  --ig-surface:#ffffff;
+  --ig-surface-2:#f4f7fc;
+  --ig-grad:linear-gradient(90deg,#2FB673,#38b6ff,#5B4BD6,#38b6ff,#2FB673);
+  --ig-header-h:68px;
+  --ig-shadow-sm:0 8px 22px rgba(14,42,92,.08);
+}
+
+/* ---------- reset ---------- */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:var(--font,var(--ig-font));
+  color:var(--ink,var(--ig-ink));
+  background:var(--bg,#fff);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{margin:0;line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
+p{margin:0}
+a{color:inherit;text-decoration:none}
+img,video{max-width:100%;display:block}
+button{font-family:inherit}
+.icon,svg.icon{width:1em;height:1em;display:inline-block;vertical-align:-.125em;fill:currentColor}
+.wrap{max-width:var(--maxw,1160px);margin:0 auto;padding:0 22px}
+
+/* accesibilitate: focus vizibil + skip link */
+:focus-visible{outline:3px solid var(--ig-purple);outline-offset:2px;border-radius:6px}
+.skip-link{
+  position:absolute;left:-9999px;top:0;z-index:200;
+  background:var(--ig-navy);color:#fff;font-weight:700;
+  padding:.8em 1.2em;border-radius:0 0 12px 0;
+}
+.skip-link:focus{left:0}
+.visually-hidden{
+  position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+/* ---------- text gradient (ambele conventii: .g si .gtext) ---------- */
+.g,.gtext{
+  background:var(--ig-grad);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:igSlide 9s linear infinite;
+}
+@keyframes igSlide{to{background-position:220% 0}}
+
+/* ---------- bara de progres la scroll ---------- */
+#progress{
+  position:fixed;top:0;left:0;height:3px;width:0;z-index:90;
+  background:var(--ig-grad);background-size:220% 100%;
+  animation:igSlide 9s linear infinite;
+  box-shadow:0 0 10px rgba(91,75,214,.5);
+  pointer-events:none;
+}
+
+/* ---------- butoane ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.55em;
+  font-weight:700;font-size:1rem;padding:.92em 1.5em;border-radius:999px;
+  border:0;cursor:pointer;font-family:inherit;line-height:1;text-align:center;
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease,color .15s ease;
+}
+.btn .icon{font-size:1.15em}
+.btn-primary{
+  background:linear-gradient(180deg,#38c983,var(--ig-green));color:#fff;
+  box-shadow:0 12px 24px rgba(47,182,115,.35),inset 0 -3px 0 rgba(0,0,0,.12);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 32px rgba(47,182,115,.5),inset 0 -3px 0 rgba(0,0,0,.12)}
+.btn-ghost{background:#fff;color:var(--ig-navy);box-shadow:inset 0 0 0 2px var(--ig-line)}
+.btn-ghost:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 2px var(--ig-line-2)}
+.btn-purple{background:linear-gradient(180deg,#6c5cf0,var(--ig-purple));color:#fff;box-shadow:0 12px 24px rgba(91,75,214,.34),inset 0 -3px 0 rgba(0,0,0,.14)}
+.btn-purple:hover{transform:translateY(-2px);box-shadow:0 18px 32px rgba(91,75,214,.46),inset 0 -3px 0 rgba(0,0,0,.14)}
+.btn-ink{background:var(--ig-navy);color:#fff;box-shadow:0 8px 22px rgba(14,42,92,.28)}
+.btn-ink:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(14,42,92,.36)}
+.btn-white{background:#fff;color:var(--ig-navy);box-shadow:0 8px 22px rgba(0,0,0,.14)}
+.btn-white:hover{transform:translateY(-2px)}
+.btn-glass{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.24)}
+.btn-glass:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+.btn-lg{font-size:1.06rem;padding:1.02em 1.75em}
+.btn-block{width:100%}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.55;cursor:not-allowed;transform:none!important}
+
+.glow{position:relative}
+.glow::after{
+  content:"";position:absolute;inset:-3px;border-radius:999px;
+  background:linear-gradient(120deg,#38c983,#38b6ff,#5B4BD6);
+  z-index:-1;filter:blur(9px);opacity:.55;animation:igGlow 2.6s ease-in-out infinite;
+}
+@keyframes igGlow{0%,100%{opacity:.4}50%{opacity:.75}}
+
+/* eroare de trimitere in modalul de inregistrare */
+.reg-error{
+  margin:0 22px;padding:.75em 1em;border-radius:12px;
+  background:#ffe9ea;border:1px solid #ffc9cc;color:#a11720;
+  font-size:.88rem;font-weight:600;line-height:1.45;
+}
+
+/* eticheta pentru grupuri de campuri fara <label for> */
+.field .field-label{display:block;font-size:.82rem;font-weight:700;color:var(--ig-navy);margin-bottom:6px}
+.card-soft .field-label{margin-bottom:8px}
+
+/* badge „curand" */
+.soon{
+  font-size:.54rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+  color:#5a3d00;background:#ffe6b3;padding:.15em .4em;border-radius:999px;
+  margin-left:5px;vertical-align:middle;
+}
+
+/* ---------- HEADER ---------- */
+.site-header{
+  position:sticky;top:0;z-index:80;
+  background:rgba(255,255,255,.86);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--ig-line);
+}
+.site-header .nav{display:flex;align-items:center;justify-content:space-between;height:var(--ig-header-h);gap:16px}
+.logo{display:flex;align-items:center;gap:.5em;font-weight:800;font-size:1.2rem;color:var(--ig-navy);letter-spacing:-.01em;flex:none}
+.logo .mark{width:36px;height:36px;display:grid;place-items:center;flex:none}
+.logo .mark svg{width:36px;height:36px;display:block;filter:drop-shadow(0 4px 9px rgba(47,182,115,.28))}
+.nlinks{display:flex;gap:1.4rem;align-items:center}
+.nlinks a{font-weight:600;font-size:.94rem;color:var(--ig-muted);position:relative;padding:.2em 0;white-space:nowrap}
+.nlinks a:hover{color:var(--ig-navy)}
+.nlinks a[aria-current="page"]{color:var(--ig-navy)}
+.nlinks a[aria-current="page"]::after{
+  content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;border-radius:2px;
+  background:var(--ig-grad);background-size:220%;animation:igSlide 9s linear infinite;
+}
+.ncta{display:flex;gap:.55rem;align-items:center}
+.ncta .btn{padding:.68em 1.15em;font-size:.92rem}
+.burger{
+  display:none;background:#fff;border:1px solid var(--ig-line);color:var(--ig-navy);
+  width:44px;height:44px;border-radius:12px;cursor:pointer;
+  align-items:center;justify-content:center;flex:none;
+}
+.burger:hover{background:var(--ig-surface-2)}
+
+@media(max-width:980px){.nlinks{gap:1rem}.nlinks a{font-size:.9rem}}
+@media(max-width:900px){
+  .nlinks,.ncta{display:none}
+  .burger{display:flex}
+}
+
+/* ---------- MENIU MOBIL ---------- */
+.mnav{position:fixed;inset:0;z-index:120;visibility:hidden;opacity:0;transition:opacity .25s ease,visibility .25s ease}
+.mnav.open{visibility:visible;opacity:1}
+.mnav-bd{position:absolute;inset:0;background:rgba(10,23,48,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.mnav-panel{
+  position:absolute;top:0;right:0;height:100%;width:min(340px,88vw);
+  background:#fff;box-shadow:-18px 0 50px rgba(10,23,48,.25);
+  padding:18px 18px calc(18px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:2px;overflow-y:auto;
+  transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.7,.2,1);
+}
+.mnav.open .mnav-panel{transform:none}
+.mnav-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mnav-panel a{padding:.8em .7em;border-radius:12px;font-weight:700;color:var(--ig-navy);font-size:1rem}
+.mnav-panel a:hover{background:var(--ig-surface-2)}
+.mnav-panel a[aria-current="page"]{background:var(--ig-green-soft);color:var(--ig-green-2)}
+.mnav-sep{margin:12px 4px 6px;font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ig-dim)}
+.mnav-panel .btn{margin-top:12px}
+
+/* ---------- FOOTER ---------- */
+.dl-bridge{background:var(--bg,#fff);position:relative;z-index:3}
+.foot-download{
+  display:flex;align-items:center;gap:26px;
+  background:radial-gradient(420px 240px at 6% 15%,rgba(47,182,115,.32),transparent 60%),linear-gradient(120deg,#6a5bea,#4740c0 60%,#3a44b5);
+  border-radius:26px;padding:26px 34px;margin-bottom:-78px;
+  box-shadow:0 30px 60px rgba(58,50,120,.42);position:relative;overflow:hidden;z-index:4;
+}
+.foot-download::after{content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%)}
+.fd-mascot{width:92px;height:auto;flex:none;filter:drop-shadow(0 12px 18px rgba(0,0,0,.3));position:relative;z-index:1}
+.fd-txt{flex:1;min-width:0;position:relative;z-index:1}
+.fd-txt h2{color:#fff;font-size:1.35rem;font-weight:900}
+.fd-txt p{color:#dcd9f7;font-size:.98rem;margin-top:5px}
+.fd-badges{flex:none;position:relative;z-index:1}
+
+.site-footer{background:linear-gradient(180deg,#0c2352,#081a3c);color:#aeb9d4;padding:112px 0 28px;font-size:.9rem;position:relative}
+.site-footer.no-bridge{padding-top:56px}
+.foot-cols{display:grid;grid-template-columns:1.7fr 1fr 1.2fr;gap:40px;padding:8px 0 34px}
+.foot-cols h2{color:#fff;font-size:.82rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.foot-brand .logo{color:#fff}
+.foot-brand p{margin-top:14px;max-width:36ch;color:#9fabc9;line-height:1.6}
+.foot-se{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-size:.78rem;font-weight:700;color:#8ff0bd;background:rgba(47,182,115,.14);border:1px solid rgba(47,182,115,.28);padding:.5em .9em;border-radius:999px}
+.foot-pages a{display:flex;align-items:center;gap:9px;color:#c2cbe0;padding:7px 0;font-weight:500}
+.foot-pages a .icon{color:var(--ig-green);font-size:1em}
+.foot-pages a:hover{color:#fff}
+.foot-pages a[aria-current="page"]{color:#fff;font-weight:700}
+.foot-contact{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.foot-contact li{display:flex;align-items:flex-start;gap:11px;color:#c2cbe0;line-height:1.5}
+.foot-contact li .icon{color:var(--ig-green);flex:none;margin-top:.15em;font-size:1.1em}
+.foot-contact a:hover{color:#fff}
+.foot-social{display:flex;gap:10px;margin-top:18px}
+.foot-social a{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.07);display:grid;place-items:center;color:#cdd6ea;font-size:1.2rem;transition:background .15s ease,transform .15s ease}
+.foot-social a:hover{background:rgba(255,255,255,.14);transform:translateY(-2px);color:#fff}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;color:#7e8bab;font-size:.84rem}
+.foot-legal{display:flex;gap:18px;flex-wrap:wrap}
+.foot-legal a{color:#8f9bb8}
+.foot-legal a:hover{color:#fff}
+
+/* insigne store (folosite si in footer, si in pagini) */
+.store-badges{display:flex;gap:12px;flex-wrap:wrap}
+.store-badge{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(180deg,#20232b,#0b0d12);color:#fff;border-radius:15px;padding:10px 20px 10px 16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px rgba(0,0,0,.22);transition:transform .16s ease,box-shadow .16s ease;min-width:180px;height:58px}
+.store-badge:hover{transform:translateY(-3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 14px 28px rgba(0,0,0,.34)}
+.store-badge .icon{font-size:2.05rem;flex:none}
+.store-badge .sb-t{display:flex;flex-direction:column;line-height:1.05;text-align:left;min-width:0}
+.store-badge .sb-t .s{font-size:.6rem;opacity:.82;font-weight:500;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.store-badge .sb-t .b{font-size:1.14rem;font-weight:600;margin-top:2px;white-space:nowrap}
+
+/* ---------- CTA fix pe mobil ---------- */
+.mobile-cta{
+  position:fixed;left:0;right:0;bottom:0;z-index:70;
+  background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-top:1px solid var(--ig-line);
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  display:none;gap:10px;box-shadow:0 -8px 24px rgba(14,42,92,.12);
+}
+.mobile-cta .btn{flex:1;padding:.85em 1em;font-size:.95rem}
+
+/* ---------- reveal la scroll ---------- */
+.rev,.reveal{opacity:0;transform:translateY(26px)}
+.rev.in,.reveal.in{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.no-js .rev,.no-js .reveal{opacity:1;transform:none}
+
+/* ---------- responsive layout comun ---------- */
+@media(max-width:980px){
+  .foot-cols{grid-template-columns:1fr 1fr;gap:30px}
+  .foot-brand{grid-column:1 / -1}
+  .foot-download{flex-wrap:wrap;justify-content:center;text-align:center;gap:18px}
+  .fd-txt{flex:1 1 100%;order:2}
+  .fd-mascot{order:1}
+  .fd-badges{order:3;flex:1 1 100%;display:flex;justify-content:center}
+}
+@media(max-width:760px){
+  .mobile-cta{display:flex}
+  body{padding-bottom:76px}
+  .site-footer{padding-bottom:96px}
+  .store-badges{gap:10px}
+  .store-badge{flex:1;min-width:0;justify-content:center;height:52px;gap:9px;padding:8px 12px}
+  .store-badge .icon{font-size:1.72rem}
+  .store-badge .sb-t .s{font-size:.56rem}
+  .store-badge .sb-t .b{font-size:.98rem}
+}
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  .site-header .nav{height:62px}
+  .site-footer{padding:96px 0 96px;text-align:center}
+  .site-footer.no-bridge{padding-top:48px}
+  .foot-download{padding:24px 22px;margin-bottom:-66px}
+  .fd-txt h2{font-size:1.18rem}
+  .foot-cols{grid-template-columns:1fr;gap:0;padding:8px 0 30px}
+  .foot-cols>div{padding:22px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .foot-cols>div:last-child{border-bottom:0}
+  .foot-brand{grid-column:auto}
+  .foot-brand .logo{justify-content:center}
+  .foot-brand p,.foot-se{margin-inline:auto}
+  .foot-pages a{justify-content:center}
+  .foot-contact li{text-align:left;justify-content:flex-start;max-width:280px;margin-inline:auto}
+  .foot-social{justify-content:center}
+  .foot-bottom{flex-direction:column;gap:12px;text-align:center;justify-content:center}
+  .foot-legal{justify-content:center}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  html{scroll-behavior:auto}
+  .rev,.reveal{opacity:1;transform:none}
+}

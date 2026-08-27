@@ -1,0 +1,21 @@
+# Cloudflare Pages · redirecturi
+# Se copiază în dist/ de către _tools/5-static.php.
+#
+# Ce face Pages automat, fără să scriem nimic aici:
+#   /parinti.html  → 308 → /parinti      (URL-uri „frumoase")
+#   /parinti/      → 308 → /parinti
+#   /index.html    → 308 → /
+#   orice URL necunoscut → 404.html, cu status 404 real
+#
+# De aceea fişierul e aproape gol. Regulile de mai jos sunt plase de siguranţă.
+
+# www → fără www.
+# Funcţionează doar dacă www.sportiveducat.ro e adăugat ca domeniu
+# personalizat pe proiectul Pages. Varianta recomandată e o Redirect Rule
+# la nivel de zonă (vezi docs/PLAN-DEPLOYMENT.md) — regula de aici e dublură.
+https://www.sportiveducat.ro/*  https://sportiveducat.ro/:splat  301
+
+# Vechiul SPA nu avea rute reale (orice cale întorcea acelaşi HTML), deci nu
+# există URL-uri vechi de redirecţionat. Dacă apar în Search Console adrese
+# indexate din vechea versiune, adaugă-le aici, câte una pe linie:
+#   /cale-veche  /pagina-noua  301

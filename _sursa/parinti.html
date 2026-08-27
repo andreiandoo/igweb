@@ -1,0 +1,1687 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iGROWth pentru părinți</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0E2A5C; --navy-2:#12336e; --navy-deep:#0a1f45;
+  --green:#2FB673; --green-2:#25a566; --green-soft:#e7f7ef;
+  --purple:#5B4BD6; --purple-2:#4c3ec4; --purple-soft:#eeecfb;
+  --amber:#FFB020; --amber-soft:#fff3d9;
+  --pink:#ff5d8f; --sky:#38b6ff;
+  --ink:#0c1730; --muted:#5b6b86; --line:#e7ecf5;
+  --bg:#ffffff; --bg-soft:#f4f7fc; --card:#ffffff;
+  --radius:22px; --radius-lg:30px;
+  --shadow:0 18px 44px rgba(14,42,92,.10);
+  --shadow-sm:0 8px 22px rgba(14,42,92,.08);
+  --maxw:1160px;
+  --font:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  /* seamless loop gradient: identical green at both ends -> no visible seam */
+  --grad-loop:linear-gradient(90deg,#2FB673,#38b6ff,#5B4BD6,#38b6ff,#2FB673);
+  --grad-brand:linear-gradient(120deg,#2FB673,#38b6ff 42%,#5B4BD6 78%);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--font);color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{line-height:1.12;margin:0;letter-spacing:-.02em;text-wrap:balance}
+p{margin:0}
+a{color:inherit;text-decoration:none}
+img,video{max-width:100%;display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.icon{width:1em;height:1em;display:inline-block;vertical-align:-.125em;fill:currentColor}
+
+/* seamless gradient text helper */
+.g{background:var(--grad-loop);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gloop 9s linear infinite}
+@keyframes gloop{to{background-position:-200% 0}}
+
+/* scroll progress */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:90;background:var(--grad-loop);background-size:200% 100%;animation:gloop 9s linear infinite;box-shadow:0 0 10px rgba(91,75,214,.5)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:.55em;font-weight:700;font-size:1rem;padding:.92em 1.5em;border-radius:999px;border:0;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,background .15s ease;font-family:inherit;line-height:1}
+.btn .icon{font-size:1.15em}
+.btn-primary{background:linear-gradient(180deg,#38c983,var(--green));color:#fff;box-shadow:0 12px 24px rgba(47,182,115,.35),inset 0 -3px 0 rgba(0,0,0,.12)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 32px rgba(47,182,115,.5),inset 0 -3px 0 rgba(0,0,0,.12)}
+.btn-ghost{background:#fff;color:var(--navy);box-shadow:inset 0 0 0 2px var(--line)}
+.btn-ghost:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 2px #cfd8ea}
+.btn-purple{background:linear-gradient(180deg,#6c5cf0,var(--purple));color:#fff;box-shadow:0 12px 24px rgba(91,75,214,.34),inset 0 -3px 0 rgba(0,0,0,.14)}
+.btn-purple:hover{transform:translateY(-2px)}
+.btn-lg{font-size:1.08rem;padding:1.05em 1.8em}
+.btn-block{width:100%;justify-content:center}
+.btn-primary.glow{position:relative}
+.btn-primary.glow::after{content:"";position:absolute;inset:-3px;border-radius:999px;background:linear-gradient(120deg,#38c983,#38b6ff,#5B4BD6);z-index:-1;filter:blur(9px);opacity:.55;animation:pulseglow 2.6s ease-in-out infinite}
+@keyframes pulseglow{0%,100%{opacity:.4}50%{opacity:.75}}
+
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:.45em;font-weight:600;font-size:.82rem;padding:.42em .85em;border-radius:999px;background:var(--bg-soft);color:var(--navy)}
+.eyebrow{display:inline-flex;align-items:center;gap:.5em;font-weight:700;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);background:var(--purple-soft);padding:.5em 1em;border-radius:999px}
+.eyebrow.eg{background:linear-gradient(120deg,var(--green-soft),var(--purple-soft));color:var(--purple)}
+.stars{color:var(--amber);display:inline-flex}
+
+/* header */
+header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:.55em;font-weight:800;font-size:1.22rem;color:var(--navy)}
+.logo .mark{width:38px;height:38px;display:grid;place-items:center;flex:none}
+.logo .marksvg{width:38px;height:38px;display:block;filter:drop-shadow(0 3px 5px rgba(14,42,92,.16))}
+.logo{gap:.5em;letter-spacing:-.01em}
+.nav-links{display:flex;gap:1.6rem;align-items:center}
+.nav-links a{font-weight:600;font-size:.95rem;color:var(--muted);position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:0;background:var(--green);transition:width .2s ease}
+.nav-links a:hover{color:var(--navy)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{display:flex;gap:.6rem;align-items:center}
+.burger{display:none;background:none;border:0;color:var(--navy);cursor:pointer;padding:.3em;border-radius:10px}
+.burger:hover{background:var(--bg-soft)}
+@media(max-width:900px){.nav-links{display:none}.nav-cta .btn-ghost{display:none}.burger{display:grid;place-items:center}.nav-cta .btn-primary{padding:.6em 1.05em;font-size:.86rem}.nav-cta .btn-primary .icon{font-size:1em}}
+@media(max-width:560px){.nav{height:62px}.nav-cta .btn-primary{display:none}}
+
+/* mobile nav sheet */
+.mnav{display:none;position:fixed;inset:0;z-index:80}
+.mnav.open{display:block}
+.mnav-bd{position:absolute;inset:0;background:rgba(10,23,48,.45);backdrop-filter:blur(3px)}
+.mnav-panel{position:absolute;top:0;right:0;height:100%;width:min(320px,86vw);background:#fff;box-shadow:-18px 0 50px rgba(10,23,48,.25);padding:20px 20px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.7,.2,1)}
+.mnav.open .mnav-panel{transform:none}
+.mnav-panel .mnav-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.mnav-panel a{padding:14px 12px;border-radius:12px;font-weight:700;color:var(--navy);font-size:1.02rem}
+.mnav-panel a:hover{background:var(--bg-soft)}
+.mnav-panel .btn{margin-top:12px}
+
+/* ============ HERO ============ */
+.hero{position:relative;padding:56px 0 120px;overflow:hidden;background:linear-gradient(180deg,#eef3fc 0%,#f3f7fe 46%,#ffffff 100%)}
+.aurora{position:absolute;inset:-24% -12%;z-index:0;filter:blur(42px);opacity:.85}
+.aurora span{position:absolute;border-radius:50%;mix-blend-mode:multiply;animation:drift 20s ease-in-out infinite}
+.aurora .a1{width:520px;height:520px;background:radial-gradient(circle,rgba(47,182,115,.5),transparent 65%);top:-10%;left:-6%}
+.aurora .a2{width:560px;height:560px;background:radial-gradient(circle,rgba(91,75,214,.46),transparent 65%);top:-16%;right:-8%;animation-delay:-5s}
+.aurora .a3{width:440px;height:440px;background:radial-gradient(circle,rgba(56,182,255,.4),transparent 65%);bottom:-20%;left:20%;animation-delay:-10s}
+.aurora .a4{width:360px;height:360px;background:radial-gradient(circle,rgba(255,93,143,.34),transparent 65%);bottom:-12%;right:16%;animation-delay:-14s}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-28px) scale(1.08)}66%{transform:translate(-28px,18px) scale(.95)}}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.02fr .98fr;gap:40px;align-items:center}
+
+/* hero mascot illustration */
+.hero-mascot{position:absolute;z-index:2;width:150px;height:auto;bottom:-6px;left:-14px;filter:drop-shadow(0 16px 24px rgba(14,42,92,.18));animation:floaty 6s ease-in-out infinite;--r:-4deg}
+
+/* trust bar bridges hero -> content */
+.trust-sec{background:#fff;position:relative;z-index:5}
+.trustbar{margin-top:-64px}
+
+/* social proof pill */
+.hp-pill{display:inline-flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 16px 6px 8px;box-shadow:var(--shadow-sm)}
+.avstack{display:flex}
+.avstack span{width:30px;height:30px;border-radius:50%;border:2px solid #fff;margin-right:-9px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:.72rem;box-shadow:0 2px 5px rgba(0,0,0,.12)}
+.hp-pill .hp-txt{font-size:.82rem;font-weight:600;color:var(--navy);line-height:1.25}
+.hp-pill .hp-txt .s{color:var(--muted);font-weight:600}
+.hp-pill .stars{font-size:.72rem}
+
+.hero h1{font-size:clamp(2.35rem,4.9vw,3.8rem);font-weight:900;color:var(--navy);margin-top:24px}
+.hero h1 .g{display:inline-block}
+.hero .lead{font-size:1.17rem;color:#33425e;margin-top:18px;max-width:40ch}
+.hero-cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:26px}
+.hero-trust{display:flex;gap:1.1rem 1.5rem;flex-wrap:wrap;margin-top:24px;align-items:center}
+.trust-item{display:flex;align-items:center;gap:.5em;font-size:.9rem;color:#44526d;font-weight:600}
+.trust-item .icon{color:var(--green);font-size:1.15em}
+
+/* hero visual */
+.hero-visual{position:relative;display:grid;place-items:center;min-height:520px;perspective:1500px}
+.phone-glow{position:absolute;width:330px;height:330px;border-radius:50%;background:conic-gradient(from 0deg,var(--green),var(--sky),var(--purple),var(--pink),var(--green));filter:blur(66px);opacity:.4;animation:spin 16s linear infinite;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.phone{position:relative;z-index:3;width:288px;border-radius:42px;background:linear-gradient(160deg,#12336e,#0a1f45);padding:12px;box-shadow:0 46px 90px rgba(14,42,92,.42),inset 0 0 0 2px rgba(255,255,255,.07);animation:phonefloat 7s ease-in-out infinite;transform-style:preserve-3d}
+@keyframes phonefloat{0%,100%{transform:translateY(0) rotateX(5deg) rotateY(-8deg)}50%{transform:translateY(-13px) rotateX(3deg) rotateY(-5deg)}}
+.phone-screen{border-radius:32px;overflow:hidden;background:#eef2fa;aspect-ratio:9/18.6;position:relative;display:flex;flex-direction:column}
+/* status bar */
+.ph-status{display:flex;align-items:center;justify-content:space-between;padding:10px 20px 4px;color:#fff;position:relative;z-index:2}
+.ph-time{font-size:.66rem;font-weight:800;letter-spacing:.02em}
+.ph-sys{display:inline-flex;align-items:center;gap:5px;font-size:.6rem}
+.ph-sys .icon{font-size:.72rem;opacity:.9}
+.ph-batt{width:18px;height:9px;border:1.4px solid rgba(255,255,255,.85);border-radius:3px;position:relative;display:inline-block}
+.ph-batt::before{content:"";position:absolute;inset:1.4px;right:5px;background:#fff;border-radius:1px}
+.ph-batt::after{content:"";position:absolute;top:2px;right:-2.4px;width:1.6px;height:4px;background:rgba(255,255,255,.85);border-radius:0 1px 1px 0}
+/* header banner */
+.ph-header{background:linear-gradient(135deg,#2FB673 0%,#37a0c9 55%,#5B4BD6 100%);padding:4px 16px 30px;color:#fff;border-radius:0 0 26px 26px}
+.ph-hrow{display:flex;align-items:center;justify-content:space-between}
+.ph-user{display:flex;align-items:center;gap:9px}
+.ph-avatar{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:1.05rem;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35)}
+.ph-uwho{display:flex;flex-direction:column;line-height:1.15}
+.ph-uwho .ph-hi{font-size:.6rem;opacity:.85;font-weight:600}
+.ph-uwho .ph-name{font-size:1.02rem;font-weight:800}
+.ph-coins{display:flex;gap:6px}
+.ph-coin{display:inline-flex;align-items:center;gap:3px;font-size:.66rem;font-weight:800;background:rgba(255,255,255,.18);padding:.32em .55em;border-radius:999px;backdrop-filter:blur(3px)}
+.ph-coin .icon{font-size:.78rem}
+.ph-coin.flame .icon{color:#ffd0a3}
+.ph-coin.gem .icon{color:#bff3d5}
+/* body */
+.ph-body{flex:1;padding:0 13px 8px;margin-top:-18px;overflow:hidden}
+.ph-mission{background:#fff;border-radius:18px;padding:12px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 22px rgba(14,42,92,.12)}
+.ph-ring{position:relative;width:52px;height:52px;flex:none}
+.ph-ring svg{width:52px;height:52px;transform:rotate(-90deg)}
+.ph-ring .rbg{fill:none;stroke:#eaf0f9;stroke-width:4}
+.ph-ring .rfg{fill:none;stroke:url(#none);stroke:#2FB673;stroke-width:4;stroke-linecap:round;stroke-dasharray:100.5;stroke-dashoffset:100.5;animation:ring 1.4s ease forwards .5s}
+@keyframes ring{to{stroke-dashoffset:25}}
+.ph-ringtxt{position:absolute;inset:0;display:grid;place-items:center;font-size:.62rem;color:var(--navy);font-weight:800}
+.ph-ringtxt b{font-size:.9rem}
+.ph-ringtxt span{color:var(--muted)}
+.ph-mtext{min-width:0}
+.ph-mlabel{font-size:.56rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--purple)}
+.ph-mtitle{font-size:.92rem;font-weight:800;color:var(--navy);margin-top:1px}
+.ph-mxp{display:inline-flex;align-items:center;gap:3px;font-size:.6rem;font-weight:700;color:var(--green-2);margin-top:4px}
+.ph-mxp .icon{font-size:.72rem}
+.ph-league{background:#fff;border-radius:16px;padding:11px 13px;margin-top:9px;box-shadow:0 6px 16px rgba(14,42,92,.08)}
+.ph-lg-top{display:flex;align-items:center;justify-content:space-between}
+.ph-lg-name{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;color:var(--navy)}
+.ph-lg-dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#c9d3e4,#9fb0c9);box-shadow:0 0 0 2px #eef2fa}
+.ph-lg-rank{font-size:.6rem;font-weight:800;color:#a9710b;background:var(--amber-soft);padding:.2em .5em;border-radius:999px}
+.ph-lg-bar{height:8px;border-radius:999px;background:#eef2fa;overflow:hidden;margin:7px 0 5px}
+.ph-lg-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#c0c8d6,#e8edf5);position:relative}
+.ph-lg-fill::after{content:"";position:absolute;inset:0;border-radius:999px;background:linear-gradient(90deg,#2FB673,#7ff0b7);width:100%;animation:lgfill 1.6s ease forwards .6s;transform-origin:left;transform:scaleX(0)}
+@keyframes lgfill{to{transform:scaleX(.66)}}
+.ph-lg-fill{width:100%}
+.ph-lg-sub{font-size:.56rem;color:var(--muted);font-weight:600}
+.ph-sec{font-size:.6rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:11px 4px 6px}
+.ph-quest{background:#fff;border-radius:14px;padding:8px 10px;display:flex;align-items:center;gap:9px;box-shadow:0 5px 13px rgba(14,42,92,.07);margin-bottom:7px}
+.ph-quest.active{box-shadow:0 8px 18px rgba(91,75,214,.16);outline:1.5px solid rgba(91,75,214,.22)}
+.ph-quest.done{opacity:.62}
+.ph-q-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;flex:none;font-size:.82rem}
+.ph-q-t{flex:1;min-width:0}
+.ph-q-n{font-size:.68rem;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph-q-s{font-size:.56rem;color:var(--muted);font-weight:500}
+.ph-quest.done .ph-q-n{text-decoration:line-through}
+.ph-q-go{font-size:.58rem;font-weight:800;color:var(--green-2);background:var(--green-soft);padding:.28em .5em;border-radius:999px;display:inline-flex;align-items:center;gap:2px;flex:none}
+.ph-q-go .icon{font-size:.68rem}
+/* bottom nav */
+.ph-nav{background:#fff;border-top:1px solid #e6ecf5;display:flex;align-items:center;justify-content:space-around;padding:9px 8px calc(9px + 4px)}
+.ph-nav-i{color:#b6c1d4;font-size:1.05rem;display:grid;place-items:center;width:32px;height:32px;border-radius:10px}
+.ph-nav-i.on{color:var(--purple);background:var(--purple-soft)}
+.ph-nav-i.mid{color:#fff;background:linear-gradient(135deg,#2FB673,#38c983);box-shadow:0 6px 14px rgba(47,182,115,.4);width:38px;height:38px;font-size:1.15rem}
+
+/* floating proof cards */
+.proof-card{position:absolute;z-index:4;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 38px rgba(14,42,92,.18);padding:12px 14px;animation:floaty 6.5s ease-in-out infinite}
+.proof-card.pc-1{top:12%;left:-4%;width:210px;--r:-3deg}
+.proof-card.pc-2{bottom:14%;right:-6%;width:190px;animation-delay:1.2s;--r:3deg}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(var(--r,0))}50%{transform:translateY(-12px) rotate(var(--r,0))}}
+.pc-rev{display:flex;gap:9px;align-items:flex-start}
+.pc-av{width:32px;height:32px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:800;font-size:.8rem}
+.pc-rev .pc-stars{color:var(--amber);font-size:.62rem}
+.pc-rev .pc-q{font-size:.76rem;font-weight:600;color:var(--navy);line-height:1.3;margin-top:2px}
+.pc-rev .pc-n{font-size:.64rem;color:var(--muted);font-weight:600;margin-top:3px}
+.pc-prog{display:flex;align-items:center;gap:10px}
+.pc-prog .pc-ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:#fff;flex:none;font-size:1.1rem;background:linear-gradient(135deg,#ff8f5e,#FFB020)}
+.pc-prog .pc-big{font-weight:900;color:var(--navy);font-size:1.05rem;line-height:1;display:flex;align-items:center;gap:4px}
+.pc-prog .pc-sub{font-size:.64rem;color:var(--muted);font-weight:600;margin-top:3px}
+
+.wave{display:block;width:100%;height:56px;margin-top:-1px}
+
+/* section frame */
+.band{padding:74px 0;position:relative}
+.band-soft{background:var(--bg-soft)}
+.sec-head{text-align:center;margin:0 auto 46px;max-width:730px}
+.sec-head .eyebrow{margin-bottom:22px}
+.sec-head h2{font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:900;color:var(--navy)}
+.sec-head p{color:var(--muted);font-size:1.08rem;margin-top:14px}
+.refer .eyebrow,.imp-head .imp-eyebrow{margin-bottom:22px}
+
+/* trust bar */
+.trustbar{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px 26px;box-shadow:var(--shadow-sm)}
+.tb-item{display:flex;align-items:center;gap:12px;flex:1;justify-content:center;min-width:0}
+.tb-ic{width:40px;height:40px;border-radius:12px;background:var(--bg-soft);display:grid;place-items:center;font-size:1.25rem;flex:none}
+.tb-txt{display:flex;flex-direction:column;line-height:1.1;min-width:0}
+.tb-txt b{font-size:1.5rem;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums}
+.tb-txt span{font-size:.78rem;color:var(--muted);font-weight:600}
+.tb-div{width:1px;height:40px;background:var(--line);flex:none}
+.sn{font-variant-numeric:tabular-nums}
+
+/* value cards */
+.cards9{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.vcard{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);border:1px solid var(--line);position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease}
+.vcard::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:var(--grad-brand);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .2s ease}
+.vcard:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.vcard:hover::before{opacity:1}
+.vcard .num{position:absolute;top:16px;right:18px;font-weight:900;font-size:1rem;color:var(--line)}
+.vic{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;color:#fff;font-size:1.55rem;margin-bottom:14px;box-shadow:0 8px 18px rgba(14,42,92,.14);transition:transform .2s ease}
+.vcard:hover .vic{transform:scale(1.08) rotate(-4deg)}
+.vcard h3{font-size:1.12rem;color:var(--navy);font-weight:800}
+.vcard p{color:var(--muted);font-size:.95rem;margin-top:8px}
+.vcard .metric{display:inline-flex;align-items:center;gap:.4em;margin-top:14px;font-weight:700;font-size:.82rem;color:var(--green-2);background:var(--green-soft);padding:.4em .8em;border-radius:999px}
+
+/* story */
+.story{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start}
+.story-sticky{position:sticky;top:100px}
+.story-visual{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);background:linear-gradient(160deg,var(--navy),var(--navy-deep));aspect-ratio:4/5;position:relative;display:grid;place-items:center}
+.story-visual video{width:100%;height:100%;object-fit:cover}
+.story-visual .sv-ring{position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
+.story-steps{display:grid;gap:20px}
+.step{background:var(--card);border-radius:var(--radius);padding:24px 24px 24px 26px;box-shadow:var(--shadow-sm);border:1px solid var(--line);border-left:5px solid var(--green);opacity:0;transform:translateY(24px)}
+.step.in{opacity:1;transform:none;transition:all .6s cubic-bezier(.2,.7,.2,1)}
+.step .st-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.step .st-n{width:36px;height:36px;border-radius:11px;background:var(--green-soft);color:var(--green-2);display:grid;place-items:center;font-weight:900;flex:none}
+.step h3{font-size:1.18rem;color:var(--navy);font-weight:800}
+.step p{color:var(--muted);font-size:.98rem;margin-top:2px}
+.step .st-tag{display:inline-flex;align-items:center;gap:.4em;margin-top:12px;font-size:.8rem;font-weight:700;padding:.4em .8em;border-radius:999px}
+.step:nth-child(1){border-left-color:var(--green)}.step:nth-child(1) .st-n{background:var(--green-soft);color:var(--green-2)}
+.step:nth-child(2){border-left-color:var(--purple)}.step:nth-child(2) .st-n{background:var(--purple-soft);color:var(--purple)}
+.step:nth-child(3){border-left-color:var(--amber)}.step:nth-child(3) .st-n{background:var(--amber-soft);color:#a9710b}
+.step:nth-child(4){border-left-color:var(--sky)}.step:nth-child(4) .st-n{background:#e2f4ff;color:#1b8dd1}
+.step:nth-child(5){border-left-color:var(--pink)}.step:nth-child(5) .st-n{background:#ffe6ee;color:#d63c6b}
+.step:nth-child(6){border-left-color:var(--green)}.step:nth-child(6) .st-n{background:var(--green-soft);color:var(--green-2)}
+
+/* split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line)}
+.scen{padding:34px 30px}
+.scen.base{background:linear-gradient(180deg,#f6f9ff,#eef4ff)}
+.scen.plus{background:radial-gradient(500px 300px at 100% 0,rgba(47,182,115,.25),transparent 60%),linear-gradient(180deg,var(--navy),var(--navy-deep));color:#fff;position:relative}
+.scen .scen-lbl{display:inline-flex;align-items:center;gap:.5em;font-weight:800;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;padding:.5em .9em;border-radius:999px;margin-bottom:16px}
+.scen.base .scen-lbl{background:var(--purple-soft);color:var(--purple)}
+.scen.plus .scen-lbl{background:rgba(47,182,115,.22);color:#8ff0bd}
+.scen h3{font-size:1.34rem;font-weight:900;color:var(--navy)}
+.scen.plus h3{color:#fff}
+.scen .scen-sub{font-size:.96rem;color:var(--muted);margin-top:6px}
+.scen.plus .scen-sub{color:#bcc9e6}
+.scen ul{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:11px}
+.scen li{display:flex;align-items:flex-start;gap:11px;font-size:.96rem;font-weight:500}
+.scen li .icon{color:var(--green);font-size:1.15em;margin-top:.15em;flex:none}
+.scen.plus li .icon{color:#8ff0bd}
+.scen .plus-badge{display:inline-flex;align-items:center;gap:.4em;font-size:.72rem;font-weight:800;background:var(--green);color:#fff;padding:.28em .6em;border-radius:999px;margin-left:auto;flex:none}
+.split-note{text-align:center;margin-top:22px;color:var(--muted);font-size:.98rem}
+.split-note b{color:var(--navy)}
+@media(max-width:820px){.split{grid-template-columns:1fr}}
+
+/* testimonials */
+.rating-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
+.rating-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 18px;box-shadow:var(--shadow-sm);transition:transform .15s ease}
+.rating-card:hover{transform:translateY(-3px)}
+.rating-card .plic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:none}
+.rating-card .rc-score{font-weight:900;font-size:1.15rem;color:var(--navy);display:flex;align-items:center;gap:5px}
+.rating-card .rc-score .stars{font-size:.8rem}
+.rating-card .rc-name{font-size:.74rem;color:var(--muted);font-weight:600}
+.marquee{overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.marquee-track{display:flex;gap:18px;width:max-content;animation:scroll 46s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes scroll{to{transform:translateX(-50%)}}
+.tcard{width:340px;max-width:82vw;flex:none;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-sm)}
+.tcard .tc-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.tc-av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;flex:none}
+.tc-who .n{font-weight:800;font-size:.92rem;color:var(--navy)}
+.tc-who .r{font-size:.74rem;color:var(--muted);font-weight:600}
+.tcard .tc-stars{color:var(--amber);font-size:.85rem;margin-bottom:8px}
+.tcard p{font-size:.94rem;color:#39465e}
+.tc-plat{display:inline-flex;align-items:center;gap:.4em;margin-top:14px;font-size:.72rem;font-weight:700;color:var(--muted)}
+.tc-plat .icon{font-size:1.15em}
+
+/* store badges */
+.store-badges{display:flex;gap:12px;flex-wrap:wrap}
+.store-badge{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(180deg,#20232b,#0b0d12);color:#fff;border-radius:15px;padding:10px 20px 10px 16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px rgba(0,0,0,.22);transition:transform .16s ease,box-shadow .16s ease;min-width:180px;height:58px}
+.store-badge:hover{transform:translateY(-3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 14px 28px rgba(0,0,0,.34)}
+.store-badge .icon{font-size:2.05rem;flex:none}
+.store-badge .sb-t{display:flex;flex-direction:column;line-height:1.05;text-align:left;min-width:0}
+.store-badge .sb-t .s{font-size:.6rem;opacity:.82;font-weight:500;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.store-badge .sb-t .b{font-size:1.14rem;font-weight:600;letter-spacing:.005em;margin-top:2px;white-space:nowrap}
+
+/* pricing */
+.bill-toggle{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px;box-shadow:var(--shadow-sm)}
+.bill-toggle button{border:0;background:none;font-family:inherit;font-weight:700;font-size:.92rem;padding:.6em 1.3em;border-radius:999px;cursor:pointer;color:var(--muted)}
+.bill-toggle button.active{background:var(--navy);color:#fff}
+.bill-save{font-size:.68rem;font-weight:800;color:var(--green-2);background:var(--green-soft);padding:.2em .5em;border-radius:999px;margin-left:6px}
+.prices{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:38px;align-items:stretch}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);position:relative;transition:transform .18s ease}
+.pcard:hover{transform:translateY(-4px)}
+.pcard.pop{border:2px solid var(--purple);box-shadow:0 22px 50px rgba(91,75,214,.22);transform:translateY(-6px)}
+.pcard.pop:hover{transform:translateY(-10px)}
+.pcard .pop-tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,var(--purple),#6c5cf0);color:#fff;font-size:.72rem;font-weight:800;padding:.4em 1em;border-radius:999px;white-space:nowrap;box-shadow:var(--shadow-sm)}
+.pname{font-weight:800;font-size:1.12rem;color:var(--navy);display:flex;align-items:center;gap:.5em}
+.pdesc{font-size:.84rem;color:var(--muted);margin-top:4px;min-height:2.4em}
+.pprice{margin:16px 0 4px;display:flex;align-items:baseline;gap:4px}
+.pprice .amt{font-size:2.1rem;font-weight:900;color:var(--navy)}
+.pprice .per{font-size:.86rem;color:var(--muted);font-weight:600}
+.pweek{font-size:.8rem;color:var(--green-2);font-weight:700;background:var(--green-soft);display:inline-flex;align-items:center;gap:.4em;padding:.3em .7em;border-radius:999px;margin-bottom:16px}
+.pfree{font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:16px}
+.pcard ul{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:10px;flex:1}
+.pcard li{display:flex;align-items:flex-start;gap:9px;font-size:.88rem;color:#39465e}
+.pcard li .icon{color:var(--green);font-size:1.05em;margin-top:.15em;flex:none}
+.pcard li.off{color:#aab4c6}
+.pcard li.off .icon{color:#cdd5e2}
+.price-note{text-align:center;color:var(--muted);font-size:.9rem;margin-top:22px}
+.family{display:flex;align-items:center;gap:20px;background:linear-gradient(120deg,var(--purple-soft),#fff);border:1px solid var(--line);border-radius:var(--radius);padding:22px 26px;margin-top:26px;flex-wrap:wrap}
+.family .fic{width:52px;height:52px;border-radius:15px;background:linear-gradient(135deg,var(--purple),#6c5cf0);color:#fff;display:grid;place-items:center;font-size:1.5rem;flex:none}
+.family .ft{flex:1;min-width:220px}
+.family .ft h4{font-size:1.08rem;color:var(--navy);font-weight:800}
+.family .ft p{font-size:.9rem;color:var(--muted);margin-top:3px}
+.family .fdiscounts{display:flex;gap:10px;flex-wrap:wrap}
+.family .fd{background:#fff;border-radius:12px;padding:8px 14px;text-align:center;box-shadow:var(--shadow-sm)}
+.family .fd .p{font-weight:900;color:var(--green-2);font-size:1.05rem}
+.family .fd .l{font-size:.68rem;color:var(--muted);font-weight:600}
+
+/* how */
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.s3{text-align:center;padding:28px 22px;background:#fff;border-radius:var(--radius);border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+.s3 .s3n{width:46px;height:46px;border-radius:14px;margin:0 auto 14px;display:grid;place-items:center;color:#fff;font-weight:900;font-size:1.15rem}
+.s3 h3{font-size:1.1rem;color:var(--navy);font-weight:800}
+.s3 p{color:var(--muted);font-size:.94rem;margin-top:8px}
+
+/* fairness */
+.fair{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;background:linear-gradient(120deg,rgba(47,182,115,.14),rgba(91,75,214,.12));border-radius:var(--radius-lg);padding:32px 34px;border:1px solid var(--line)}
+.fair .fbadge{width:74px;height:74px;border-radius:20px;background:linear-gradient(135deg,var(--green),var(--purple));display:grid;place-items:center;color:#fff;font-size:2rem;flex:none;box-shadow:var(--shadow-sm)}
+.fair h3{font-size:1.35rem;color:var(--navy);font-weight:900}
+.fair p{color:#3c4a63;margin-top:8px;font-size:1rem}
+
+/* FAQ */
+.faq{max-width:820px;margin:0 auto;display:grid;gap:12px}
+.faq details{background:#fff;border:1px solid var(--line);border-radius:16px;padding:4px 20px;box-shadow:var(--shadow-sm)}
+.faq summary{list-style:none;cursor:pointer;font-weight:700;color:var(--navy);font-size:1.02rem;padding:16px 0;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .icon{color:var(--purple);transition:transform .2s ease;flex:none}
+.faq details[open] summary .icon{transform:rotate(45deg)}
+.faq .fa-body{padding:0 0 18px;color:var(--muted);font-size:.98rem}
+
+/* final CTA */
+.finalcta{text-align:center;background:radial-gradient(700px 340px at 20% 0%,rgba(47,182,115,.5),transparent 55%),radial-gradient(700px 340px at 80% 100%,rgba(91,75,214,.55),transparent 55%),linear-gradient(180deg,var(--navy),var(--navy-deep));color:#fff;border-radius:var(--radius-lg);padding:60px 30px;position:relative;overflow:hidden}
+.finalcta h2{font-size:clamp(1.8rem,3.6vw,2.7rem);font-weight:900}
+.finalcta p{color:#cad4ec;font-size:1.12rem;margin-top:14px;max-width:52ch;margin-inline:auto}
+.finalcta .hero-cta{justify-content:center;margin-top:28px}
+.finalcta .fc-tw{position:absolute;color:rgba(255,255,255,.5);animation:tw 3s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.1)}}
+
+/* ===== IMPACT (social enterprise) — full-bleed standout ===== */
+.impact-band{position:relative;overflow:hidden;padding:78px 0 84px;color:#fff;background:radial-gradient(760px 460px at 82% 8%,rgba(91,75,214,.42),transparent 60%),radial-gradient(680px 440px at 10% 90%,rgba(47,182,115,.32),transparent 58%),linear-gradient(165deg,#123a7a 0%,#0d2657 55%,#0a1f45 100%)}
+.imp-rings{position:absolute;top:50%;left:50%;width:900px;height:900px;transform:translate(-50%,-50%);background:repeating-radial-gradient(circle at center,rgba(255,255,255,.05) 0 1px,transparent 1px 62px);opacity:.5;pointer-events:none}
+.imp-head{text-align:center;max-width:760px;margin:0 auto 44px;position:relative;z-index:2}
+.imp-eyebrow{display:inline-flex;align-items:center;gap:.5em;font-weight:800;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:#8ff0bd;background:rgba(47,182,115,.18);border:1px solid rgba(47,182,115,.3);padding:.5em 1.1em;border-radius:999px;margin-bottom:18px}
+.imp-head h2{font-size:clamp(1.8rem,3.7vw,2.7rem);font-weight:900;line-height:1.1}
+.imp-head h2 .imp-hl{background:var(--grad-loop);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gloop 9s linear infinite}
+.imp-sub{color:#c3cee6;font-size:1.1rem;margin-top:16px}
+.imp-sub b{color:#fff}
+.imp-main{position:relative;z-index:2;display:grid;grid-template-columns:auto 1fr;gap:52px;align-items:center;max-width:940px;margin:0 auto}
+.imp-visual{position:relative;display:grid;place-items:center;padding-left:20px}
+.imp-donut{position:relative;width:230px;height:230px}
+.imp-donut svg{width:230px;height:230px;transform:rotate(-90deg)}
+.imp-donut .d-track{fill:none;stroke:rgba(255,255,255,.12);stroke-width:20}
+.imp-donut .d-arc{fill:none;stroke:#38c983;stroke-width:20;stroke-linecap:round;stroke-dasharray:490;stroke-dashoffset:490;animation:donut 1.8s cubic-bezier(.3,.8,.3,1) forwards .3s}
+@keyframes donut{to{stroke-dashoffset:49}}
+.imp-donut .d-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.d-num{font-size:3.2rem;font-weight:900;line-height:1;color:#fff}
+.d-num b{font-size:1.4rem;font-weight:800;color:#8ff0bd;vertical-align:super}
+.d-lab{font-size:.72rem;font-weight:700;color:#aebbd6;text-transform:uppercase;letter-spacing:.05em;margin-top:6px;line-height:1.3}
+.imp-mascot{position:absolute;width:92px;height:auto;right:-14px;bottom:-8px;filter:drop-shadow(0 12px 20px rgba(0,0,0,.3));animation:floaty 6s ease-in-out infinite;--r:4deg}
+.imp-copy{min-width:0}
+.imp-legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:16px}
+.imp-legend .lg{display:inline-flex;align-items:center;gap:8px;font-size:.84rem;font-weight:700;color:#dbe4f5}
+.imp-legend .dot{width:11px;height:11px;border-radius:3px;flex:none}
+.imp-legend .dot.g{background:#38c983}
+.imp-legend .dot.m{background:rgba(255,255,255,.28)}
+.imp-lead{color:#c8d2e8;font-size:1.05rem;line-height:1.65}
+.imp-lead b{color:#fff}
+.imp-quote{display:flex;align-items:flex-start;gap:10px;margin-top:20px;padding:16px 18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;font-size:1rem;color:#eaf0fb}
+.imp-quote .icon{color:#ff8fab;font-size:1.3rem;flex:none;margin-top:.1em}
+.imp-quote b{color:#8ff0bd}
+.imp-pillars{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;max-width:940px;margin-inline:auto}
+.imp-card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:24px 22px;transition:transform .18s ease,background .18s ease}
+.imp-card:hover{transform:translateY(-4px);background:rgba(255,255,255,.09)}
+.imp-card .ipc-ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:#fff;font-size:1.35rem;margin-bottom:14px;box-shadow:0 8px 18px rgba(0,0,0,.25)}
+.imp-card .ipc-t{font-weight:800;font-size:1.05rem;color:#fff}
+.imp-card .ipc-d{font-size:.92rem;color:#aebbd6;margin-top:8px;line-height:1.55}
+
+/* ===== REFER A FRIEND ===== */
+.refer{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
+.refer-visual{position:relative;background:linear-gradient(150deg,var(--purple-soft),#fff);border:1px solid var(--line);border-radius:var(--radius-lg);padding:34px;box-shadow:var(--shadow-sm);overflow:hidden}
+.gift-card{background:#fff;border-radius:20px;padding:22px;box-shadow:var(--shadow);border:1px solid var(--line);position:relative;z-index:2}
+.gift-card .gc-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.gift-card .gc-ic{width:52px;height:52px;border-radius:15px;background:linear-gradient(135deg,var(--purple),#6c5cf0);color:#fff;display:grid;place-items:center;font-size:1.5rem;box-shadow:0 10px 20px rgba(91,75,214,.3)}
+.gift-card .gc-h{font-weight:800;color:var(--navy);font-size:1.05rem}
+.gift-card .gc-sub{font-size:.82rem;color:var(--muted)}
+.gc-rewards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gc-rw{background:var(--bg-soft);border-radius:14px;padding:14px;text-align:center}
+.gc-rw .icon{font-size:1.4rem;color:var(--green)}
+.gc-rw .r-b{font-weight:800;color:var(--navy);font-size:.9rem;margin-top:6px}
+.gc-rw .r-s{font-size:.72rem;color:var(--muted);font-weight:600}
+.refer-visual .rv-blob{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(91,75,214,.25),transparent 70%);top:-40px;right:-40px}
+.refer h2{font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:900;color:var(--navy)}
+.refer .rf-lead{color:var(--muted);font-size:1.05rem;margin-top:12px}
+.share-box{display:flex;gap:8px;margin-top:22px}
+.share-input{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:.72em 1em;font-size:.92rem;color:var(--navy);font-weight:600;overflow:hidden;font-family:inherit;cursor:pointer;transition:border-color .15s ease}
+.share-input:hover{border-color:#cfd8ea}
+.share-input .si-link{color:var(--muted);flex:none}
+.share-input span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-align:left}
+.share-input .si-copy{color:var(--purple);flex:none;font-size:1.2em;margin-left:2px;display:none}
+.share-input.copied{border-color:var(--green)}
+.share-input.copied .si-copy{color:var(--green-2)}
+.btn-copy{white-space:nowrap;flex:none}
+.share-btns{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.share-btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.9rem;padding:.7em 1.1em;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;transition:transform .15s ease,border-color .15s ease;font-family:inherit}
+.share-btn:hover{transform:translateY(-2px);border-color:#cfd8ea}
+.share-btn .icon{font-size:1.2rem}
+.share-btn.wa{color:#25D366}.share-btn.fb{color:#1877F2}.share-btn.ml{color:var(--purple)}
+.rf-note{font-size:.84rem;color:var(--muted);margin-top:16px;display:flex;align-items:center;gap:.5em}
+.rf-note .icon{color:var(--green)}
+
+/* ===== FOMO toast ===== */
+.fomo{position:fixed;left:16px;bottom:16px;z-index:75;max-width:320px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 44px rgba(14,42,92,.22);padding:12px 14px;display:flex;align-items:center;gap:11px;transform:translateY(140%);opacity:0;transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .4s ease}
+.fomo.show{transform:none;opacity:1}
+.fomo .fo-av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;flex:none;font-size:1.1rem}
+.fomo .fo-t{flex:1;min-width:0;line-height:1.25}
+.fomo .fo-n{font-size:.86rem;font-weight:700;color:var(--navy)}
+.fomo .fo-s{font-size:.72rem;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:5px;margin-top:1px}
+.fomo .fo-s .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(47,182,115,.18)}
+.fomo .fo-x{background:none;border:0;color:#b6c1d4;cursor:pointer;padding:2px;flex:none}
+.fomo .fo-x:hover{color:var(--muted)}
+@media(max-width:760px){.fomo{left:12px;right:12px;bottom:84px;max-width:none}}
+
+/* ===== footer (rebuilt) ===== */
+/* download panel straddles the boundary between content and footer */
+.dl-bridge{background:#fff;position:relative;z-index:3}
+.foot-download{display:flex;align-items:center;gap:26px;background:radial-gradient(420px 240px at 6% 15%,rgba(47,182,115,.32),transparent 60%),linear-gradient(120deg,#6a5bea,#4740c0 60%,#3a44b5);border-radius:26px;padding:26px 34px;margin-bottom:-78px;box-shadow:0 30px 60px rgba(58,50,120,.42);position:relative;overflow:hidden;z-index:4}
+.foot-download::after{content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%)}
+footer{background:linear-gradient(180deg,#0c2352,#081a3c);color:#aeb9d4;padding:112px 0 28px;font-size:.9rem;position:relative}
+.fd-mascot{width:92px;height:auto;flex:none;filter:drop-shadow(0 12px 18px rgba(0,0,0,.3));position:relative;z-index:1}
+.fd-txt{flex:1;min-width:0;position:relative;z-index:1}
+.fd-txt h3{color:#fff;font-size:1.35rem;font-weight:900}
+.fd-txt p{color:#dcd9f7;font-size:.98rem;margin-top:5px}
+.fd-badges{flex:none;position:relative;z-index:1}
+.foot-cols{display:grid;grid-template-columns:1.7fr 1fr 1.2fr;gap:40px;padding:8px 0 34px}
+.foot-cols h4{color:#fff;font-size:.82rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.foot-brand p{margin-top:14px;max-width:36ch;color:#9fabc9;line-height:1.6}
+.foot-se{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-size:.78rem;font-weight:700;color:#8ff0bd;background:rgba(47,182,115,.14);border:1px solid rgba(47,182,115,.28);padding:.5em .9em;border-radius:999px}
+.foot-pages a{display:flex;align-items:center;gap:9px;color:#c2cbe0;padding:7px 0;font-weight:500}
+.foot-pages a .icon{color:var(--green);font-size:1em}
+.foot-pages a:hover{color:#fff}
+.foot-contact{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.foot-contact li{display:flex;align-items:flex-start;gap:11px;color:#c2cbe0;line-height:1.5}
+.foot-contact li .icon{color:var(--green);flex:none;margin-top:.15em;font-size:1.1em}
+.foot-contact a{color:#c2cbe0}
+.foot-contact a:hover{color:#fff}
+.foot-social{display:flex;gap:10px;margin-top:18px}
+.foot-social a{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.07);display:grid;place-items:center;color:#cdd6ea;font-size:1.2rem;transition:background .15s ease,transform .15s ease}
+.foot-social a:hover{background:rgba(255,255,255,.14);transform:translateY(-2px);color:#fff}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;color:#7e8bab;font-size:.84rem}
+.foot-legal{display:flex;gap:18px}
+.foot-legal a{color:#8f9bb8}
+.foot-legal a:hover{color:#fff}
+
+/* sticky mobile CTA */
+.mobile-cta{position:fixed;left:0;right:0;bottom:0;z-index:70;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:none;gap:10px;box-shadow:0 -8px 24px rgba(14,42,92,.12)}
+.mobile-cta .btn{flex:1;justify-content:center;padding:.85em 1em;font-size:.95rem}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+.modal.open{display:flex}
+.modal-backdrop{position:absolute;inset:0;background:rgba(10,23,48,.55);backdrop-filter:blur(4px)}
+.modal-box{position:relative;z-index:2;width:100%;max-width:490px;background:#fff;border-radius:26px;box-shadow:0 40px 90px rgba(10,23,48,.4);overflow:hidden;max-height:94vh;display:flex;flex-direction:column}
+.modal-head{padding:22px 24px 0;position:relative}
+.modal-close{position:absolute;top:16px;right:18px;background:var(--bg-soft);border:0;width:34px;height:34px;border-radius:50%;cursor:pointer;display:grid;place-items:center;color:var(--muted)}
+.modal-close:hover{background:#e7ecf5}
+.reg-prog{display:flex;gap:8px;margin:14px 0 4px}
+.reg-prog .rp{flex:1;height:7px;border-radius:999px;background:var(--line);overflow:hidden;transition:background .3s ease}
+.reg-prog .rp.done{background:var(--green)}
+.reg-prog .rp.cur{background:linear-gradient(90deg,var(--green),var(--line) 60%)}
+.reg-stepnum{font-size:.76rem;font-weight:700;color:var(--purple);letter-spacing:.04em;text-transform:uppercase}
+.modal-body{padding:14px 24px 4px;overflow-y:auto}
+.rstep{display:none}
+.rstep.on{display:block;animation:fadeup .35s ease}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.rstep h3{font-size:1.3rem;color:var(--navy);font-weight:900;margin-bottom:4px}
+.rstep .rs-sub{font-size:.92rem;color:var(--muted);margin-bottom:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+.field .hint{font-weight:500;color:var(--muted);font-size:.76rem}
+.field input,.field select{width:100%;border:1.5px solid var(--line);border-radius:13px;padding:.8em 1em;font-family:inherit;font-size:1rem;color:var(--ink);background:#fff;transition:border .15s ease}
+.field input:focus,.field select:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px var(--purple-soft)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.seg{display:inline-flex;background:var(--bg-soft);border-radius:11px;padding:4px;margin-bottom:10px;gap:4px}
+.seg button{border:0;background:none;font-family:inherit;font-weight:700;font-size:.82rem;padding:.5em 1em;border-radius:8px;cursor:pointer;color:var(--muted)}
+.seg button.on{background:#fff;color:var(--navy);box-shadow:var(--shadow-sm)}
+.card-soft{background:var(--bg-soft);border-radius:16px;padding:16px;margin-bottom:14px}
+.card-soft .cs-h{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--navy);font-size:.9rem;margin-bottom:12px}
+.card-soft .cs-h .icon{color:var(--green)}
+.avatar-pick{display:flex;gap:10px;flex-wrap:wrap;margin-top:2px}
+.avatar-pick .ap{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;color:#fff;font-size:1.4rem;cursor:pointer;border:3px solid transparent;transition:transform .12s ease}
+.avatar-pick .ap:hover{transform:scale(1.06)}
+.avatar-pick .ap.sel{border-color:var(--navy)}
+.bill-toggle.mini{transform:scale(.92);margin:0 auto 14px;display:flex;width:max-content}
+.plan-pick{display:grid;gap:11px;margin-top:4px}
+.plan-opt{display:flex;align-items:center;gap:13px;border:1.5px solid var(--line);border-radius:16px;padding:14px 15px;cursor:pointer;transition:border .15s ease,background .15s ease,transform .12s ease;position:relative}
+.plan-opt:hover{border-color:#cfd8ea;transform:translateY(-1px)}
+.plan-opt.sel{border-color:var(--purple);background:var(--purple-soft)}
+.plan-opt .po-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;flex:none;font-size:1.2rem}
+.plan-opt .po-t{flex:1;min-width:0}
+.plan-opt .po-t .n{font-weight:800;color:var(--navy);font-size:.96rem;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.plan-opt .po-t .tag{font-size:.6rem;font-weight:800;background:linear-gradient(90deg,var(--purple),#6c5cf0);color:#fff;padding:.2em .5em;border-radius:999px}
+.plan-opt .po-t .d{font-size:.78rem;color:var(--muted);margin-top:1px}
+.plan-opt .po-price{text-align:right;flex:none}
+.plan-opt .po-price .pa{font-weight:900;color:var(--navy);font-size:1.02rem}
+.plan-opt .po-price .pw{font-size:.66rem;color:var(--green-2);font-weight:700}
+.plan-opt .po-check{position:absolute;top:10px;right:12px;width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:#fff}
+.plan-opt.sel .po-check{border-color:var(--purple);background:var(--purple)}
+.plan-opt .po-check .icon{opacity:0;font-size:.7rem}
+.plan-opt.sel .po-check .icon{opacity:1}
+.modal-foot{padding:16px 24px 22px;display:flex;gap:10px;border-top:1px solid var(--line);margin-top:8px}
+.reg-done-ic{width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,var(--green),#38c983);display:grid;place-items:center;color:#fff;font-size:2.2rem;margin:6px auto 16px;box-shadow:var(--shadow-sm);animation:pop .4s ease}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.trust-mini{display:flex;align-items:center;justify-content:center;gap:.5em;font-size:.78rem;color:var(--muted);margin-top:6px;font-weight:600}
+.trust-mini .icon{color:var(--green)}
+
+/* section mascots (Growie doing sports) — sit behind content, peek through whitespace */
+.band>.wrap{position:relative;z-index:1}
+.sec-mascot{position:absolute;z-index:0;width:118px;height:auto;pointer-events:none;filter:drop-shadow(0 14px 20px rgba(14,42,92,.14))}
+.sm-bl{left:26px;bottom:30px}
+.sm-br{right:26px;bottom:30px}
+.sm-tr{right:30px;top:64px}
+.sm-tl{left:30px;top:64px}
+.g-hop{animation:ghop 1.5s ease-in-out infinite}
+@keyframes ghop{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+.g-sway{animation:gsway 2.4s ease-in-out infinite}
+@keyframes gsway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.g-swing{animation:gswing 2s ease-in-out infinite;transform-origin:55% 75%}
+@keyframes gswing{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(9deg)}}
+.g-bob{animation:gbob 3s ease-in-out infinite}
+@keyframes gbob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+/* mid widths: less side room -> tuck mascots to the very edge, smaller */
+@media(max-width:1080px){.sec-mascot{width:92px}.sm-bl{left:6px;bottom:18px}.sm-br{right:6px;bottom:18px}.sm-tr{right:8px;top:52px}.sm-tl{left:8px;top:52px}}
+/* mobile: keep Growie playing, tucked in the section's bottom-right whitespace */
+@media(max-width:760px){.sec-mascot{width:66px;left:auto;right:8px;top:auto;bottom:12px}}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(28px)}
+.reveal.in{opacity:1;transform:none;transition:all .7s cubic-bezier(.2,.7,.2,1)}
+
+/* ===================== RESPONSIVE ===================== */
+@media(max-width:1040px){
+  .proof-card.pc-1{left:0%}
+  .proof-card.pc-2{right:0%}
+}
+@media(max-width:980px){
+  .hero{padding:44px 0 96px}
+  .hero-grid{grid-template-columns:1fr;gap:14px;text-align:center}
+  .hero-copy{display:flex;flex-direction:column;align-items:center}
+  .hero .lead{max-width:52ch}
+  .hero-cta{justify-content:center}
+  .hero-trust{justify-content:center}
+  .hero-visual{order:2;min-height:0;margin-top:8px}
+  .hero-mascot{width:104px;left:2px;bottom:0}
+  .trustbar{margin-top:-52px}
+  .cards9{grid-template-columns:repeat(2,1fr)}
+  .story{grid-template-columns:1fr;gap:26px}.story-sticky{position:static}
+  .prices{grid-template-columns:repeat(2,1fr)}.pcard.pop{transform:none}.pcard.pop:hover{transform:translateY(-4px)}
+  .steps3{grid-template-columns:1fr}
+  .foot-cols{grid-template-columns:1fr 1fr;gap:30px}
+  .foot-brand{grid-column:1 / -1}
+  .foot-download{flex-wrap:wrap;justify-content:center;text-align:center;gap:18px}
+  .fd-txt{flex:1 1 100%;order:2}
+  .fd-mascot{order:1}
+  .fd-badges{order:3;flex:1 1 100%;justify-content:center}
+  .imp-main{grid-template-columns:1fr;gap:30px;justify-items:center;text-align:center}
+  .imp-legend{justify-content:center}
+  .imp-quote{text-align:left}
+  .imp-pillars{grid-template-columns:1fr;max-width:460px}
+  .refer{grid-template-columns:1fr;gap:30px}
+  .refer-visual{order:2}
+}
+@media(max-width:760px){
+  .band{padding:52px 0}
+  .sec-head{margin-bottom:32px}
+  .sec-head p{font-size:1rem}
+  .mobile-cta{display:flex}
+  body{padding-bottom:76px}
+  /* hero mobile */
+  .hero-visual{min-height:0}
+  .phone{width:230px;padding:9px;border-radius:34px;animation:none;transform:rotateX(0) rotateY(0)}
+  .phone-screen{border-radius:26px}
+  .phone-glow{width:250px;height:250px}
+  .proof-card{animation:none}
+  /* the wordy review floats awkwardly on a narrow phone — hide it (it reappears in Testimoniale); keep the compact streak card */
+  .proof-card.pc-1{display:none}
+  .proof-card.pc-2{bottom:6%;right:-4px;left:auto;width:150px;transform:rotate(3deg)}
+  .pc-rev .pc-q{font-size:.72rem}
+  .hp-pill{padding:5px 14px 5px 7px}
+  .hp-pill .hp-txt{font-size:.76rem}
+  /* trust bar -> 2x2 grid on mobile */
+  .trustbar{display:grid;grid-template-columns:1fr 1fr;gap:18px 10px;padding:20px 18px;border-radius:18px}
+  .tb-div{display:none}
+  .tb-item{justify-content:flex-start}
+  .tb-txt b{font-size:1.3rem}
+  .tb-txt span{font-size:.72rem}
+  .tb-ic{width:36px;height:36px;font-size:1.1rem}
+  /* rating row 2x2 */
+  .rating-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .rating-card{padding:10px 12px;gap:9px}
+  .rating-card .plic{width:32px;height:32px}
+  .rating-card .rc-score{font-size:1rem}
+  /* store badges — compact so names stay on one line */
+  .store-badges{gap:10px}
+  .store-badge{flex:1;min-width:0;justify-content:center;height:52px;gap:9px;padding:8px 12px}
+  .store-badge .icon{font-size:1.72rem}
+  .store-badge .sb-t .s{font-size:.56rem}
+  .store-badge .sb-t .b{font-size:.98rem;font-weight:600}
+  /* family */
+  .family{flex-direction:column;text-align:center;align-items:stretch}
+  .family .fic{margin:0 auto}
+  .family .fdiscounts{justify-content:center}
+}
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  .hero h1{font-size:clamp(2rem,8.5vw,2.6rem)}
+  .hero .lead{font-size:1.05rem}
+  .hero-cta{flex-direction:column;width:100%}
+  .hero-cta .btn{width:100%;justify-content:center}
+  .hero-trust{gap:8px 16px;font-size:.84rem}
+  .cards9{grid-template-columns:1fr}
+  .prices{grid-template-columns:1fr}
+  .fair{grid-template-columns:1fr;text-align:center;padding:26px 22px}.fair .fbadge{margin:0 auto}
+  .field-row{grid-template-columns:1fr}
+  /* footer mobile — refined */
+  footer{padding:96px 0 26px;text-align:center}
+  .foot-download{padding:24px 22px;margin-bottom:-66px}
+  .fd-txt h3{font-size:1.18rem}
+  .foot-cols{grid-template-columns:1fr;gap:0;padding:8px 0 30px}
+  .foot-cols > div{padding:22px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+  .foot-cols > div:last-child{border-bottom:0}
+  .foot-brand{grid-column:auto}
+  .foot-brand .logo{justify-content:center}
+  .foot-brand p,.foot-se{margin-inline:auto}
+  .foot-se{display:inline-flex}
+  .foot-pages a{justify-content:center}
+  .foot-contact li{text-align:left;justify-content:flex-start;max-width:280px;margin-inline:auto}
+  .foot-social{justify-content:center}
+  .foot-bottom{flex-direction:column;gap:12px;text-align:center;justify-content:center}
+  .foot-legal{justify-content:center}
+  .scen{padding:26px 22px}
+  .impact-band{padding:56px 0 60px}
+  .imp-donut,.imp-donut svg{width:190px;height:190px}
+  .d-num{font-size:2.6rem}
+  .refer-visual{padding:26px}
+  /* refer: drop Copy button, tap-to-copy via trailing icon */
+  .btn-copy{display:none}
+  .share-input .si-copy{display:inline-block}
+  .share-btns{justify-content:stretch}
+  .share-btn{flex:1;justify-content:center;min-width:0;padding:.7em .6em}
+  .gc-rewards{grid-template-columns:1fr 1fr}
+  .modal-box{border-radius:22px}
+  .modal-head,.modal-body,.modal-foot{padding-left:18px;padding-right:18px}
+  .plan-opt{padding:12px 12px;gap:10px}
+  .plan-opt .po-ic{width:38px;height:38px;font-size:1.05rem}
+  .plan-opt .po-check{top:8px;right:10px}
+}
+@media(max-width:380px){
+  .phone{width:200px}
+  .proof-card.pc-1{width:150px}
+  .proof-card.pc-2{width:142px}
+  .rating-row{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<!-- SVG SPRITE -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 18.5 6.1 21.3l1.2-6.6-4.8-4.6 6.6-.9z"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M13 2c.5 3-1.5 4.5-3 6.5C8.3 10.7 7 12.4 7 15a5 5 0 0 0 10 0c0-1.6-.6-3-1.5-4.2.2 1.3-.3 2.2-1 2.7.3-2.5-1-5.3-1.5-6.5-.3-.8-.5-3.3 1-5z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.2C.6 9 1.6 5.5 4.8 4.7 7 4.1 8.9 5.3 12 8c3.1-2.7 5-3.9 7.2-3.3 3.2.8 4.2 4.3 2.8 7.1C19.5 16.4 12 21 12 21z"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M7 4h10v2h3v3a4 4 0 0 1-4 4h-.3A5 5 0 0 1 13 15.9V18h3v2H8v-2h3v-2.1A5 5 0 0 1 8.3 13H8a4 4 0 0 1-4-4V6h3V4zm0 4H6v1a2 2 0 0 0 1 1.7V8zm10 0v2.7A2 2 0 0 0 18 9V8h-1z"/></symbol>
+  <symbol id="i-medal" viewBox="0 0 24 24"><path d="M8 2h8l-2 6h-4L8 2zm4 7a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm0 3.2l-1 2-2.2.2 1.7 1.5-.6 2.1 2.1-1.2 2.1 1.2-.6-2.1 1.7-1.5-2.2-.2z"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 7l4 4 5-6 5 6 4-4v11H3z"/></symbol>
+  <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l3 5-9 13L3 8z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.4 8.5-8 11-4.6-2.5-8-6-8-11V5z M10.5 14.5l-2.5-2.5 1.4-1.4 1.1 1.1 3.6-3.6L15.5 9z"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 7-7v5h2V5h-7v2h3.6L13 12l-4-4-7 7z"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm0 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4h7a3 3 0 0 1 1 .3A3 3 0 0 1 13 4h7v15h-7a2 2 0 0 0-1 .3A2 2 0 0 0 11 19H4zm7 2H6v11h5zm2 11h5V6h-5z"/></symbol>
+  <symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M2 9h2v6H2zm3-2h2v10H5zm12 0h2v10h-2zm3 2h2v6h-2zM8 11h8v2H8z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2zm12 7v10H5V9zM7 11v2h2v-2zm4 0v2h2v-2zm4 0v2h2v-2z"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><path d="M2 5h20v4H2zm0 6h20v8H2zm3 4v2h5v-2z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M9 16.2l-4.2-4.2L3 13.8 9 20 21 8l-1.8-1.8z"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.2 14.2l-4-4L8.2 11l2.6 2.6L15.8 8.6l1.4 1.4z"/></symbol>
+  <symbol id="i-droplet" viewBox="0 0 24 24"><path d="M12 2s7 7.6 7 12a7 7 0 0 1-14 0c0-4.4 7-12 7-12zm0 16a4 4 0 0 0 4-4h-2a2 2 0 0 1-2 2z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M12 5c-6 0-10 7-10 7s4 7 10 7 10-7 10-7-4-7-10-7zm0 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><path d="M12 2a6 6 0 0 1 3 11.2V22l-3-2-3 2v-8.8A6 6 0 0 1 12 2zm0 2a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 5h-2v6l5 3 1-1.7-4-2.3z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M8 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3.3 2.7-5 6-5s6 1.7 6 5v1H2zm14.5-4.9c2.4.5 3.5 2 3.5 4.9v1h-4v-1c0-1.9-.6-3.5-1.6-4.7z"/></symbol>
+  <symbol id="i-cap" viewBox="0 0 24 24"><path d="M12 3L1 8l11 5 9-4.1V15h2V8zm-7 8.5V15c0 1.7 3.1 3 7 3s7-1.3 7-3v-3.5l-7 3.2z"/></symbol>
+  <symbol id="i-whistle" viewBox="0 0 24 24"><path d="M13 8V5h4v3zM8.5 10A5.5 5.5 0 1 0 14 15.5V11h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-9.2A5.5 5.5 0 0 0 8.5 10zm0 9A3.5 3.5 0 1 1 12 15.5 3.5 3.5 0 0 1 8.5 19z"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 2l1.6 4.4L18 8l-4.4 1.6L12 14l-1.6-4.4L6 8l4.4-1.6zM5 14l.9 2.4L8 17l-2.1.9L5 20l-.9-2.1L2 17l2.1-.6zm13 0l.9 2.4L21 17l-2.1.9L18 20l-.9-2.1L15 17l2.1-.6z"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M14 3c3 0 7 4 7 7-1 3-4 6-7 8l-2-2-3 3-2-2 3-3-2-2c2-3 5-6 8-7zm1 5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM4 16l2 2c-1 1-2 4-2 4s3-1 4-2l-2-2z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path d="M6 10V8a6 6 0 0 1 12 0v2h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1zm2 0h8V8a4 4 0 0 0-8 0z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-5 0-9 2.5-9 6v2h18v-2c0-3.5-4-6-9-6z"/></symbol>
+  <symbol id="b-google" viewBox="0 0 24 24"><path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z" fill="#4285F4"/><path d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" fill="#34A853"/><path d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z" fill="#FBBC05"/><path d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.6 9.4 5.9 12 5.9z" fill="#EA4335"/></symbol>
+  <symbol id="b-fb" viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z" fill="#1877F2"/></symbol>
+  <symbol id="b-apple" viewBox="0 0 24 24"><path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.8-2.2c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.5-1-2.5-3.9zM14.2 5.9c.6-.8 1.1-1.9 1-3-.9 0-2 .6-2.7 1.4-.6.7-1.1 1.8-1 2.9 1 .1 2-.5 2.7-1.3z" fill="currentColor"/></symbol>
+  <symbol id="b-gplay" viewBox="0 0 24 24"><path d="M3.6 2.4c-.3.3-.5.7-.5 1.3v16.6c0 .6.2 1 .5 1.3l.1.1L13 12.1v-.2z" fill="#00D0FF"/><path d="M16.4 15.3L13 12.1v-.2l3.4-3.2 3.9 2.2c1.1.6 1.1 1.6 0 2.3z" fill="#FFCE00"/><path d="M16.4 15.3L13 12 3.6 21.5c.4.4 1 .4 1.7 0z" fill="#FF3D47"/><path d="M16.4 8.7L5.3 2.5c-.7-.4-1.3-.4-1.7 0L13 12z" fill="#00F076"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm9 7L4 7v1l8 5 8-5V7z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24 11 11 0 0 0 3.5.56 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11 11 0 0 0 .56 3.5 1 1 0 0 1-.24 1z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10.6 13.4a1 1 0 0 0 1.4 0l4-4a3 3 0 1 0-4.2-4.2l-1.3 1.3 1.4 1.4 1.3-1.3a1 1 0 0 1 1.4 1.4l-4 4a1 1 0 0 0 0 1.4zm2.8-2.8a1 1 0 0 0-1.4 0l-4 4a3 3 0 1 0 4.2 4.2l1.3-1.3-1.4-1.4-1.3 1.3a1 1 0 0 1-1.4-1.4l4-4a1 1 0 0 0 0-1.4z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><path d="M9 3h9a2 2 0 0 1 2 2v11h-2V5H9zm-3 4h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm0 2v10h9V9z"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><path d="M12 4.2A2.6 2.6 0 0 1 16.4 6H20v3H4V6h3.6A2.6 2.6 0 0 1 12 4.2zM4 11h7v9H5a1 1 0 0 1-1-1zm9 0h7v8a1 1 0 0 1-1 1h-6z"/></symbol>
+  <symbol id="i-seed" viewBox="0 0 24 24"><path d="M12 22c0-4 0-7 2-9 2-2 5-2 7-2 0 3 0 6-2 8s-5 3-7 3zm0 0c0-3 0-5-2-7-2-2-5-2-8-2 0 3 0 5 2 7s5 2 8 2z"/></symbol>
+  <symbol id="i-handshake" viewBox="0 0 24 24"><path d="M2 11l4-4h4l2 2 2-2h4l4 4-3 3-3-3h-1l-3 3-2-1-2 1-3-3H8l-3 3zm10 3l3 3 3-3 2 2-3 3a2 2 0 0 1-3 0l-2-2-2 2a2 2 0 0 1-3 0l-3-3 2-2 3 3z"/></symbol>
+  <symbol id="i-graph-up" viewBox="0 0 24 24"><path d="M4 4h2v14h14v2H4zm4 9l3-4 3 3 4-6 1.6 1.2L15 15l-3-3-2.6 3.4z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6h-4v6H6v-9H3z"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm3.5 6.5l-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 0 1 0 16 8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 0 1 12 4zm4.5 10.3c-.2-.1-1.3-.7-1.5-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.2.1-.3 0-.5l-.7-1.6c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.7.7-.9 1.6-.5 2.7a8 8 0 0 0 3.6 4c1.4.6 2.4.6 3.2.4.5-.1 1.3-.6 1.5-1.1.2-.5.2-1 .1-1.1z"/></symbol>
+  <symbol id="b-linkedin" viewBox="0 0 24 24"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95C21.4 8.75 22 11 22 14v7h-4v-6.2c0-1.48-.03-3.38-2.06-3.38-2.06 0-2.38 1.6-2.38 3.27V21h-4z"/></symbol>
+  <symbol id="b-instagram" viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm5 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm4.5-2.8a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2z"/></symbol>
+  <!-- Growie: iGROWth mascot (a cheerful sprout athlete) -->
+  <symbol id="growie" viewBox="0 0 240 260">
+    <ellipse cx="94" cy="236" rx="24" ry="13" fill="#1f9d5f"/>
+    <ellipse cx="150" cy="236" rx="24" ry="13" fill="#1f9d5f"/>
+    <ellipse cx="46" cy="150" rx="17" ry="30" fill="#2FB673" transform="rotate(-18 46 150)"/>
+    <ellipse cx="194" cy="150" rx="17" ry="30" fill="#2FB673" transform="rotate(18 194 150)"/>
+    <path d="M120 64 C119 44 118 32 120 20" fill="none" stroke="#1f9d5f" stroke-width="9" stroke-linecap="round"/>
+    <path d="M120 40 C104 22 80 26 76 44 C94 54 116 50 120 40 Z" fill="#43c98a"/>
+    <path d="M120 46 C134 30 158 33 162 50 C144 60 124 56 120 46 Z" fill="#5fd79c"/>
+    <ellipse cx="120" cy="152" rx="82" ry="86" fill="#2FB673"/>
+    <ellipse cx="120" cy="172" rx="52" ry="56" fill="#FFE7C2"/>
+    <circle cx="66" cy="116" r="10" fill="#28a869"/>
+    <circle cx="176" cy="196" r="9" fill="#28a869"/>
+    <ellipse cx="100" cy="120" rx="23" ry="25" fill="#fff"/>
+    <ellipse cx="142" cy="120" rx="23" ry="25" fill="#fff"/>
+    <circle cx="105" cy="125" r="12.5" fill="#16233f"/>
+    <circle cx="137" cy="125" r="12.5" fill="#16233f"/>
+    <circle cx="110" cy="119" r="4.2" fill="#fff"/>
+    <circle cx="142" cy="119" r="4.2" fill="#fff"/>
+    <path d="M80 96 Q100 86 118 98" fill="none" stroke="#16233f" stroke-width="5" stroke-linecap="round"/>
+    <path d="M124 98 Q142 86 162 96" fill="none" stroke="#16233f" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="74" cy="152" r="10" fill="#ff9db3" opacity=".55"/>
+    <circle cx="166" cy="152" r="10" fill="#ff9db3" opacity=".55"/>
+    <path d="M99 150 Q121 162 143 150 Q141 180 121 182 Q101 180 99 150 Z" fill="#8a2b4a"/>
+    <path d="M108 172 Q121 182 134 172 Q131 178 121 178 Q111 178 108 172 Z" fill="#ff7a9c"/>
+    <path d="M92 150 Q121 156 150 150" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".85"/>
+  </symbol>
+  <!-- soft landscape scene (hills + sun) -->
+  <symbol id="scene-hills" viewBox="0 0 1440 420" preserveAspectRatio="xMidYMax slice">
+    <circle cx="1180" cy="120" r="70" fill="#ffe08a" opacity=".85"/>
+    <circle cx="1180" cy="120" r="98" fill="#ffe08a" opacity=".28"/>
+    <path d="M0 300 C 240 250 420 250 640 290 C 900 338 1080 300 1440 260 L1440 420 L0 420 Z" fill="#8fe0b0" opacity=".55"/>
+    <path d="M0 350 C 260 310 520 360 760 350 C 1040 338 1240 372 1440 340 L1440 420 L0 420 Z" fill="#63d199" opacity=".6"/>
+  </symbol>
+  <!-- compact Growie logomark -->
+  <symbol id="growie-mark" viewBox="0 0 100 100">
+    <path d="M50 26 C49 16 49 11 50 6" fill="none" stroke="#1f9d5f" stroke-width="5" stroke-linecap="round"/>
+    <path d="M50 16 C42 9 31 11 30 19 C39 24 48 22 50 16 Z" fill="#43c98a"/>
+    <path d="M50 19 C58 11 69 13 70 21 C61 26 52 24 50 19 Z" fill="#5fd79c"/>
+    <circle cx="50" cy="56" r="36" fill="#2FB673"/>
+    <ellipse cx="50" cy="64" rx="20" ry="22" fill="#FFE7C2"/>
+    <ellipse cx="39" cy="50" rx="11" ry="12" fill="#fff"/>
+    <ellipse cx="61" cy="50" rx="11" ry="12" fill="#fff"/>
+    <circle cx="42" cy="53" r="6" fill="#16233f"/>
+    <circle cx="58" cy="53" r="6" fill="#16233f"/>
+    <circle cx="44.5" cy="50.5" r="2" fill="#fff"/>
+    <circle cx="60.5" cy="50.5" r="2" fill="#fff"/>
+    <circle cx="31" cy="63" r="5" fill="#ff9db3" opacity=".55"/>
+    <circle cx="69" cy="63" r="5" fill="#ff9db3" opacity=".55"/>
+    <path d="M41 62 Q50 70 59 62 Q57 76 50 77 Q43 76 41 62 Z" fill="#8a2b4a"/>
+    <path d="M46 71 Q50 75 54 71 Q52 74 50 74 Q48 74 46 71 Z" fill="#ff7a9c"/>
+  </symbol>
+  <!-- Growie playing basketball -->
+  <symbol id="growie-basket" viewBox="0 0 200 210">
+    <ellipse cx="82" cy="182" rx="15" ry="9" fill="#1f9d5f"/><ellipse cx="116" cy="182" rx="15" ry="9" fill="#1f9d5f"/>
+    <ellipse cx="150" cy="70" rx="15" ry="30" fill="#2FB673" transform="rotate(38 150 70)"/>
+    <ellipse cx="52" cy="140" rx="14" ry="26" fill="#2FB673" transform="rotate(-16 52 140)"/>
+    <ellipse cx="100" cy="118" rx="54" ry="58" fill="#2FB673"/>
+    <ellipse cx="100" cy="132" rx="32" ry="35" fill="#FFE7C2"/>
+    <path d="M100 62 C99 50 99 44 100 36" fill="none" stroke="#1f9d5f" stroke-width="6" stroke-linecap="round"/>
+    <path d="M100 48 C91 39 78 41 76 51 C86 57 97 54 100 48 Z" fill="#43c98a"/>
+    <path d="M100 51 C109 42 122 44 124 53 C114 59 103 57 100 51 Z" fill="#5fd79c"/>
+    <ellipse cx="86" cy="104" rx="14" ry="15" fill="#fff"/><ellipse cx="114" cy="104" rx="14" ry="15" fill="#fff"/>
+    <circle cx="90" cy="107" r="7.5" fill="#16233f"/><circle cx="110" cy="107" r="7.5" fill="#16233f"/>
+    <circle cx="92.5" cy="104" r="2.4" fill="#fff"/><circle cx="112.5" cy="104" r="2.4" fill="#fff"/>
+    <circle cx="72" cy="122" r="7" fill="#ff9db3" opacity=".5"/><circle cx="128" cy="122" r="7" fill="#ff9db3" opacity=".5"/>
+    <path d="M87 122 Q100 132 113 122 Q111 144 100 145 Q89 144 87 122 Z" fill="#8a2b4a"/>
+    <path d="M93 137 Q100 143 107 137 Q105 141 100 141 Q95 141 93 137 Z" fill="#ff7a9c"/>
+    <circle cx="164" cy="52" r="20" fill="#f08a3c"/>
+    <path d="M144 52h40M164 32v40M150 38q14 14 0 28M178 38q-14 14 0 28" fill="none" stroke="#8a4a1e" stroke-width="2.2"/>
+  </symbol>
+  <!-- Growie playing soccer -->
+  <symbol id="growie-soccer" viewBox="0 0 200 210">
+    <ellipse cx="150" cy="140" rx="14" ry="26" fill="#2FB673" transform="rotate(20 150 140)"/>
+    <ellipse cx="50" cy="140" rx="14" ry="26" fill="#2FB673" transform="rotate(-20 50 140)"/>
+    <ellipse cx="80" cy="180" rx="15" ry="9" fill="#1f9d5f"/><ellipse cx="118" cy="176" rx="15" ry="9" fill="#1f9d5f" transform="rotate(-18 118 176)"/>
+    <ellipse cx="100" cy="116" rx="54" ry="58" fill="#2FB673"/>
+    <ellipse cx="100" cy="130" rx="32" ry="35" fill="#FFE7C2"/>
+    <path d="M100 60 C99 48 99 42 100 34" fill="none" stroke="#1f9d5f" stroke-width="6" stroke-linecap="round"/>
+    <path d="M100 46 C91 37 78 39 76 49 C86 55 97 52 100 46 Z" fill="#43c98a"/>
+    <path d="M100 49 C109 40 122 42 124 51 C114 57 103 55 100 49 Z" fill="#5fd79c"/>
+    <ellipse cx="86" cy="102" rx="14" ry="15" fill="#fff"/><ellipse cx="114" cy="102" rx="14" ry="15" fill="#fff"/>
+    <circle cx="90" cy="105" r="7.5" fill="#16233f"/><circle cx="110" cy="105" r="7.5" fill="#16233f"/>
+    <circle cx="92.5" cy="102" r="2.4" fill="#fff"/><circle cx="112.5" cy="102" r="2.4" fill="#fff"/>
+    <circle cx="72" cy="120" r="7" fill="#ff9db3" opacity=".5"/><circle cx="128" cy="120" r="7" fill="#ff9db3" opacity=".5"/>
+    <path d="M87 120 Q100 130 113 120 Q111 142 100 143 Q89 142 87 120 Z" fill="#8a2b4a"/>
+    <path d="M93 135 Q100 141 107 135 Q105 139 100 139 Q95 139 93 135 Z" fill="#ff7a9c"/>
+    <circle cx="140" cy="188" r="17" fill="#fff" stroke="#d7deea" stroke-width="1.5"/>
+    <path d="M140 178l6 5-2 8h-8l-2-8z" fill="#16233f"/><circle cx="127" cy="192" r="3" fill="#16233f"/><circle cx="153" cy="192" r="3" fill="#16233f"/>
+  </symbol>
+  <!-- Growie playing tennis -->
+  <symbol id="growie-tennis" viewBox="0 0 200 210">
+    <ellipse cx="82" cy="182" rx="15" ry="9" fill="#1f9d5f"/><ellipse cx="116" cy="182" rx="15" ry="9" fill="#1f9d5f"/>
+    <ellipse cx="52" cy="140" rx="14" ry="26" fill="#2FB673" transform="rotate(-16 52 140)"/>
+    <ellipse cx="150" cy="74" rx="14" ry="28" fill="#2FB673" transform="rotate(40 150 74)"/>
+    <ellipse cx="100" cy="118" rx="54" ry="58" fill="#2FB673"/>
+    <ellipse cx="100" cy="132" rx="32" ry="35" fill="#FFE7C2"/>
+    <path d="M100 62 C99 50 99 44 100 36" fill="none" stroke="#1f9d5f" stroke-width="6" stroke-linecap="round"/>
+    <path d="M100 48 C91 39 78 41 76 51 C86 57 97 54 100 48 Z" fill="#43c98a"/>
+    <path d="M100 51 C109 42 122 44 124 53 C114 59 103 57 100 51 Z" fill="#5fd79c"/>
+    <ellipse cx="86" cy="104" rx="14" ry="15" fill="#fff"/><ellipse cx="114" cy="104" rx="14" ry="15" fill="#fff"/>
+    <circle cx="90" cy="107" r="7.5" fill="#16233f"/><circle cx="110" cy="107" r="7.5" fill="#16233f"/>
+    <circle cx="92.5" cy="104" r="2.4" fill="#fff"/><circle cx="112.5" cy="104" r="2.4" fill="#fff"/>
+    <circle cx="72" cy="122" r="7" fill="#ff9db3" opacity=".5"/><circle cx="128" cy="122" r="7" fill="#ff9db3" opacity=".5"/>
+    <path d="M87 122 Q100 132 113 122 Q111 144 100 145 Q89 144 87 122 Z" fill="#8a2b4a"/>
+    <path d="M93 137 Q100 143 107 137 Q105 141 100 141 Q95 141 93 137 Z" fill="#ff7a9c"/>
+    <rect x="156" y="34" width="6" height="34" rx="3" fill="#c98a3c" transform="rotate(40 159 51)"/>
+    <ellipse cx="176" cy="30" rx="17" ry="20" fill="none" stroke="#5B4BD6" stroke-width="5" transform="rotate(40 176 30)"/>
+    <circle cx="150" cy="86" r="8" fill="#d8f24a"/>
+  </symbol>
+  <!-- Growie dancing -->
+  <symbol id="growie-dance" viewBox="0 0 200 210">
+    <ellipse cx="76" cy="184" rx="15" ry="9" fill="#1f9d5f" transform="rotate(-10 76 184)"/><ellipse cx="120" cy="180" rx="15" ry="9" fill="#1f9d5f" transform="rotate(18 120 180)"/>
+    <ellipse cx="46" cy="78" rx="13" ry="26" fill="#2FB673" transform="rotate(-42 46 78)"/>
+    <ellipse cx="154" cy="78" rx="13" ry="26" fill="#2FB673" transform="rotate(42 154 78)"/>
+    <ellipse cx="100" cy="118" rx="53" ry="57" fill="#2FB673"/>
+    <ellipse cx="100" cy="132" rx="31" ry="34" fill="#FFE7C2"/>
+    <path d="M100 63 C99 51 99 45 100 37" fill="none" stroke="#1f9d5f" stroke-width="6" stroke-linecap="round"/>
+    <path d="M100 49 C91 40 78 42 76 52 C86 58 97 55 100 49 Z" fill="#43c98a"/>
+    <path d="M100 52 C109 43 122 45 124 54 C114 60 103 58 100 52 Z" fill="#5fd79c"/>
+    <ellipse cx="87" cy="104" rx="13.5" ry="15" fill="#fff"/><ellipse cx="113" cy="104" rx="13.5" ry="15" fill="#fff"/>
+    <circle cx="91" cy="107" r="7" fill="#16233f"/><circle cx="109" cy="107" r="7" fill="#16233f"/>
+    <circle cx="93.5" cy="104" r="2.3" fill="#fff"/><circle cx="111.5" cy="104" r="2.3" fill="#fff"/>
+    <circle cx="73" cy="122" r="7" fill="#ff9db3" opacity=".5"/><circle cx="127" cy="122" r="7" fill="#ff9db3" opacity=".5"/>
+    <path d="M88 122 Q100 133 112 122 Q110 144 100 145 Q90 144 88 122 Z" fill="#8a2b4a"/>
+    <path d="M94 137 Q100 143 106 137 Q104 141 100 141 Q96 141 94 137 Z" fill="#ff7a9c"/>
+    <path d="M30 60 v-22 l10-4 v22" fill="none" stroke="#5B4BD6" stroke-width="4" stroke-linecap="round"/><circle cx="28" cy="60" r="5" fill="#5B4BD6"/><circle cx="42" cy="56" r="5" fill="#5B4BD6"/>
+    <path d="M168 84 v-20" fill="none" stroke="#FFB020" stroke-width="4" stroke-linecap="round"/><circle cx="166" cy="84" r="5" fill="#FFB020"/>
+  </symbol>
+</svg>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top"><span class="mark"><svg viewBox="0 0 100 100" class="marksvg" aria-hidden="true"><use href="#growie-mark"/></svg></span> iGROWth</a>
+    <nav class="nav-links">
+      <a href="#valoare">Ce câștigă copilul</a>
+      <a href="#parinte">Pentru tine, părinte</a>
+      <a href="#preturi">Prețuri</a>
+      <a href="#faq">Întrebări</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#preturi" class="btn btn-ghost">Vezi planurile</a>
+      <button class="btn btn-primary js-reg"><svg class="icon"><use href="#i-sparkles"/></svg> Creează cont</button>
+    </div>
+    <button class="burger" onclick="openMnav()" aria-label="Meniu"><svg class="icon" style="font-size:1.6rem"><use href="#i-menu"/></svg></button>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mnav" id="mnav">
+  <div class="mnav-bd" onclick="closeMnav()"></div>
+  <div class="mnav-panel">
+    <div class="mnav-top">
+      <a class="logo" href="#top" onclick="closeMnav()"><span class="mark"><svg viewBox="0 0 100 100" class="marksvg" aria-hidden="true"><use href="#growie-mark"/></svg></span> iGROWth</a>
+      <button class="burger" onclick="closeMnav()" aria-label="Închide"><svg class="icon" style="font-size:1.5rem"><use href="#i-x"/></svg></button>
+    </div>
+    <a href="#valoare" onclick="closeMnav()">Ce câștigă copilul</a>
+    <a href="#parinte" onclick="closeMnav()">Pentru tine, părinte</a>
+    <a href="#preturi" onclick="closeMnav()">Prețuri</a>
+    <a href="#testimoniale" onclick="closeMnav()">Testimoniale</a>
+    <a href="#faq" onclick="closeMnav()">Întrebări frecvente</a>
+    <button class="btn btn-primary btn-block js-reg" onclick="closeMnav()"><svg class="icon"><use href="#i-sparkles"/></svg> Creează cont gratuit</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span><span class="a4"></span></div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="hp-pill">
+        <div class="avstack">
+          <span style="background:linear-gradient(135deg,#2FB673,#38c983)">A</span>
+          <span style="background:linear-gradient(135deg,#5B4BD6,#6c5cf0)">M</span>
+          <span style="background:linear-gradient(135deg,#FFB020,#ffd15c)">R</span>
+          <span style="background:linear-gradient(135deg,#ff5d8f,#ff87ab)">C</span>
+          <span style="background:linear-gradient(135deg,#38b6ff,#66d3ff)">+</span>
+        </div>
+        <div class="hp-txt"><b>3.400+</b> copii învață zilnic<br><span class="stars"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></span> <span class="s">4,9/5 de la părinți</span></div>
+      </div>
+      <h1>Crește un copil sănătos și motivat, <span class="g">ca la joacă.</span></h1>
+      <p class="lead">iGROWth face din nutriție, mișcare și mentalitate un joc zilnic pe care copilul îl deschide singur. Tu vezi progresul, negru pe alb.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary glow btn-lg js-reg"><svg class="icon"><use href="#i-rocket"/></svg> Creează cont gratuit</button>
+        <a href="#poveste" class="btn btn-ghost btn-lg">Vezi cum funcționează</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><svg class="icon"><use href="#i-check-circle"/></svg> Gratuit pentru început</div>
+        <div class="trust-item"><svg class="icon"><use href="#i-lock"/></svg> Plătește doar părintele</div>
+        <div class="trust-item"><svg class="icon"><use href="#i-heart"/></svg> Anulezi oricând</div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone-glow" aria-hidden="true"></div>
+      <svg class="hero-mascot" viewBox="0 0 240 260" aria-hidden="true"><use href="#growie"/></svg>
+      <div class="proof-card pc-1">
+        <div class="pc-rev">
+          <div class="pc-av" style="background:linear-gradient(135deg,#2FB673,#38c983)">A</div>
+          <div><div class="pc-stars"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></div><div class="pc-q">„Bea apă singur acum și mă întreabă de somn!"</div><div class="pc-n">Andreea, mamă</div></div>
+        </div>
+      </div>
+      <div class="proof-card pc-2">
+        <div class="pc-prog">
+          <div class="pc-ic"><svg class="icon"><use href="#i-flame"/></svg></div>
+          <div><div class="pc-big">14 zile <svg class="icon" style="color:#FFB020;font-size:.9rem"><use href="#i-trophy"/></svg></div><div class="pc-sub">serie · locul 3 în ligă</div></div>
+        </div>
+      </div>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-status"><span class="ph-time">9:41</span><span class="ph-sys"><svg class="icon"><use href="#i-flame"/></svg><svg class="icon"><use href="#i-zap"/></svg><span class="ph-batt"></span></span></div>
+          <div class="ph-header">
+            <div class="ph-hrow">
+              <div class="ph-user">
+                <div class="ph-avatar"><svg class="icon"><use href="#i-rocket"/></svg></div>
+                <div class="ph-uwho"><span class="ph-hi">Bună dimineața,</span><span class="ph-name">David</span></div>
+              </div>
+              <div class="ph-coins">
+                <span class="ph-coin flame"><svg class="icon"><use href="#i-flame"/></svg> 14</span>
+                <span class="ph-coin gem"><svg class="icon"><use href="#i-gem"/></svg> 6</span>
+              </div>
+            </div>
+          </div>
+          <div class="ph-body">
+            <div class="ph-mission">
+              <div class="ph-ring">
+                <svg viewBox="0 0 40 40"><circle class="rbg" cx="20" cy="20" r="16"/><circle class="rfg" cx="20" cy="20" r="16"/></svg>
+                <div class="ph-ringtxt"><b>3</b><span>/4</span></div>
+              </div>
+              <div class="ph-mtext">
+                <div class="ph-mlabel">Misiunea de azi</div>
+                <div class="ph-mtitle">Aproape gata!</div>
+                <div class="ph-mxp"><svg class="icon"><use href="#i-zap"/></svg> +120 XP la final</div>
+              </div>
+            </div>
+            <div class="ph-league">
+              <div class="ph-lg-top"><span class="ph-lg-name"><span class="ph-lg-dot"></span> Liga Argint</span><span class="ph-lg-rank">Locul 3</span></div>
+              <div class="ph-lg-bar"><div class="ph-lg-fill"></div></div>
+              <div class="ph-lg-sub">Încă 180 XP până în Liga Aur</div>
+            </div>
+            <div class="ph-sec">Continuă</div>
+            <div class="ph-quest done">
+              <div class="ph-q-ic" style="background:linear-gradient(135deg,#2FB673,#38c983)"><svg class="icon"><use href="#i-check"/></svg></div>
+              <div class="ph-q-t"><div class="ph-q-n">Quiz: Hidratare corectă</div><div class="ph-q-s">Finalizat · +30 XP</div></div>
+            </div>
+            <div class="ph-quest active">
+              <div class="ph-q-ic" style="background:linear-gradient(135deg,#5B4BD6,#6c5cf0)"><svg class="icon"><use href="#i-dumbbell"/></svg></div>
+              <div class="ph-q-t"><div class="ph-q-n">10 min mobilitate</div><div class="ph-q-s">Antrenament acasă</div></div>
+              <span class="ph-q-go"><svg class="icon"><use href="#i-zap"/></svg> +50</span>
+            </div>
+            <div class="ph-quest">
+              <div class="ph-q-ic" style="background:linear-gradient(135deg,#FFB020,#ffd15c)"><svg class="icon"><use href="#i-book"/></svg></div>
+              <div class="ph-q-t"><div class="ph-q-n">Lecție: Somn & recuperare</div><div class="ph-q-s">3 minute</div></div>
+              <span class="ph-q-go"><svg class="icon"><use href="#i-zap"/></svg> +40</span>
+            </div>
+          </div>
+          <div class="ph-nav">
+            <span class="ph-nav-i on"><svg class="icon"><use href="#i-home"/></svg></span>
+            <span class="ph-nav-i"><svg class="icon"><use href="#i-book"/></svg></span>
+            <span class="ph-nav-i mid"><svg class="icon"><use href="#i-zap"/></svg></span>
+            <span class="ph-nav-i"><svg class="icon"><use href="#i-trophy"/></svg></span>
+            <span class="ph-nav-i"><svg class="icon"><use href="#i-user"/></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF (trust bar — bridges hero into content) -->
+<section class="trust-sec">
+  <div class="wrap">
+    <div class="trustbar reveal">
+      <div class="tb-item"><span class="tb-ic" style="color:var(--green)"><svg class="icon"><use href="#i-users"/></svg></span><span class="tb-txt"><b class="sn" data-to="3400" data-suf="+">0</b><span>copii activi</span></span></div>
+      <span class="tb-div"></span>
+      <div class="tb-item"><span class="tb-ic" style="color:var(--purple)"><svg class="icon"><use href="#i-shield"/></svg></span><span class="tb-txt"><b class="sn" data-to="120" data-suf="+">0</b><span>cluburi partenere</span></span></div>
+      <span class="tb-div"></span>
+      <div class="tb-item"><span class="tb-ic" style="color:#1b8dd1"><svg class="icon"><use href="#i-book"/></svg></span><span class="tb-txt"><b class="sn" data-to="500" data-suf="+">0</b><span>lecții & quiz-uri</span></span></div>
+      <span class="tb-div"></span>
+      <div class="tb-item"><span class="tb-ic" style="color:#ff8f5e"><svg class="icon"><use href="#i-flame"/></svg></span><span class="tb-txt"><b class="sn" data-to="68000" data-suf="+">0</b><span>zile la rând jucate</span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="band" id="poveste" style="padding-top:36px">
+  <svg class="sec-mascot sm-tr g-hop" viewBox="0 0 200 210" aria-hidden="true"><use href="#growie-basket"/></svg>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow eg"><svg class="icon"><use href="#i-sparkles"/></svg> Învață prin joc</span>
+      <h2>De la „nu vrea" la <span class="g">„mai lasă-mă cinci minute"</span></h2>
+      <p>Aceeași informație pe care i-ai spune-o tu, dar livrată ca o aventură. Iată cum arată drumul copilului — și ce rămâne cu el la final.</p>
+    </div>
+    <div class="story">
+      <div class="story-sticky">
+        <div class="story-visual">
+          <video autoplay muted loop playsinline><source src="__VIDEO1__" type="video/mp4"></video>
+          <div class="sv-ring"></div>
+        </div>
+      </div>
+      <div class="story-steps" id="storySteps">
+        <div class="step"><div class="st-top"><span class="st-n">1</span><h3>Intră și se simte campion</h3></div><p>Îl întâmpină avatarul lui, seria de zile la rând și misiunea de azi. Zero plictiseală, totul e al lui.</p><span class="st-tag" style="background:var(--green-soft);color:var(--green-2)"><svg class="icon"><use href="#i-flame"/></svg> Serie zilnică</span></div>
+        <div class="step"><div class="st-top"><span class="st-n">2</span><h3>Învață jucându-se</h3></div><p>Quiz-uri scurte despre nutriție, somn, hidratare și mișcare. Răspunde, greșește fără frică, primește XP și trece mai departe.</p><span class="st-tag" style="background:var(--purple-soft);color:var(--purple)"><svg class="icon"><use href="#i-book"/></svg> Lecții de 3 minute</span></div>
+        <div class="step"><div class="st-top"><span class="st-n">3</span><h3>Concurează corect</h3></div><p>Urcă în ligă alături de copii de vârsta lui. Punctele vin din <b>corectitudine și viteză</b> — nu se pot cumpăra. Meritul contează, nu banii.</p><span class="st-tag" style="background:var(--amber-soft);color:#a9710b"><svg class="icon"><use href="#i-trophy"/></svg> Ligi săptămânale</span></div>
+        <div class="step"><div class="st-top"><span class="st-n">4</span><h3>Se întoarce singur, zi de zi</h3></div><p>Seria de zile, obiectivele zilnice și recompensele îl aduc înapoi din proprie inițiativă. Fără să-i amintești tu.</p><span class="st-tag" style="background:#e2f4ff;color:#1b8dd1"><svg class="icon"><use href="#i-target"/></svg> Obicei sănătos</span></div>
+        <div class="step"><div class="st-top"><span class="st-n">5</span><h3>Rămâne cu ce contează</h3></div><p>Dincolo de XP, copilul pleacă cu <b>obiceiuri reale</b>: bea apă, doarme mai bine, se mișcă zilnic și înțelege de ce. Lucruri care rămân cu el și după ce închide aplicația.</p><span class="st-tag" style="background:#ffe6ee;color:#d63c6b"><svg class="icon"><use href="#i-shield"/></svg> Obiceiuri pe viață</span></div>
+        <div class="step"><div class="st-top"><span class="st-n">6</span><h3>Tu vezi cum crește</h3></div><p>Primești rapoarte clare: ce a învățat, cât de constant e, unde progresează. Tu câștigi <b>liniște și dovezi</b>, nu doar promisiuni.</p><span class="st-tag" style="background:var(--green-soft);color:var(--green-2)"><svg class="icon"><use href="#i-trend"/></svg> Progres măsurabil</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE 9 -->
+<section class="band band-soft" id="valoare">
+  <svg class="sec-mascot sm-bl g-swing" viewBox="0 0 200 210" aria-hidden="true"><use href="#growie-tennis"/></svg>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow eg"><svg class="icon"><use href="#i-award"/></svg> Ce câștigă cu adevărat</span>
+      <h2>Nu note pe hârtie. <span class="g">Abilități care rămân.</span></h2>
+      <p>Fiecare zi în aplicație lasă în urmă ceva concret. Iată ce dezvoltă copilul tău — și cum se vede.</p>
+    </div>
+    <div class="cards9 reveal">
+      <div class="vcard"><span class="num">01</span><div class="vic" style="background:linear-gradient(135deg,#2FB673,#38c983)"><svg class="icon"><use href="#i-dumbbell"/></svg></div><h3>Corp sănătos, activ</h3><p>Înțelege nutriția, hidratarea și mișcarea zilnică — și le pune în practică fără să fie forțat.</p><span class="metric"><svg class="icon"><use href="#i-trend"/></svg> Mișcare zilnică</span></div>
+      <div class="vcard"><span class="num">02</span><div class="vic" style="background:linear-gradient(135deg,#5B4BD6,#6c5cf0)"><svg class="icon"><use href="#i-target"/></svg></div><h3>Disciplină & consecvență</h3><p>Seria de zile la rând îl învață că progresul vine din a reveni zilnic, nu din salturi mari.</p><span class="metric"><svg class="icon"><use href="#i-flame"/></svg> Serie de 14 zile</span></div>
+      <div class="vcard"><span class="num">03</span><div class="vic" style="background:linear-gradient(135deg,#FFB020,#ffd15c)"><svg class="icon"><use href="#i-trophy"/></svg></div><h3>Spirit competitiv sănătos</h3><p>Învață să câștige și să piardă frumos, în ligi unde contează efortul propriu, nu norocul.</p><span class="metric"><svg class="icon"><use href="#i-medal"/></svg> Fair-play</span></div>
+      <div class="vcard"><span class="num">04</span><div class="vic" style="background:linear-gradient(135deg,#38b6ff,#66d3ff)"><svg class="icon"><use href="#i-book"/></svg></div><h3>Curiozitate & învățare</h3><p>Transformă „trebuie să învăț" în „vreau să aflu". Quiz-urile scurte hrănesc curiozitatea, nu o sting.</p><span class="metric"><svg class="icon"><use href="#i-sparkles"/></svg> Lecții zilnice</span></div>
+      <div class="vcard"><span class="num">05</span><div class="vic" style="background:linear-gradient(135deg,#ff5d8f,#ff87ab)"><svg class="icon"><use href="#i-heart"/></svg></div><h3>Reziliență mentală</h3><p>Greșește într-un mediu sigur, reia și reușește. Învață că eșecul e o etapă, nu un capăt de drum.</p><span class="metric"><svg class="icon"><use href="#i-shield"/></svg> Mentalitate</span></div>
+      <div class="vcard"><span class="num">06</span><div class="vic" style="background:linear-gradient(135deg,#2FB673,#5B4BD6)"><svg class="icon"><use href="#i-crown"/></svg></div><h3>Încredere prin realizări</h3><p>Fiecare item de avatar și fiecare insignă sunt câștigate, nu cumpărate. Statutul e meritat.</p><span class="metric"><svg class="icon"><use href="#i-award"/></svg> Recompense reale</span></div>
+      <div class="vcard"><span class="num">07</span><div class="vic" style="background:linear-gradient(135deg,#38b6ff,#2FB673)"><svg class="icon"><use href="#i-droplet"/></svg></div><h3>Grijă față de corp</h3><p>Somn, recuperare, prevenirea accidentărilor — învață să-și asculte corpul și să se odihnească inteligent.</p><span class="metric"><svg class="icon"><use href="#i-heart"/></svg> Recuperare</span></div>
+      <div class="vcard"><span class="num">08</span><div class="vic" style="background:linear-gradient(135deg,#5B4BD6,#38b6ff)"><svg class="icon"><use href="#i-eye"/></svg></div><h3>Concentrare & atenție</h3><p>Sesiuni scurte, cu obiectiv clar, îi antrenează atenția — un mușchi la fel de important ca oricare altul.</p><span class="metric"><svg class="icon"><use href="#i-target"/></svg> Focus zilnic</span></div>
+      <div class="vcard"><span class="num">09</span><div class="vic" style="background:linear-gradient(135deg,#FFB020,#ff5d8f)"><svg class="icon"><use href="#i-cap"/></svg></div><h3>Autonomie & responsabilitate</h3><p>Își gestionează singur misiunile, viețile și progresul. Învață că rezultatele depind de el.</p><span class="metric"><svg class="icon"><use href="#i-check-circle"/></svg> Independență</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT -->
+<section class="band" id="parinte">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow eg"><svg class="icon"><use href="#i-eye"/></svg> Pentru tine, părinte</span>
+      <h2>Orice ar alege copilul tău, <span class="g">tu rămâi conectat</span></h2>
+      <p>Fie că e legitimat la un club, fie că se antrenează pe cont propriu, tu vezi mereu ce contează. Iar dacă are club, primești <b>tot</b>.</p>
+    </div>
+    <div class="split reveal">
+      <div class="scen base">
+        <span class="scen-lbl"><svg class="icon"><use href="#i-book"/></svg> Copil fără club</span>
+        <h3>Crește oriunde, oricând</h3>
+        <p class="scen-sub">Nu are nevoie de o echipă ca să progreseze. Tu urmărești tot ce ține de dezvoltarea lui personală.</p>
+        <ul>
+          <li><svg class="icon"><use href="#i-trend"/></svg> Progresul la învățare — quiz-uri, lecții, XP acumulat</li>
+          <li><svg class="icon"><use href="#i-flame"/></svg> Consecvența zilnică — seria de zile și obiectivele atinse</li>
+          <li><svg class="icon"><use href="#i-heart"/></svg> Etape mentale & obiceiuri — somn, hidratare, mișcare</li>
+          <li><svg class="icon"><use href="#i-award"/></svg> Realizări și insigne câștigate în timp</li>
+          <li><svg class="icon"><use href="#i-trophy"/></svg> Poziția în ligile individuale, cu copii de vârsta lui</li>
+        </ul>
+      </div>
+      <div class="scen plus">
+        <span class="scen-lbl"><svg class="icon"><use href="#i-shield"/></svg> Copil înscris la club</span>
+        <h3>Primești tot ce e mai sus <span style="color:#8ff0bd">+ viața de club</span></h3>
+        <p class="scen-sub">Toate beneficiile din stânga rămân. În plus, se deschide fereastra către activitatea sportivă reală.</p>
+        <ul>
+          <li><svg class="icon"><use href="#i-check-circle"/></svg> Tot progresul la învățare, obiceiuri și realizări <span class="plus-badge"><svg class="icon"><use href="#i-check"/></svg> inclus</span></li>
+          <li><svg class="icon"><use href="#i-calendar"/></svg> Prezența la antrenamente și programul echipei</li>
+          <li><svg class="icon"><use href="#i-dumbbell"/></svg> Performanța atletică notată de antrenor</li>
+          <li><svg class="icon"><use href="#i-trend"/></svg> Evoluția fizică — măsurători și progres în timp</li>
+          <li><svg class="icon"><use href="#i-card"/></svg> Plata abonamentelor de club, la un loc</li>
+          <li><svg class="icon"><use href="#i-trophy"/></svg> Evenimente și competiții sportive ale clubului</li>
+        </ul>
+      </div>
+    </div>
+    <p class="split-note">Copilul nu e legat de un club ca să înceapă. <b>Poți porni azi, singur</b> — iar în ziua în care se înscrie la o echipă, totul se conectează automat.</p>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="band band-soft" id="testimoniale">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow eg"><svg class="icon"><use href="#i-star"/></svg> Ce spun părinții</span>
+      <h2>Peste 3.400 de familii <span class="g">ne dau dreptate</span></h2>
+      <p>Note reale, pe platformele pe care le folosești zilnic.</p>
+    </div>
+    <div class="rating-row">
+      <div class="rating-card"><div class="plic" style="background:#fff;box-shadow:inset 0 0 0 1px var(--line)"><svg class="icon" style="font-size:1.4rem"><use href="#b-google"/></svg></div><div><div class="rc-score">4,9 <span class="stars"><svg class="icon"><use href="#i-star"/></svg></span></div><div class="rc-name">Google · 820 recenzii</div></div></div>
+      <div class="rating-card"><div class="plic" style="background:#fff;box-shadow:inset 0 0 0 1px var(--line)"><svg class="icon" style="font-size:1.4rem"><use href="#b-fb"/></svg></div><div><div class="rc-score">4,8 <span class="stars"><svg class="icon"><use href="#i-star"/></svg></span></div><div class="rc-name">Facebook · 640 recenzii</div></div></div>
+      <div class="rating-card"><div class="plic" style="background:#000;color:#fff"><svg class="icon" style="font-size:1.3rem"><use href="#b-apple"/></svg></div><div><div class="rc-score">4,9 <span class="stars"><svg class="icon"><use href="#i-star"/></svg></span></div><div class="rc-name">App Store · 1.2k note</div></div></div>
+      <div class="rating-card"><div class="plic" style="background:#fff;box-shadow:inset 0 0 0 1px var(--line)"><svg class="icon" style="font-size:1.4rem"><use href="#b-gplay"/></svg></div><div><div class="rc-score">4,8 <span class="stars"><svg class="icon"><use href="#i-star"/></svg></span></div><div class="rc-name">Google Play · 2.1k note</div></div></div>
+    </div>
+  </div>
+  <div class="marquee"><div class="marquee-track" id="mtrack"></div></div>
+  <div class="wrap" style="text-align:center;margin-top:40px">
+    <p style="color:var(--muted);font-weight:600;margin-bottom:16px">Descarcă aplicația pentru copil:</p>
+    <div class="store-badges" style="justify-content:center">
+      <a class="store-badge js-reg" href="#"><svg class="icon"><use href="#b-apple"/></svg><span class="sb-t"><span class="s">Descarcă din</span><span class="b">App Store</span></span></a>
+      <a class="store-badge js-reg" href="#"><svg class="icon"><use href="#b-gplay"/></svg><span class="sb-t"><span class="s">Disponibil pe</span><span class="b">Google Play</span></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="band" id="preturi">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow eg"><svg class="icon"><use href="#i-card"/></svg> Prețuri simple</span>
+      <h2>Alege planul, <span class="g">schimbă-l oricând</span></h2>
+      <p>Începe gratuit. Faci upgrade doar când simți că merită. Fără contracte, anulezi când vrei.</p>
+    </div>
+    <div style="display:flex;justify-content:center;margin-bottom:6px">
+      <div class="bill-toggle">
+        <button id="btnMonthly" class="active" onclick="setPeriod('m')">Lunar</button>
+        <button id="btnYearly" onclick="setPeriod('y')">Anual <span class="bill-save">−17%</span></button>
+      </div>
+    </div>
+    <div class="prices">
+      <div class="pcard">
+        <div class="pname"><svg class="icon" style="color:var(--muted)"><use href="#i-sparkles"/></svg> Free</div>
+        <div class="pdesc">Un început bun, gratuit pentru totdeauna.</div>
+        <div class="pprice"><span class="amt">0 €</span><span class="per">/lună</span></div>
+        <div class="pfree">Fără card. Fără termen.</div>
+        <ul>
+          <li><svg class="icon"><use href="#i-check"/></svg> Quiz-uri și lecții zilnice</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> 3 vieți, regenerare lentă</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> Clasament în echipă</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> Avatar de bază</li>
+          <li class="off"><svg class="icon"><use href="#i-x"/></svg> Competiții cu premii reale</li>
+        </ul>
+        <button class="btn btn-ghost btn-block js-reg">Începe gratuit</button>
+      </div>
+      <div class="pcard">
+        <div class="pname"><svg class="icon" style="color:var(--green)"><use href="#i-zap"/></svg> Start</div>
+        <div class="pdesc">Primul pas serios spre progres.</div>
+        <div class="pprice"><span class="amt" data-m="5,99 €" data-y="59,99 €">5,99 €</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
+        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="≈ 1,38 €/săptămână" data-yw="≈ 1,15 €/săptămână">≈ 1,38 €/săptămână</span></div>
+        <ul>
+          <li><svg class="icon"><use href="#i-check"/></svg> Tot ce e în Free</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> 5 vieți, regenerare mai rapidă</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> Raport lunar pentru părinte</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> Fără reclame</li>
+          <li class="off"><svg class="icon"><use href="#i-x"/></svg> Competiții cu premii reale</li>
+        </ul>
+        <button class="btn btn-ghost btn-block js-reg">Alege Start</button>
+      </div>
+      <div class="pcard pop">
+        <span class="pop-tag"><svg class="icon"><use href="#i-star"/></svg> Cel mai ales</span>
+        <div class="pname"><svg class="icon" style="color:var(--purple)"><use href="#i-crown"/></svg> Campion</div>
+        <div class="pdesc">Experiența completă pentru un copil ambițios.</div>
+        <div class="pprice"><span class="amt" data-m="9,99 €" data-y="99,99 €">9,99 €</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
+        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="≈ 2,31 €/săptămână" data-yw="≈ 1,92 €/săptămână">≈ 2,31 €/săptămână</span></div>
+        <ul>
+          <li><svg class="icon"><use href="#i-check"/></svg> Tot ce e în Start</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> 15 vieți, regenerare rapidă</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> <b>Competiții cu premii reale</b></li>
+          <li><svg class="icon"><use href="#i-check"/></svg> Clasamente de club & raport detaliat</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> Bonus lunar de avatar</li>
+        </ul>
+        <button class="btn btn-purple btn-block js-reg">Alege Campion</button>
+      </div>
+      <div class="pcard">
+        <div class="pname"><svg class="icon" style="color:var(--amber)"><use href="#i-gem"/></svg> Elită</div>
+        <div class="pdesc">Tot ce oferim, la nivel maxim.</div>
+        <div class="pprice"><span class="amt" data-m="18,99 €" data-y="189,99 €">18,99 €</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
+        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="≈ 4,38 €/săptămână" data-yw="≈ 3,65 €/săptămână">≈ 4,38 €/săptămână</span></div>
+        <ul>
+          <li><svg class="icon"><use href="#i-check"/></svg> Tot ce e în Campion</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> 60 vieți, regenerare la 5 min</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> Campionat național</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> Conținut exclusiv cu sportivi</li>
+          <li><svg class="icon"><use href="#i-check"/></svg> Rapoarte avansate & acces prioritar</li>
+        </ul>
+        <button class="btn btn-ghost btn-block js-reg">Alege Elită</button>
+      </div>
+    </div>
+    <div class="family reveal">
+      <div class="fic"><svg class="icon"><use href="#i-users"/></svg></div>
+      <div class="ft"><h4>Plan de familie — mai mulți copii, preț mai mic</h4><p>Ai doi sau trei copii? Reducerea se aplică automat și se adună cu planul anual.</p></div>
+      <div class="fdiscounts"><div class="fd"><div class="p">−20%</div><div class="l">al 2-lea copil</div></div><div class="fd"><div class="p">−30%</div><div class="l">al 3-lea copil</div></div></div>
+    </div>
+    <p class="price-note"><svg class="icon" style="color:var(--green);vertical-align:-.15em"><use href="#i-lock"/></svg> Plătește întotdeauna părintele. TVA inclus. Anulezi oricând, fără penalizări.</p>
+  </div>
+</section>
+
+<!-- FAIRNESS -->
+<section class="band band-soft">
+  <div class="wrap">
+    <div class="fair reveal">
+      <div class="fbadge"><svg class="icon"><use href="#i-shield"/></svg></div>
+      <div>
+        <h3>Banii nu cumpără victoria. Niciodată.</h3>
+        <p>Punctele copilului vin din <b>cât de corect și cât de repede</b> răspunde — lucruri care nu se pot plăti. Un plan mai scump îți dă acces la mai multe experiențe, dar <b>zero avantaj în clasament</b>. Un copil talentat pe Free bate oricând un copil mai puțin pregătit pe Elită. Așa rămâne sportul, sport.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT (social enterprise) — standout full-bleed band -->
+<section class="impact-band" id="misiune">
+  <div class="imp-rings" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="imp-head reveal">
+      <span class="imp-eyebrow"><svg class="icon"><use href="#i-seed"/></svg> Misiune peste profit</span>
+      <h2>Nu construim doar o aplicație. <span class="imp-hl">Construim o șansă.</span></h2>
+      <p class="imp-sub">iGROWth este o <b>întreprindere socială</b>. Profitul nu pleacă din ecosistem — se întoarce la copiii care au cea mai mare nevoie de el.</p>
+    </div>
+    <div class="imp-main reveal">
+      <div class="imp-visual">
+        <div class="imp-donut">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <circle class="d-track" cx="100" cy="100" r="78"/>
+            <circle class="d-arc" cx="100" cy="100" r="78"/>
+          </svg>
+          <div class="d-center"><span class="d-num">90<b>%</b></span><span class="d-lab">din profit,<br>reinvestit</span></div>
+        </div>
+        <svg class="imp-mascot" viewBox="0 0 240 260" aria-hidden="true"><use href="#growie"/></svg>
+      </div>
+      <div class="imp-copy">
+        <div class="imp-legend">
+          <span class="lg"><i class="dot g"></i> 90% în misiunea socială</span>
+          <span class="lg"><i class="dot m"></i> 10% costuri de funcționare</span>
+        </div>
+        <p class="imp-lead">Reinvestim <b>90% din profit</b> ca să susținem copiii talentați din medii vulnerabile — abonamente, echipament și acces la cluburi pentru cei care altfel ar rămâne pe dinafară.</p>
+        <div class="imp-quote"><svg class="icon"><use href="#i-heart"/></svg> Când plătești pentru copilul tău, <b>un alt copil primește aceeași șansă.</b></div>
+      </div>
+    </div>
+    <div class="imp-pillars reveal">
+      <div class="imp-card"><span class="ipc-ic" style="background:linear-gradient(135deg,#2FB673,#38c983)"><svg class="icon"><use href="#i-cap"/></svg></span><div class="ipc-t">Acces pentru cei vulnerabili</div><div class="ipc-d">Conturi și echipament pentru copii talentați, indiferent de posibilitățile familiei.</div></div>
+      <div class="imp-card"><span class="ipc-ic" style="background:linear-gradient(135deg,#38b6ff,#5B4BD6)"><svg class="icon"><use href="#i-graph-up"/></svg></span><div class="ipc-t">Transparență, an de an</div><div class="ipc-d">Publicăm exact unde merge fiecare euro reinvestit. Cifre reale, nu promisiuni.</div></div>
+      <div class="imp-card"><span class="ipc-ic" style="background:linear-gradient(135deg,#FFB020,#ff7a9c)"><svg class="icon"><use href="#i-handshake"/></svg></span><div class="ipc-t">Un copil crește, altul urcă</div><div class="ipc-d">Fiecare abonament devine, direct, șansa reală a unui alt copil din România.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="band">
+  <svg class="sec-mascot sm-br g-sway" viewBox="0 0 200 210" aria-hidden="true"><use href="#growie-soccer"/></svg>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow eg"><svg class="icon"><use href="#i-rocket"/></svg> În 3 pași</span>
+      <h2>Copilul tău începe <span class="g">în două minute</span></h2>
+    </div>
+    <div class="steps3 reveal">
+      <div class="s3"><div class="s3n" style="background:linear-gradient(135deg,#2FB673,#38c983)">1</div><h3>Creezi contul copilului</h3><p>Adaugi câteva detalii despre el și datele lui de logare, apoi despre tine, ca părinte. Tu deții contul.</p></div>
+      <div class="s3"><div class="s3n" style="background:linear-gradient(135deg,#5B4BD6,#6c5cf0)">2</div><h3>Copilul joacă și învață</h3><p>Misiuni zilnice, quiz-uri și ligi. Se distrează, tu stai liniștit — conținutul e verificat.</p></div>
+      <div class="s3"><div class="s3n" style="background:linear-gradient(135deg,#FFB020,#ffd15c)">3</div><h3>Tu urmărești progresul</h3><p>Primești rapoarte clare și alegi planul potrivit. Faci upgrade doar când simți că merită.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="band band-soft" id="faq">
+  <svg class="sec-mascot sm-tr g-bob" viewBox="0 0 200 210" aria-hidden="true"><use href="#growie-dance"/></svg>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow eg"><svg class="icon"><use href="#i-book"/></svg> Întrebări frecvente</span>
+      <h2>Îți răspundem <span class="g">la tot ce te-ai întreba</span></h2>
+    </div>
+    <div class="faq">
+      <details open><summary>Trebuie ca fiul sau fiica mea să fie la un club? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Nu. Copilul tău poate începe azi, complet independent. Urmărești progresul lui la învățare, obiceiuri și consecvență. Dacă în viitor se înscrie la un club, se adaugă automat și partea sportivă — prezență, performanță atletică, evoluție fizică.</div></details>
+      <details><summary>Cine plătește și cine controlează contul? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Tu, părintele. Pentru un copil minor, abonamentul e pe numele tău, iar toate mesajele legate de plată sau upgrade vin la tine — niciodată către copil. Tu deții contul și îl poți gestiona oricând.</div></details>
+      <details><summary>Chiar e gratuit? Ce primesc fără să plătesc? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Da, planul Free e gratuit pentru totdeauna: quiz-uri și lecții zilnice, clasament în echipă, avatar de bază și 3 vieți. Tot conținutul educațional de bază rămâne gratuit — plătești doar pentru extra: competiții cu premii, mai multe vieți, rapoarte detaliate.</div></details>
+      <details><summary>Un copil care plătește mai mult câștigă mai ușor? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Nu. Punctele se dau strict pe corectitudine și viteză. Un plan mai scump oferă acces la mai multe experiențe și vieți pentru jocul zilnic, dar niciun avantaj în clasament. Meritul rămâne singurul care contează.</div></details>
+      <details><summary>Ce sunt „viețile" și de ce aș cumpăra? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Viețile îi permit copilului să continue un quiz chiar dacă a greșit. Se refac singure în timp și fiecare plan vine cu un stoc. Sunt opționale și nu dau puncte — deci nu influențează clasamentul. Le poți cumpăra oricând, indiferent de plan.</div></details>
+      <details><summary>E sigur pentru copilul meu? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Da. Nu există chat public liber, conținutul e curatoriat de specialiști, iar datele copilului sunt protejate. Contul e legat de tine, ca părinte, și tu decizi ce se întâmplă cu el.</div></details>
+      <details><summary>Pot anula oricând? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Oricând, cu un clic, fără penalizări și fără să suni pe nimeni. Rămâi cu accesul plătit până la finalul perioadei, apoi treci automat pe Free.</div></details>
+      <details><summary>Pentru ce vârste este potrivit? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">iGROWth este gândit pentru copii de la 6 la 17 ani. Conținutul și dificultatea se adaptează în funcție de vârsta pe care o alegi la înregistrare, așa că fiecare copil primește misiuni potrivite lui.</div></details>
+      <details><summary>Cât timp petrece copilul zilnic în aplicație? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Puțin și cu sens. O misiune zilnică durează în jur de 5–10 minute — suficient cât să formeze un obicei, fără să devină timp pierdut în fața ecranului. Îl încurajăm să învețe constant, nu ore în șir.</div></details>
+      <details><summary>Pe ce dispozitive funcționează? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Pe telefon și tabletă (iOS și Android), dar și direct din browser, ca aplicație web. Progresul copilului se sincronizează automat, indiferent de dispozitivul pe care se conectează.</div></details>
+      <details><summary>În ce limbă este aplicația? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Implicit în română, cu engleză disponibilă. Poți schimba limba oricând din setări, atât pentru copil, cât și pentru contul tău de părinte.</div></details>
+      <details><summary>Cine creează conținutul educațional? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Lecțiile și quiz-urile sunt construite împreună cu specialiști în nutriție sportivă, mișcare și psihologia sportului. Nimic nu ajunge la copil fără să fie verificat — vrem informație corectă, pe limba lui.</div></details>
+      <details><summary>Ce se întâmplă cu datele copilului meu? <svg class="icon"><use href="#i-plus"/></svg></summary><div class="fa-body">Sunt protejate și folosite doar pentru experiența din aplicație, conform GDPR. Nu vindem date, nu există publicitate țintită către copil, iar tu, ca părinte, poți cere oricând ștergerea contului.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- REFER A FRIEND -->
+<section class="band" id="recomanda">
+  <div class="wrap">
+    <div class="refer reveal">
+      <div>
+        <span class="eyebrow eg"><svg class="icon"><use href="#i-gift"/></svg> Recomandă mai departe</span>
+        <h2>Cunoști un părinte căruia i-ar prinde bine?</h2>
+        <p class="rf-lead">Trimite-i iGROWth și câștigați amândoi. Copilul lui începe cu un cadou de bun-venit, iar tu primești vieți bonus și o lună Campion pentru fiecare prieten care creează cont.</p>
+        <div class="share-box">
+          <button class="share-input" id="copyBtn" type="button" onclick="copyRef()" aria-label="Copiază linkul de invitație">
+            <svg class="icon si-link"><use href="#i-link"/></svg>
+            <span id="refLink">sportiveducat.ro/invit/DAVID-A9F3</span>
+            <svg class="icon si-copy"><use href="#i-copy"/></svg>
+          </button>
+          <button class="btn btn-primary btn-copy" onclick="copyRef()"><svg class="icon"><use href="#i-copy"/></svg> Copiază</button>
+        </div>
+        <div class="share-btns">
+          <button class="share-btn wa" onclick="shareVia('wa')"><svg class="icon"><use href="#i-wa"/></svg> WhatsApp</button>
+          <button class="share-btn fb" onclick="shareVia('fb')"><svg class="icon"><use href="#b-fb"/></svg> Facebook</button>
+          <button class="share-btn ml" onclick="shareVia('ml')"><svg class="icon"><use href="#i-mail"/></svg> Email</button>
+        </div>
+        <div class="rf-note"><svg class="icon"><use href="#i-shield"/></svg> Recompensele se acordă după ce prietenul îți activează contul copilului.</div>
+      </div>
+      <div class="refer-visual">
+        <div class="rv-blob" aria-hidden="true"></div>
+        <div class="gift-card">
+          <div class="gc-top">
+            <div class="gc-ic"><svg class="icon"><use href="#i-gift"/></svg></div>
+            <div><div class="gc-h">Câștigați amândoi</div><div class="gc-sub">Un cadou pentru fiecare, la fiecare invitație</div></div>
+          </div>
+          <div class="gc-rewards">
+            <div class="gc-rw"><svg class="icon"><use href="#i-heart"/></svg><div class="r-b">Prietenul tău</div><div class="r-s">Cadou de bun-venit + 3 vieți</div></div>
+            <div class="gc-rw"><svg class="icon"><use href="#i-crown"/></svg><div class="r-b">Tu primești</div><div class="r-s">1 lună Campion + vieți bonus</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="band">
+  <div class="wrap">
+    <div class="finalcta reveal">
+      <span class="fc-tw" style="top:16%;left:12%;font-size:1.2rem"><svg class="icon"><use href="#i-sparkles"/></svg></span>
+      <span class="fc-tw" style="top:24%;right:14%;font-size:1rem;animation-delay:1s"><svg class="icon"><use href="#i-star"/></svg></span>
+      <span class="fc-tw" style="bottom:20%;left:20%;font-size:.9rem;animation-delay:1.6s"><svg class="icon"><use href="#i-heart"/></svg></span>
+      <span class="eyebrow" style="background:rgba(255,255,255,.14);color:#fff"><svg class="icon"><use href="#i-rocket"/></svg> Începe azi</span>
+      <h2 style="margin-top:16px">Dă-i copilului tău un motiv să învețe zilnic</h2>
+      <p>Creezi contul în două minute, gratuit. Vezi singur cum „trebuie" devine „vreau".</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary glow btn-lg js-reg"><svg class="icon"><use href="#i-sparkles"/></svg> Creează cont pentru copil</button>
+        <a href="#preturi" class="btn btn-ghost btn-lg" style="background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)">Vezi planurile</a>
+      </div>
+      <div class="trust-mini" style="color:#c3cee6;margin-top:20px"><svg class="icon"><use href="#i-lock"/></svg> Fără card la înregistrare · Plătește doar părintele · Anulezi oricând</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD BRIDGE (straddles content -> footer) -->
+<section class="dl-bridge">
+  <div class="wrap">
+    <div class="foot-download reveal">
+      <svg class="fd-mascot g-sway" viewBox="0 0 200 210" aria-hidden="true"><use href="#growie-dance"/></svg>
+      <div class="fd-txt">
+        <h3>Descarcă iGROWth și pornește azi</h3>
+        <p>Gratuit la început. Copilul învață jucându-se, tu vezi progresul.</p>
+      </div>
+      <div class="store-badges fd-badges">
+        <a class="store-badge js-reg" href="#"><svg class="icon"><use href="#b-apple"/></svg><span class="sb-t"><span class="s">Descarcă din</span><span class="b">App Store</span></span></a>
+        <a class="store-badge js-reg" href="#"><svg class="icon"><use href="#b-gplay"/></svg><span class="sb-t"><span class="s">Disponibil pe</span><span class="b">Google Play</span></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-cols">
+      <div class="foot-brand">
+        <a class="logo" href="#top" style="color:#fff"><span class="mark"><svg viewBox="0 0 100 100" class="marksvg" aria-hidden="true"><use href="#growie-mark"/></svg></span> iGROWth</a>
+        <p>Transformăm mișcarea, nutriția și mentalitatea sportivă în obiceiuri de-o viață — prin joc.</p>
+        <span class="foot-se"><svg class="icon"><use href="#i-seed"/></svg> Întreprindere socială · 90% din profit reinvestit</span>
+        <div class="foot-social">
+          <a href="https://www.linkedin.com/company/igrowth-nexus/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg class="icon"><use href="#b-linkedin"/></svg></a>
+          <a href="https://www.instagram.com/igrowth.nexus" target="_blank" rel="noopener" aria-label="Instagram"><svg class="icon"><use href="#b-instagram"/></svg></a>
+          <a href="https://www.facebook.com/profile.php?id=61560906159867" target="_blank" rel="noopener" aria-label="Facebook"><svg class="icon"><use href="#b-fb"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-pages">
+        <h4>Pagini dedicate</h4>
+        <a href="#"><svg class="icon"><use href="#i-heart"/></svg> Pentru părinți</a>
+        <a href="#"><svg class="icon"><use href="#i-zap"/></svg> Pentru sportivi</a>
+        <a href="#"><svg class="icon"><use href="#i-shield"/></svg> Pentru cluburi</a>
+        <a href="#"><svg class="icon"><use href="#i-whistle"/></svg> Pentru antrenori</a>
+      </div>
+      <div class="foot-reach">
+        <h4>Ia legătura</h4>
+        <ul class="foot-contact">
+          <li><svg class="icon"><use href="#i-mail"/></svg> <a href="mailto:contact@sportiveducat.ro">contact@sportiveducat.ro</a></li>
+          <li><svg class="icon"><use href="#i-phone"/></svg> <a href="tel:+40726412932">+40 726 412 932</a></li>
+          <li><svg class="icon"><use href="#i-pin"/></svg> <span>Str. Dragoș Vodă, nr. 8, Cam. 1,<br>Ploiești, România</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot-bottom">
+      <span>© 2026 iGROWth · Sportiv Educat</span>
+      <span class="foot-legal"><a href="#">Termeni</a><a href="#">Confidențialitate</a><a href="#">Cookies</a></span>
+      <span>Făcut cu grijă pentru copiii din România 🇷🇴</span>
+    </div>
+  </div>
+</footer>
+
+<!-- STICKY MOBILE CTA -->
+<div class="mobile-cta">
+  <a href="#preturi" class="btn btn-ghost">Planuri</a>
+  <button class="btn btn-primary js-reg"><svg class="icon"><use href="#i-sparkles"/></svg> Creează cont</button>
+</div>
+
+<!-- FOMO toast -->
+<div class="fomo" id="fomo" role="status" aria-live="polite">
+  <div class="fo-av" id="foAv">A</div>
+  <div class="fo-t"><div class="fo-n" id="foN">Cineva</div><div class="fo-s"><span class="dot"></span> <span id="foS">tocmai s-a înregistrat</span></div></div>
+  <button class="fo-x" onclick="stopFomo()" aria-label="Închide"><svg class="icon" style="font-size:1rem"><use href="#i-x"/></svg></button>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="modal" id="reg" role="dialog" aria-modal="true" aria-label="Creează cont">
+  <div class="modal-backdrop" onclick="closeReg()"></div>
+  <div class="modal-box">
+    <div class="modal-head">
+      <button class="modal-close" onclick="closeReg()" aria-label="Închide"><svg class="icon" style="font-size:1.1rem"><use href="#i-x"/></svg></button>
+      <div class="reg-stepnum" id="regStepNum">Pasul 1 din 3</div>
+      <div class="reg-prog"><div class="rp cur" id="rp1"></div><div class="rp" id="rp2"></div><div class="rp" id="rp3"></div></div>
+    </div>
+    <div class="modal-body">
+      <div class="rstep on" id="rstep1">
+        <h3>Să începem cu campionul tău</h3>
+        <p class="rs-sub">Câteva detalii despre copil și datele cu care se va conecta în aplicație.</p>
+        <div class="card-soft">
+          <div class="cs-h"><svg class="icon"><use href="#i-user"/></svg> Despre copil</div>
+          <div class="field"><label>Prenumele copilului</label><input type="text" placeholder="ex. David" id="childName"></div>
+          <div class="field-row">
+            <div class="field"><label>Vârsta</label><select id="childAge"><option value="">Alege</option><option>6</option><option>7</option><option>8</option><option>9</option><option selected>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option></select></div>
+            <div class="field"><label>Sport preferat</label><select><option value="">Alege</option><option>Fotbal</option><option>Baschet</option><option>Tenis</option><option>Înot</option><option>Atletism</option><option>Gimnastică</option><option>Încă alege</option></select></div>
+          </div>
+          <div class="field" style="margin-bottom:0"><label>Alege un avatar</label>
+            <div class="avatar-pick">
+              <div class="ap sel" style="background:linear-gradient(135deg,#2FB673,#38c983)" onclick="pickAv(this)"><svg class="icon"><use href="#i-rocket"/></svg></div>
+              <div class="ap" style="background:linear-gradient(135deg,#5B4BD6,#6c5cf0)" onclick="pickAv(this)"><svg class="icon"><use href="#i-crown"/></svg></div>
+              <div class="ap" style="background:linear-gradient(135deg,#FFB020,#ffd15c)" onclick="pickAv(this)"><svg class="icon"><use href="#i-trophy"/></svg></div>
+              <div class="ap" style="background:linear-gradient(135deg,#ff5d8f,#ff87ab)" onclick="pickAv(this)"><svg class="icon"><use href="#i-flame"/></svg></div>
+              <div class="ap" style="background:linear-gradient(135deg,#38b6ff,#66d3ff)" onclick="pickAv(this)"><svg class="icon"><use href="#i-zap"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-soft" style="margin-bottom:4px">
+          <div class="cs-h"><svg class="icon"><use href="#i-lock"/></svg> Cont de logare pentru copil</div>
+          <div class="seg">
+            <button type="button" class="on" id="segEmail" onclick="setChildMode('email')">Are email</button>
+            <button type="button" id="segUser" onclick="setChildMode('user')">Fără email</button>
+          </div>
+          <div class="field" id="childEmailField"><label>Emailul copilului</label><input type="email" placeholder="copil@exemplu.ro"></div>
+          <div class="field" id="childUserField" style="display:none"><label>Username <span class="hint">— dacă nu are email</span></label><input type="text" placeholder="ex. david_campion"></div>
+          <div class="field" style="margin-bottom:0"><label>Parolă pentru copil</label><input type="password" placeholder="Minim 6 caractere"></div>
+        </div>
+      </div>
+      <div class="rstep" id="rstep2">
+        <h3>Acum despre tine, părinte</h3>
+        <p class="rs-sub">Tu deții contul și primești rapoartele. Plata, dacă alegi un plan, e mereu pe numele tău.</p>
+        <div class="card-soft">
+          <div class="cs-h"><svg class="icon"><use href="#i-user"/></svg> Datele tale</div>
+          <div class="field"><label>Numele tău</label><input type="text" placeholder="ex. Andreea Popescu"></div>
+          <div class="field"><label>Email</label><input type="email" placeholder="email@exemplu.ro"></div>
+          <div class="field" style="margin-bottom:0"><label>Telefon <span class="hint">(opțional)</span></label><input type="tel" placeholder="07xx xxx xxx"></div>
+        </div>
+        <div class="card-soft" style="margin-bottom:4px">
+          <div class="cs-h"><svg class="icon"><use href="#i-lock"/></svg> Setează-ți parola</div>
+          <div class="field-row" style="margin-bottom:0">
+            <div class="field" style="margin-bottom:0"><label>Parolă</label><input type="password" placeholder="Minim 8 caractere"></div>
+            <div class="field" style="margin-bottom:0"><label>Confirmă parola</label><input type="password" placeholder="Repetă parola"></div>
+          </div>
+        </div>
+        <div class="trust-mini"><svg class="icon"><use href="#i-shield"/></svg> Datele tale sunt protejate. Fără spam, promitem.</div>
+      </div>
+      <div class="rstep" id="rstep3">
+        <h3>Alege cum vrei să începi</h3>
+        <p class="rs-sub">Poți începe gratuit și face upgrade oricând. Fără card acum, dacă alegi Free.</p>
+        <div class="bill-toggle mini">
+          <button type="button" id="rBtnM" class="active" onclick="setRegPeriod('m')">Lunar</button>
+          <button type="button" id="rBtnY" onclick="setRegPeriod('y')">Anual <span class="bill-save">−17%</span></button>
+        </div>
+        <div class="plan-pick">
+          <label class="plan-opt" onclick="pickPlan(this)"><span class="po-check"><svg class="icon"><use href="#i-check"/></svg></span><span class="po-ic" style="background:linear-gradient(135deg,#8a97ad,#b4bece)"><svg class="icon"><use href="#i-sparkles"/></svg></span><span class="po-t"><span class="n">Free</span><span class="d">Quiz-uri, lecții și clasament în echipă</span></span><span class="po-price"><span class="pa">0 €</span><span class="pw">gratuit</span></span></label>
+          <label class="plan-opt" onclick="pickPlan(this)"><span class="po-check"><svg class="icon"><use href="#i-check"/></svg></span><span class="po-ic" style="background:linear-gradient(135deg,#2FB673,#38c983)"><svg class="icon"><use href="#i-zap"/></svg></span><span class="po-t"><span class="n">Start</span><span class="d">Mai multe vieți + raport lunar</span></span><span class="po-price"><span class="pa" data-m="5,99 €" data-y="59,99 €">5,99 €</span><span class="pw" data-m="≈ 1,38 €/săpt" data-y="≈ 1,15 €/săpt">≈ 1,38 €/săpt</span></span></label>
+          <label class="plan-opt sel" onclick="pickPlan(this)"><span class="po-check"><svg class="icon"><use href="#i-check"/></svg></span><span class="po-ic" style="background:linear-gradient(135deg,#5B4BD6,#6c5cf0)"><svg class="icon"><use href="#i-crown"/></svg></span><span class="po-t"><span class="n">Campion <span class="tag">Recomandat</span></span><span class="d">Competiții cu premii + rapoarte</span></span><span class="po-price"><span class="pa" data-m="9,99 €" data-y="99,99 €">9,99 €</span><span class="pw" data-m="≈ 2,31 €/săpt" data-y="≈ 1,92 €/săpt">≈ 2,31 €/săpt</span></span></label>
+          <label class="plan-opt" onclick="pickPlan(this)"><span class="po-check"><svg class="icon"><use href="#i-check"/></svg></span><span class="po-ic" style="background:linear-gradient(135deg,#FFB020,#ff5d8f)"><svg class="icon"><use href="#i-gem"/></svg></span><span class="po-t"><span class="n">Elită</span><span class="d">Tot ce oferim, la nivel maxim</span></span><span class="po-price"><span class="pa" data-m="18,99 €" data-y="189,99 €">18,99 €</span><span class="pw" data-m="≈ 4,38 €/săpt" data-y="≈ 3,65 €/săpt">≈ 4,38 €/săpt</span></span></label>
+        </div>
+        <div class="trust-mini" style="margin-top:14px"><svg class="icon"><use href="#i-lock"/></svg> Plătește doar părintele · Anulezi oricând</div>
+      </div>
+      <div class="rstep" id="rstep4">
+        <div style="text-align:center;padding:10px 0 6px">
+          <div class="reg-done-ic"><svg class="icon"><use href="#i-check"/></svg></div>
+          <h3 style="text-align:center">Gata, contul e pregătit! 🎉</h3>
+          <p class="rs-sub" style="text-align:center;max-width:34ch;margin-inline:auto" id="doneMsg">Campionul tău e gata de prima misiune. Îți trimitem pe email pașii de acces.</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot" id="regFoot">
+      <button class="btn btn-ghost" id="regBack" onclick="regNext(-1)" style="display:none">Înapoi</button>
+      <button class="btn btn-primary btn-block" id="regFwd" onclick="regNext(1)">Continuă</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var prog=document.getElementById('progress');
+window.addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-window.innerHeight;prog.style.width=(h>0?(window.scrollY/h*100):0)+'%'},{passive:true});
+
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+
+var sio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var els=document.querySelectorAll('#storySteps .step');var i=[].indexOf.call(els,e.target);e.target.style.transitionDelay=(i%3*0.08)+'s';e.target.classList.add('in');sio.unobserve(e.target)}})},{threshold:.2});
+document.querySelectorAll('#storySteps .step').forEach(function(el){sio.observe(el)});
+
+function fmt(n){return n.toLocaleString('ro-RO')}
+var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var el=e.target,to=+el.getAttribute('data-to'),suf=el.getAttribute('data-suf')||'',t0=null,dur=1400;
+  function tick(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/dur,1);var val=Math.floor((1-Math.pow(1-p,3))*to);el.textContent=fmt(val)+suf;if(p<1)requestAnimationFrame(tick)}
+  requestAnimationFrame(tick);cio.unobserve(el)}})},{threshold:.6});
+document.querySelectorAll('.sn[data-to]').forEach(function(el){cio.observe(el)});
+
+function setPeriod(p){var m=p==='m';
+  document.getElementById('btnMonthly').classList.toggle('active',m);
+  document.getElementById('btnYearly').classList.toggle('active',!m);
+  document.querySelectorAll('.pprice .amt[data-m]').forEach(function(el){el.textContent=el.getAttribute(m?'data-m':'data-y')});
+  document.querySelectorAll('.pprice .per[data-m]').forEach(function(el){el.textContent=el.getAttribute(m?'data-m':'data-y')});
+  document.querySelectorAll('.week[data-mw]').forEach(function(el){el.textContent=el.getAttribute(m?'data-mw':'data-yw')});
+}
+function setRegPeriod(p){var m=p==='m';
+  document.getElementById('rBtnM').classList.toggle('active',m);
+  document.getElementById('rBtnY').classList.toggle('active',!m);
+  document.querySelectorAll('.plan-opt .pa[data-m]').forEach(function(el){el.textContent=el.getAttribute(m?'data-m':'data-y')});
+  document.querySelectorAll('.plan-opt .pw[data-m]').forEach(function(el){el.textContent=el.getAttribute(m?'data-m':'data-y')});
+}
+
+var TESTI=[
+  {n:'Andreea M.',r:'mamă, David 11 ani',c:'#2FB673',t:'A trecut de la „nu vreau apă" la „am băut deja 6 pahare, uite în app". Mi se pare incredibil.',p:'b-google',pn:'Google'},
+  {n:'Robert P.',r:'tată, Maria 9 ani',c:'#5B4BD6',t:'Se trezește și primul lucru pe care-l face e „misiunea de azi". Și învață lucruri utile, nu pierde timpul.',p:'b-fb',pn:'Facebook'},
+  {n:'Cristina D.',r:'mamă, 2 copii',c:'#FFB020',t:'Planul de familie ne-a convins. Amândoi copiii concurează între ei, sănătos, și eu văd totul într-un loc.',p:'b-apple',pn:'App Store'},
+  {n:'Mihai V.',r:'tată, Luca 13 ani',c:'#ff5d8f',t:'Îmi place că nu poți cumpăra locul în clasament. Luca e mândru că a urcat pe bune, prin muncă.',p:'b-gplay',pn:'Google Play'},
+  {n:'Elena T.',r:'mamă, Sofia 10 ani',c:'#38b6ff',t:'Rapoartele lunare sunt exact ce-mi trebuia. Văd negru pe alb la ce e constantă și unde mai are de lucru.',p:'b-google',pn:'Google'},
+  {n:'Andrei S.',r:'antrenor & tată',c:'#2FB673',t:'Ca antrenor recomand aplicația părinților, ca tată o folosesc acasă. Copiii chiar învață despre corpul lor.',p:'b-apple',pn:'App Store'}
+];
+function starRow(){var s='';for(var i=0;i<5;i++)s+='<svg class="icon"><use href="#i-star"/></svg>';return s}
+function tcard(o){return '<div class="tcard"><div class="tc-head"><div class="tc-av" style="background:linear-gradient(135deg,'+o.c+',#ffffff55)">'+o.n.charAt(0)+'</div><div class="tc-who"><div class="n">'+o.n+'</div><div class="r">'+o.r+'</div></div></div><div class="tc-stars">'+starRow()+'</div><p>“'+o.t+'”</p><div class="tc-plat"><svg class="icon"><use href="#'+o.p+'"/></svg> Recenzie pe '+o.pn+'</div></div>'}
+(function(){var track=document.getElementById('mtrack');var html=TESTI.map(tcard).join('');track.innerHTML=html+html})();
+
+/* mobile nav */
+function openMnav(){document.getElementById('mnav').classList.add('open');document.body.style.overflow='hidden'}
+function closeMnav(){document.getElementById('mnav').classList.remove('open');document.body.style.overflow=''}
+
+/* register modal */
+var regStep=1;
+function openReg(e){if(e)e.preventDefault();regStep=1;renderReg();document.getElementById('reg').classList.add('open');document.body.style.overflow='hidden'}
+function closeReg(){document.getElementById('reg').classList.remove('open');document.body.style.overflow=''}
+function renderReg(){
+  for(var i=1;i<=4;i++){document.getElementById('rstep'+i).classList.toggle('on',i===regStep)}
+  document.getElementById('rp1').className='rp '+(regStep>1?'done':(regStep===1?'cur':''));
+  document.getElementById('rp2').className='rp '+(regStep>2?'done':(regStep===2?'cur':''));
+  document.getElementById('rp3').className='rp '+(regStep>3?'done':(regStep===3?'cur':''));
+  var num=document.getElementById('regStepNum'),fwd=document.getElementById('regFwd'),back=document.getElementById('regBack'),foot=document.getElementById('regFoot');
+  if(regStep<=3){num.textContent='Pasul '+regStep+' din 3';num.style.display='';
+    back.style.display=regStep>1?'':'none';fwd.style.display='';
+    fwd.textContent=regStep===3?'Creează contul':'Continuă';
+    if(regStep>1)fwd.classList.remove('btn-block');else fwd.classList.add('btn-block');
+    foot.style.display='';
+  } else {num.style.display='none';foot.style.display='none';
+    var cn=(document.getElementById('childName').value||'Campionul tău');
+    document.getElementById('doneMsg').textContent=cn+' e gata de prima misiune. Îți trimitem pe email pașii de acces.';
+  }
+}
+function regNext(d){var next=regStep+d;if(next<1)return;if(next>4){closeReg();return}regStep=next;renderReg();document.querySelector('.modal-body').scrollTop=0}
+function pickAv(el){el.parentNode.querySelectorAll('.ap').forEach(function(a){a.classList.remove('sel')});el.classList.add('sel')}
+function pickPlan(el){el.parentNode.querySelectorAll('.plan-opt').forEach(function(a){a.classList.remove('sel')});el.classList.add('sel')}
+function setChildMode(m){var em=m==='email';
+  document.getElementById('segEmail').classList.toggle('on',em);
+  document.getElementById('segUser').classList.toggle('on',!em);
+  document.getElementById('childEmailField').style.display=em?'':'none';
+  document.getElementById('childUserField').style.display=em?'none':'';
+}
+document.querySelectorAll('.js-reg').forEach(function(b){b.addEventListener('click',openReg)});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeReg();closeMnav()}});
+
+/* refer: copy + share */
+function copyRef(){
+  var txt='https://'+document.getElementById('refLink').textContent.trim();
+  var box=document.getElementById('copyBtn'),dbtn=document.querySelector('.btn-copy');
+  function ok(){
+    box.classList.add('copied');
+    var o=dbtn?dbtn.innerHTML:'';if(dbtn)dbtn.innerHTML='<svg class="icon"><use href="#i-check"/></svg> Copiat!';
+    setTimeout(function(){box.classList.remove('copied');if(dbtn)dbtn.innerHTML=o},1800);
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,ok)}
+  else{var t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(t);ok()}
+}
+function shareVia(k){
+  var url='https://'+document.getElementById('refLink').textContent.trim();
+  var msg='Am găsit iGROWth — copilul învață mișcare, nutriție și mentalitate sportivă jucându-se. Îți las invitația mea: ';
+  var u=encodeURIComponent(url),m=encodeURIComponent(msg);
+  var link=k==='wa'?'https://wa.me/?text='+m+u
+    :k==='fb'?'https://www.facebook.com/sharer/sharer.php?u='+u
+    :'mailto:?subject='+encodeURIComponent('Cred că îți place iGROWth')+'&body='+m+u;
+  window.open(link,'_blank','noopener');
+}
+
+/* FOMO — simulated social proof.
+   NOTE: for production, feed these from REAL signup/download events, not fabricated ones. */
+var FOMO=[
+  {n:'Andreea din București',s:'tocmai a creat cont pentru copil',c:'#2FB673'},
+  {n:'Un părinte din Cluj',s:'a descărcat aplicația acum câteva minute',c:'#5B4BD6'},
+  {n:'Familia Popescu',s:'a activat planul Campion',c:'#FFB020'},
+  {n:'Un tată din Iași',s:'a înscris 2 copii în plan de familie',c:'#ff5d8f'},
+  {n:'Maria din Timișoara',s:'tocmai s-a înregistrat',c:'#38b6ff'},
+  {n:'Un părinte din Ploiești',s:'a recomandat iGROWth unui prieten',c:'#2FB673'},
+  {n:'Andrei din Brașov',s:'a descărcat aplicația din App Store',c:'#5B4BD6'}
+];
+var fomoOn=true,fomoI=0,fomoTimer=null;
+var fomoEl=document.getElementById('fomo');
+function showFomo(){
+  if(!fomoOn)return;
+  var o=FOMO[fomoI%FOMO.length];fomoI++;
+  document.getElementById('foN').textContent=o.n;
+  document.getElementById('foS').textContent=o.s;
+  var av=document.getElementById('foAv');av.textContent=o.n.charAt(0);av.style.background='linear-gradient(135deg,'+o.c+',#ffffff55)';
+  fomoEl.classList.add('show');
+  fomoTimer=setTimeout(function(){fomoEl.classList.remove('show');fomoTimer=setTimeout(showFomo,7000+Math.floor(fomoI%4)*1500)},5200);
+}
+function stopFomo(){fomoOn=false;fomoEl.classList.remove('show');if(fomoTimer)clearTimeout(fomoTimer)}
+var mqReduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(!mqReduce)setTimeout(showFomo,6000);
+</script>
+</body>
+</html>

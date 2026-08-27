@@ -1,0 +1,159 @@
+<div class="modal" id="reg" role="dialog" aria-modal="true" aria-labelledby="regTitle">
+  <div class="modal-backdrop"></div>
+  <div class="modal-box">
+    <form id="regForm" data-lead-type="athlete" novalidate>
+      <div class="modal-head">
+        <button type="button" class="modal-close" onclick="closeReg()" aria-label="Închide"><svg class="icon" style="font-size:1.1rem" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
+        <div class="reg-steps" id="regDots"></div>
+        <div class="reg-stepnum" id="regStepNum">Pasul 1</div>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="rstep on" data-step="age">
+          <h3 id="regTitle">Salut! Câți ani ai?</h3>
+          <p class="rs-sub">Începem cu vârsta ta — în funcție de ea, adaptăm contul și conținutul.</p>
+          <div class="field">
+            <label for="regFirst">Prenume <span class="hint">*</span></label>
+            <input type="text" id="regFirst" name="first_name" required autocomplete="given-name" placeholder="ex. David">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="regAge">Vârsta <span class="hint">*</span></label>
+            <select id="regAge" name="age" required>
+              <option value="">Alege vârsta</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option selected>10</option>
+                            <option>11</option>
+                            <option>12</option>
+                            <option>13</option>
+                            <option>14</option>
+                            <option>15</option>
+                            <option>16</option>
+                            <option>17</option>
+                            <option>18</option>
+                            <option>19</option>
+                            <option value="20">20+</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rstep" data-step="account">
+          <h3>Contul tău de sportiv</h3>
+          <p class="rs-sub">Cu ce te conectezi în aplicație. Poți folosi un email sau un username.</p>
+          <div class="field">
+            <label for="regEmail">Email <span class="hint">— sau lasă gol și folosește username</span></label>
+            <input type="email" id="regEmail" name="email" autocomplete="email" placeholder="ex. david@email.com">
+          </div>
+          <div class="field">
+            <label for="regUser">Username <span class="hint">— dacă nu ai email</span></label>
+            <input type="text" id="regUser" name="username" autocomplete="username" placeholder="ex. david_campion">
+          </div>
+          <div class="frow2">
+            <div class="field">
+              <label for="regPass">Parolă <span class="hint">*</span></label>
+              <input type="password" id="regPass" name="password" required minlength="6" autocomplete="new-password" placeholder="Minim 6 caractere">
+            </div>
+            <div class="field">
+              <label for="regPass2">Confirmă <span class="hint">*</span></label>
+              <input type="password" id="regPass2" name="password_confirm" required minlength="6" autocomplete="new-password" placeholder="Repetă parola">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="regSport">Sportul tău <span class="hint">— opțional</span></label>
+            <select id="regSport" name="sport">
+              <option value="">Alege sportul</option>
+              <option>Fotbal</option><option>Baschet</option><option>Tenis</option><option>Înot</option><option>Atletism</option><option>Gimnastică</option><option>Volei</option><option>Handbal</option><option>Altul</option>            </select>
+          </div>
+        </div>
+
+        <div class="rstep" data-step="parent">
+          <h3>Datele părintelui sau tutorelui</h3>
+          <p class="rs-sub">Ai sub 18 ani, așa că avem nevoie de un adult care să aprobe contul.</p>
+          <p class="minor-note"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg> <span>Toate mesajele despre plată și abonament merg către părinte — niciodată către tine. Contul rămâne sub supravegherea lui.</span></p>
+          <div class="parent-box">
+            <div class="pb-h"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-heart"/></svg> Părinte / tutore legal</div>
+            <div class="field">
+              <label for="pgName">Nume și prenume <span class="hint">*</span></label>
+              <input type="text" id="pgName" name="guardian_name" autocomplete="name" placeholder="ex. Andreea Popescu">
+            </div>
+            <div class="frow2">
+              <div class="field">
+                <label for="pgEmail">Email părinte <span class="hint">*</span></label>
+                <input type="email" id="pgEmail" name="guardian_email" autocomplete="email" placeholder="parinte@email.com">
+              </div>
+              <div class="field">
+                <label for="pgPhone">Telefon</label>
+                <input type="tel" id="pgPhone" name="guardian_phone" autocomplete="tel" placeholder="07xx xxx xxx">
+              </div>
+            </div>
+            <label class="check" style="margin-bottom:0">
+              <input type="checkbox" name="guardian_consent" value="1">
+              <span>Sunt părintele/tutorele și sunt de acord ca acest copil să folosească iGROWth.</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="rstep" data-step="plan">
+          <h3>Alege planul de start</h3>
+          <p class="rs-sub">Poți începe gratuit și schimba oricând. Fără card la înscriere.</p>
+          <div class="plan-pick" id="planPick" role="radiogroup" aria-label="Plan">
+            <label class="plan-opt sel" data-plan="Free">
+              <input type="radio" name="plan" value="free" class="visually-hidden" checked>
+              <span class="po-ic" style="background:linear-gradient(135deg,#9fb0cf,#7d8fb3)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sparkles"/></svg></span>
+              <span class="po-t"><span class="n">Free</span><span class="d">Quiz-uri zilnice, clasament, 3 vieți</span></span>
+              <span class="po-price"><span class="pa">0 €</span></span>
+              <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
+            </label>
+            <label class="plan-opt" data-plan="Start">
+              <input type="radio" name="plan" value="start" class="visually-hidden">
+              <span class="po-ic" style="background:linear-gradient(135deg,#2FB673,#25a566)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg></span>
+              <span class="po-t"><span class="n">Start</span><span class="d">5 vieți, raport lunar, fără reclame</span></span>
+              <span class="po-price"><span class="pa">5,99 €</span><span class="pw">/lună</span></span>
+              <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
+            </label>
+            <label class="plan-opt" data-plan="Campion">
+              <input type="radio" name="plan" value="campion" class="visually-hidden">
+              <span class="po-ic" style="background:linear-gradient(135deg,#7c6cff,#5B4BD6)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-crown"/></svg></span>
+              <span class="po-t"><span class="n">Campion <span class="tag">Popular</span></span><span class="d">Competiții cu premii, 15 vieți</span></span>
+              <span class="po-price"><span class="pa">9,99 €</span><span class="pw">/lună</span></span>
+              <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
+            </label>
+            <label class="plan-opt" data-plan="Elită">
+              <input type="radio" name="plan" value="elita" class="visually-hidden">
+              <span class="po-ic" style="background:linear-gradient(135deg,#FFB020,#ff8f3c)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-gem"/></svg></span>
+              <span class="po-t"><span class="n">Elită</span><span class="d">Tot, la nivel maxim, 60 vieți</span></span>
+              <span class="po-price"><span class="pa">18,99 €</span><span class="pw">/lună</span></span>
+              <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
+            </label>
+          </div>
+          <label class="check" style="margin-top:16px">
+            <input type="checkbox" name="terms_accepted" value="1" required>
+            <span>Sunt de acord cu <a href="/termeni" target="_blank" rel="noopener" style="color:var(--green2);font-weight:700">Termenii</a> și <a href="/confidentialitate" target="_blank" rel="noopener" style="color:var(--green2);font-weight:700">Politica de confidențialitate</a>.</span>
+          </label>
+
+          <div class="visually-hidden" aria-hidden="true">
+            <label for="athHp">Nu completa acest câmp</label>
+            <input type="text" id="athHp" name="website_confirm" tabindex="-1" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="rstep" data-step="done">
+          <div class="reg-done">
+            <div class="rd-ic"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></div>
+            <h3>Gata, ești în joc! 🎉</h3>
+            <p class="rs-sub" style="margin-bottom:0">Ți-am pregătit contul. Deschide aplicația, conectează-te și strânge primul XP chiar azi.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-foot" id="regFoot">
+        <button type="button" class="btn btn-ghost" id="regBack" onclick="regNav(-1)" style="display:none">Înapoi</button>
+        <button type="button" class="btn btn-primary" id="regFwd" onclick="regNav(1)">Continuă</button>
+      </div>
+    </form>
+  </div>
+</div>

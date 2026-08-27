@@ -1,0 +1,26 @@
+# Cloudflare Pages · antete HTTP
+# Echivalentul secțiunilor 5 și 7 din .htaccess (care nu se aplică pe Pages).
+# Se copiază în dist/ de către _tools/5-static.php.
+#
+# Notă: HSTS nu se setează de aici, ci din zonă:
+#   Cloudflare → SSL/TLS → Edge Certificates → HTTP Strict Transport Security
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; img-src 'self' data:; media-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; upgrade-insecure-requests
+
+# Asset-urile sunt versionate prin ?v=<mtime> din ig_asset(), deci pot fi
+# cache-uite pe termen lung. HTML-ul rămâne pe implicitul Pages
+# (public, max-age=0, must-revalidate).
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/site.webmanifest
+  Cache-Control: public, max-age=604800
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: noindex

@@ -1,0 +1,19 @@
+# rezultatul build-ului — se regenerează cu `npm run build`
+dist/
+
+# artefacte intermediare ale scripturilor din _tools/
+_tools/.out/
+
+# dependințe (proiectul nu are niciuna, dar npm creează folderul)
+node_modules/
+
+# mediu / editor / sistem
+.env
+.env.*
+.DS_Store
+Thumbs.db
+*.log
+*.bak
+*.orig
+.vscode/
+.idea/

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="iGROWth">
+  <title>iGROWth</title>
+  <defs>
+    <linearGradient id="igBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f7fc"/>
+      <stop offset="1" stop-color="#e7f7ef"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="104" fill="url(#igBg)"/>
+  <g transform="translate(256 262) scale(3.6) translate(-50 -52)">
+    <path d="M50 26 C49 16 49 11 50 6" fill="none" stroke="#1f9d5f" stroke-width="5" stroke-linecap="round"/>
+    <path d="M50 16 C42 9 31 11 30 19 C39 24 48 22 50 16 Z" fill="#43c98a"/>
+    <path d="M50 19 C58 11 69 13 70 21 C61 26 52 24 50 19 Z" fill="#5fd79c"/>
+    <circle cx="50" cy="56" r="36" fill="#2FB673"/>
+    <ellipse cx="50" cy="64" rx="20" ry="22" fill="#FFE7C2"/>
+    <ellipse cx="39" cy="50" rx="11" ry="12" fill="#fff"/>
+    <ellipse cx="61" cy="50" rx="11" ry="12" fill="#fff"/>
+    <circle cx="42" cy="53" r="6" fill="#16233f"/>
+    <circle cx="58" cy="53" r="6" fill="#16233f"/>
+    <circle cx="44.5" cy="50.5" r="2" fill="#fff"/>
+    <circle cx="60.5" cy="50.5" r="2" fill="#fff"/>
+    <circle cx="31" cy="63" r="5" fill="#ff9db3" opacity=".55"/>
+    <circle cx="69" cy="63" r="5" fill="#ff9db3" opacity=".55"/>
+    <path d="M41 62 Q50 70 59 62 Q57 76 50 77 Q43 76 41 62 Z" fill="#8a2b4a"/>
+    <path d="M46 71 Q50 75 54 71 Q52 74 50 74 Q48 74 46 71 Z" fill="#ff7a9c"/>
+  </g>
+</svg>

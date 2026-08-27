@@ -1,0 +1,15 @@
+{
+  "name": "sportiveducat",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Site de prezentare iGROWth (sportiveducat.ro) — generator static, fără dependințe.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs && node _tools/serve.mjs",
+    "verify": "node _tools/4-verify.mjs http://localhost:8099"
+  }
+}

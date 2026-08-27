@@ -1,0 +1,17 @@
+# iGROWth · sportiveducat.ro
+# Site de prezentare. Aplicatia (app.sportiveducat.ro) are propriul robots.txt.
+
+User-agent: *
+Allow: /
+
+# fisiere interne — nu au ce cauta in index
+Disallow: /includes/
+Disallow: /_sursa/
+Disallow: /_tools/
+Disallow: /docs/
+Disallow: /404.php
+Disallow: /*?v=
+
+# paginile legale sunt marcate noindex din meta pana la publicarea textului final
+
+Sitemap: https://sportiveducat.ro/sitemap.xml

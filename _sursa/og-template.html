@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<title>Generator imagini Open Graph · iGROWth</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{background:#20242c;font-family:'Poppins',system-ui,sans-serif;padding:24px;color:#fff}
+  .hint{max-width:1200px;margin:0 auto 20px;font-size:.9rem;line-height:1.6;color:#c9d2e4}
+  .hint code{background:#333a46;padding:.15em .45em;border-radius:5px;font-size:.85em}
+  .hint a{color:#8ff0bd}
+
+  /* --- cardul de 1200x630; asta se capturează --- */
+  .og{
+    width:1200px;height:630px;position:relative;overflow:hidden;margin:0 auto;
+    background:
+      radial-gradient(760px 520px at 12% 14%, var(--accent), transparent 62%),
+      radial-gradient(680px 480px at 92% 92%, #0E2A5C, transparent 60%),
+      radial-gradient(560px 420px at 82% 8%, rgba(91,75,214,.55), transparent 62%),
+      linear-gradient(150deg,#123a7a,#081a3c);
+    display:grid;grid-template-columns:auto 1fr;align-items:center;gap:56px;padding:0 72px;
+  }
+  .og::after{content:"";position:absolute;left:0;right:0;bottom:0;height:14px;background:var(--accent)}
+  .og .rings{position:absolute;left:250px;top:50%;transform:translate(-50%,-50%);width:640px;height:640px;
+    background:repeating-radial-gradient(circle at center,rgba(255,255,255,.05) 0 1px,transparent 1px 62px)}
+  .mascot{width:300px;height:auto;position:relative;filter:drop-shadow(0 24px 40px rgba(0,0,0,.35))}
+  .copy{position:relative;min-width:0}
+  .kicker{display:inline-flex;align-items:center;gap:.5em;font-size:.9rem;font-weight:800;letter-spacing:.14em;
+    text-transform:uppercase;color:#8ff0bd;background:rgba(47,182,115,.16);border:1px solid rgba(47,182,115,.32);
+    padding:.5em 1.1em;border-radius:999px;margin-bottom:22px}
+  .title{font-size:60px;line-height:1.05;font-weight:900;letter-spacing:-.02em;text-wrap:balance}
+  .title em{font-style:normal;color:var(--accent);filter:brightness(1.25)}
+  .sub{margin-top:20px;font-size:24px;font-weight:600;color:#c3cee6;line-height:1.4;max-width:26ch}
+  .brand{position:absolute;right:72px;bottom:46px;display:flex;align-items:center;gap:12px;
+    font-size:26px;font-weight:800;color:#fff;opacity:.92}
+  .brand svg{width:44px;height:44px}
+</style>
+</head>
+<body>
+
+<p class="hint">
+  <b>Cum produci imaginile Open Graph finale.</b><br>
+  1. Editează câmpurile de mai jos direct în pagină (sunt <code>contenteditable</code>) sau schimbă
+  atributul <code>data-accent</code> de pe <code>.og</code>.<br>
+  2. Capturează exact zona de 1200×630. Cu Chrome headless:
+  <code>chrome --headless=new --window-size=1200,630 --screenshot=og.png --default-background-color=00000000 "file:///…/og-template.html"</code>
+  (ascunde întâi acest paragraf), sau folosește DevTools → Elements → click dreapta pe
+  <code>.og</code> → <em>Capture node screenshot</em>.<br>
+  3. Salvează ca <code>assets/img/og/&lt;pagina&gt;.png</code> — numele trebuie să fie cheia paginii:
+  <code>acasa</code>, <code>parinti</code>, <code>sportivi</code>, <code>cluburi</code>, <code>antrenori</code>, <code>default</code>.<br>
+  Culori de accent recomandate: acasă <code>#2FB673</code> · părinți <code>#ff5d8f</code> ·
+  sportivi <code>#38b6ff</code> · cluburi <code>#5B4BD6</code> · antrenori <code>#FFB020</code>.
+</p>
+
+<div class="og" style="--accent:#ff5d8f">
+  <div class="rings"></div>
+
+  <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M50 26 C49 16 49 11 50 6" fill="none" stroke="#1f9d5f" stroke-width="5" stroke-linecap="round"/>
+    <path d="M50 16 C42 9 31 11 30 19 C39 24 48 22 50 16 Z" fill="#43c98a"/>
+    <path d="M50 19 C58 11 69 13 70 21 C61 26 52 24 50 19 Z" fill="#5fd79c"/>
+    <circle cx="50" cy="56" r="36" fill="#2FB673"/>
+    <ellipse cx="50" cy="64" rx="20" ry="22" fill="#FFE7C2"/>
+    <ellipse cx="39" cy="50" rx="11" ry="12" fill="#fff"/><ellipse cx="61" cy="50" rx="11" ry="12" fill="#fff"/>
+    <circle cx="42" cy="53" r="6" fill="#16233f"/><circle cx="58" cy="53" r="6" fill="#16233f"/>
+    <circle cx="44.5" cy="50.5" r="2" fill="#fff"/><circle cx="60.5" cy="50.5" r="2" fill="#fff"/>
+    <circle cx="31" cy="63" r="5" fill="#ff9db3" opacity=".55"/><circle cx="69" cy="63" r="5" fill="#ff9db3" opacity=".55"/>
+    <path d="M41 62 Q50 70 59 62 Q57 76 50 77 Q43 76 41 62 Z" fill="#8a2b4a"/>
+    <path d="M46 71 Q50 75 54 71 Q52 74 50 74 Q48 74 46 71 Z" fill="#ff7a9c"/>
+  </svg>
+
+  <div class="copy">
+    <span class="kicker" contenteditable>Pentru părinți</span>
+    <div class="title" contenteditable>Crește un copil sănătos și motivat, <em>ca la joacă.</em></div>
+    <div class="sub" contenteditable>Tu vezi progresul. El vede un joc pe care îl deschide singur.</div>
+  </div>
+
+  <div class="brand">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" fill="rgba(255,255,255,.12)"/>
+      <circle cx="50" cy="54" r="30" fill="#2FB673"/>
+      <ellipse cx="50" cy="60" rx="17" ry="18" fill="#FFE7C2"/>
+      <ellipse cx="41" cy="48" rx="9" ry="10" fill="#fff"/><ellipse cx="59" cy="48" rx="9" ry="10" fill="#fff"/>
+      <circle cx="43" cy="51" r="5" fill="#16233f"/><circle cx="57" cy="51" r="5" fill="#16233f"/>
+      <path d="M43 59 Q50 66 57 59 Q55 71 50 72 Q45 71 43 59 Z" fill="#8a2b4a"/>
+    </svg>
+    sportiveducat.ro
+  </div>
+</div>
+
+</body>
+</html>

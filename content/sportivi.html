@@ -296,13 +296,13 @@
           <li><svg class="icon"><use href="#i-check"/></svg> Avatar de bază</li>
           <li class="off"><svg class="icon"><use href="#i-x"/></svg> Competiții cu premii reale</li>
         </ul>
-        <button class="btn btn-ghost btn-block js-reg">Începe gratuit</button>
+        <button class="btn btn-ghost btn-block js-reg" data-plan="free">Începe gratuit</button>
       </div>
       <div class="pcard">
         <div class="pname"><svg class="icon" style="color:var(--green)"><use href="#i-zap"/></svg> Start</div>
         <div class="pdesc">Primul pas serios spre progres.</div>
-        <div class="pprice"><span class="amt" data-m="5,99 €" data-y="59,99 €">5,99 €</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
-        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="≈ 1,38 €/săptămână" data-yw="≈ 1,15 €/săptămână">≈ 1,38 €/săptămână</span></div>
+        <div class="pprice"><span class="amt" data-m="{{price:start:m}}" data-y="{{price:start:y}}">{{price:start:m}}</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
+        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="{{week:start:m}}" data-yw="{{week:start:y}}">{{week:start:m}}</span></div>
         <ul>
           <li><svg class="icon"><use href="#i-check"/></svg> Tot ce e în Free</li>
           <li><svg class="icon"><use href="#i-check"/></svg> 5 vieți, regenerare mai rapidă</li>
@@ -310,14 +310,14 @@
           <li><svg class="icon"><use href="#i-check"/></svg> Fără reclame</li>
           <li class="off"><svg class="icon"><use href="#i-x"/></svg> Competiții cu premii reale</li>
         </ul>
-        <button class="btn btn-ghost btn-block js-reg">Alege Start</button>
+        <button class="btn btn-ghost btn-block js-reg" data-plan="start">Alege Start</button>
       </div>
       <div class="pcard pop">
         <span class="pop-tag"><svg class="icon"><use href="#i-star"/></svg> Cel mai ales</span>
         <div class="pname"><svg class="icon" style="color:var(--purple)"><use href="#i-crown"/></svg> Campion</div>
         <div class="pdesc">Experiența completă pentru un copil ambițios.</div>
-        <div class="pprice"><span class="amt" data-m="9,99 €" data-y="99,99 €">9,99 €</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
-        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="≈ 2,31 €/săptămână" data-yw="≈ 1,92 €/săptămână">≈ 2,31 €/săptămână</span></div>
+        <div class="pprice"><span class="amt" data-m="{{price:campion:m}}" data-y="{{price:campion:y}}">{{price:campion:m}}</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
+        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="{{week:campion:m}}" data-yw="{{week:campion:y}}">{{week:campion:m}}</span></div>
         <ul>
           <li><svg class="icon"><use href="#i-check"/></svg> Tot ce e în Start</li>
           <li><svg class="icon"><use href="#i-check"/></svg> 15 vieți, regenerare rapidă</li>
@@ -325,13 +325,13 @@
           <li><svg class="icon"><use href="#i-check"/></svg> Clasamente de club & raport detaliat</li>
           <li><svg class="icon"><use href="#i-check"/></svg> Bonus lunar de avatar</li>
         </ul>
-        <button class="btn btn-purple btn-block js-reg">Alege Campion</button>
+        <button class="btn btn-purple btn-block js-reg" data-plan="campion">Alege Campion</button>
       </div>
       <div class="pcard">
         <div class="pname"><svg class="icon" style="color:var(--amber)"><use href="#i-gem"/></svg> Elită</div>
         <div class="pdesc">Tot ce oferim, la nivel maxim.</div>
-        <div class="pprice"><span class="amt" data-m="18,99 €" data-y="189,99 €">18,99 €</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
-        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="≈ 4,38 €/săptămână" data-yw="≈ 3,65 €/săptămână">≈ 4,38 €/săptămână</span></div>
+        <div class="pprice"><span class="amt" data-m="{{price:elite:m}}" data-y="{{price:elite:y}}">{{price:elite:m}}</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
+        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="{{week:elite:m}}" data-yw="{{week:elite:y}}">{{week:elite:m}}</span></div>
         <ul>
           <li><svg class="icon"><use href="#i-check"/></svg> Tot ce e în Campion</li>
           <li><svg class="icon"><use href="#i-check"/></svg> 60 vieți, regenerare la 5 min</li>
@@ -339,7 +339,7 @@
           <li><svg class="icon"><use href="#i-check"/></svg> Conținut exclusiv cu sportivi</li>
           <li><svg class="icon"><use href="#i-check"/></svg> Rapoarte avansate & acces prioritar</li>
         </ul>
-        <button class="btn btn-ghost btn-block js-reg">Alege Elită</button>
+        <button class="btn btn-ghost btn-block js-reg" data-plan="elite">Alege Elită</button>
       </div>
     </div>
     <div class="family rev">

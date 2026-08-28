@@ -14,6 +14,13 @@ export const SITE = {
   /** endpoint-ul Pages Function pentru formulare (vezi functions/api/lead.js) */
   lead:     '/api/lead',
 
+  /**
+   * Facturarea anuală în formularul de înscriere.
+   * Prețurile anuale vin din catalog (site/plans.mjs); `year` se trimite doar
+   * pentru planurile care au preț anual — restul rămân pe `month`.
+   */
+  yearlyBilling: true,
+
   brand:     'iGROWth',
   brandFull: 'iGROWth · Sportiv Educat',
   tagline:   'Sport, sănătate și învățare, prin joc.',

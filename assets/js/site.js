@@ -99,8 +99,23 @@
     });
   };
 
+  /* Perioada aleasa in modal. `year` se trimite DOAR daca planul selectat are
+     pret anual in catalog (window.IG.yearlyPlans) — altfel backend-ul da 400. */
+  var regPeriod = 'month';
+
+  function syncBillingPeriod() {
+    var hidden = $('#reg [name="billing_period"]');
+    if (!hidden) return;
+    var checked = $('#reg [name="plan"]:checked');
+    var code = checked ? checked.value : '';
+    var allowed = (window.IG && window.IG.yearlyPlans) || [];
+    hidden.value = (regPeriod === 'year' && allowed.indexOf(code) !== -1) ? 'year' : 'month';
+  }
+  window.igSyncBillingPeriod = syncBillingPeriod;
+
   window.setRegPeriod = function (p) {
     var monthly = p === 'm';
+    regPeriod = monthly ? 'month' : 'year';
     var bm = doc.getElementById('rBtnM'), by = doc.getElementById('rBtnY');
     if (bm) bm.classList.toggle('active', monthly);
     if (by) by.classList.toggle('active', !monthly);
@@ -110,8 +125,7 @@
     $$('.plan-opt .pw[data-m]').forEach(function (el) {
       var v = el.getAttribute(monthly ? 'data-m' : 'data-y'); if (v) el.textContent = v;
     });
-    var hidden = $('[name="billing_period"]');
-    if (hidden) hidden.value = monthly ? 'month' : 'year';
+    syncBillingPeriod();
   };
 
   /* --- selectoare din formulare (apelate din onclick in markup) --- */
@@ -120,6 +134,7 @@
     el.classList.add('sel');
     var input = el.querySelector('input[type="radio"]');
     if (input) input.checked = true;
+    syncBillingPeriod();
   };
   window.pickAv = function (el) {
     $$('.ap', el.parentNode).forEach(function (a) { a.classList.remove('sel'); a.setAttribute('aria-checked', 'false'); });
@@ -245,6 +260,46 @@
     return true;
   }
   window.igHandleLeadResult = handleLeadResult;
+
+  /**
+   * Butoanele din zona de preturi au `data-plan`. Cand unul dintre ele deschide
+   * modalul, planul respectiv devine cel selectat — altfel omul ar alege „Start"
+   * si ar gasi „Campion" bifat la ultimul pas.
+   */
+  window.igPreselectPlan = function (trigger) {
+    var code = trigger && trigger.getAttribute && trigger.getAttribute('data-plan');
+    if (!code) return;
+    var input = doc.querySelector('#reg [name="plan"][value="' + code + '"]');
+    if (!input) return;
+    input.checked = true;
+    var opt = input.closest('.plan-opt');
+    if (opt) {
+      $$('.plan-opt', opt.parentNode).forEach(function (a) { a.classList.remove('sel'); });
+      opt.classList.add('sel');
+    }
+    syncBillingPeriod();
+  };
+
+  /** Ecranul „te ducem la plata", inainte de a parasi site-ul spre Stripe. */
+  window.igShowRedirecting = function (modal) {
+    var body = modal.querySelector('.modal-body');
+    var foot = modal.querySelector('.modal-foot');
+    var head = modal.querySelector('.reg-prog, .reg-steps');
+    var num = modal.querySelector('.reg-stepnum');
+    if (foot) foot.style.display = 'none';
+    if (head) head.style.display = 'none';
+    if (num) num.style.display = 'none';
+    if (!body) return;
+    body.innerHTML =
+      '<div class="reg-redirect">' +
+        '<div class="spin" aria-hidden="true"></div>' +
+        '<h3>Te ducem la plată</h3>' +
+        '<p>Îți deschidem pagina securizată Stripe, unde finalizezi abonamentul. ' +
+        'Nu închide fereastra.</p>' +
+        '<span class="lock"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg> ' +
+        'Plată procesată de Stripe</span>' +
+      '</div>';
+  };
 
   /**
    * Daca planul ales cerea plata dar checkout-ul n-a pornit, intoarce textul
@@ -438,6 +493,7 @@
         opener = doc.activeElement;
         step = 1;
         render();
+        window.igPreselectPlan(e && e.currentTarget);
         modal.classList.add('open');
         doc.body.style.overflow = 'hidden';
         var first = modal.querySelector('input:not([type="hidden"]), select, button');
@@ -470,8 +526,9 @@
           window.igSubmitLead(modal.querySelector('form')).then(function (res) {
             /* la plan platit se face redirect spre Stripe — lasam butonul blocat */
             if (res && res.ok && res.checkout_url) {
-              if (fwd) fwd.textContent = 'Te ducem la plată…';
-              window.location.assign(res.checkout_url);
+              window.igShowRedirecting(modal);
+              /* o clipa, ca mesajul sa apuce sa fie vazut */
+              setTimeout(function () { window.location.assign(res.checkout_url); }, 900);
               return;
             }
             sending = false;

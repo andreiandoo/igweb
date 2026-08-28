@@ -102,7 +102,7 @@
         <div class="rstep" data-step="plan">
           <h3>Alege planul de start</h3>
           <p class="rs-sub">Poți începe gratuit și schimba oricând. Fără card la înscriere.</p>
-          <input type="hidden" name="billing_period" value="month">
+          {{billingToggle}}
           <div class="plan-pick" id="planPick" role="radiogroup" aria-label="Plan">
             <label class="plan-opt sel" data-plan="Free">
               <input type="radio" name="plan" value="free" class="visually-hidden" checked>
@@ -115,28 +115,28 @@
               <input type="radio" name="plan" value="start" class="visually-hidden">
               <span class="po-ic" style="background:linear-gradient(135deg,#2FB673,#25a566)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg></span>
               <span class="po-t"><span class="n">Start</span><span class="d">5 vieți, raport lunar, fără reclame</span></span>
-              <span class="po-price"><span class="pa">5,99 €</span><span class="pw">/lună</span></span>
+              <span class="po-price"><span class="pa" data-m="{{price:start:m}}" data-y="{{price:start:y}}">{{price:start:m}}</span><span class="pw" data-m="{{wk:start:m}}" data-y="{{wk:start:y}}">{{wk:start:m}}</span></span>
               <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
             </label>
             <label class="plan-opt" data-plan="Campion">
               <input type="radio" name="plan" value="campion" class="visually-hidden">
               <span class="po-ic" style="background:linear-gradient(135deg,#7c6cff,#5B4BD6)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-crown"/></svg></span>
               <span class="po-t"><span class="n">Campion <span class="tag">Popular</span></span><span class="d">Competiții cu premii, 15 vieți</span></span>
-              <span class="po-price"><span class="pa">9,99 €</span><span class="pw">/lună</span></span>
+              <span class="po-price"><span class="pa" data-m="{{price:campion:m}}" data-y="{{price:campion:y}}">{{price:campion:m}}</span><span class="pw" data-m="{{wk:campion:m}}" data-y="{{wk:campion:y}}">{{wk:campion:m}}</span></span>
               <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
             </label>
             <label class="plan-opt" data-plan="Elită">
               <input type="radio" name="plan" value="elite" class="visually-hidden">
               <span class="po-ic" style="background:linear-gradient(135deg,#FFB020,#ff8f3c)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-gem"/></svg></span>
               <span class="po-t"><span class="n">Elită</span><span class="d">Tot, la nivel maxim, 60 vieți</span></span>
-              <span class="po-price"><span class="pa">18,99 €</span><span class="pw">/lună</span></span>
+              <span class="po-price"><span class="pa" data-m="{{price:elite:m}}" data-y="{{price:elite:y}}">{{price:elite:m}}</span><span class="pw" data-m="{{wk:elite:m}}" data-y="{{wk:elite:y}}">{{wk:elite:m}}</span></span>
               <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
             </label>
           </div>
-          <label class="check" style="margin-top:16px">
+          <div class="reg-consents" style="margin-top:18px"><label class="check">
             <input type="checkbox" name="terms_accepted" value="1" required>
             <span>Sunt de acord cu <a href="/termeni" target="_blank" rel="noopener" style="color:var(--green2);font-weight:700">Termenii</a> și <a href="/confidentialitate" target="_blank" rel="noopener" style="color:var(--green2);font-weight:700">Politica de confidențialitate</a>.</span>
-          </label>
+          </label></div>
 
           <div class="visually-hidden" aria-hidden="true">
             <label for="athHp">Nu completa acest câmp</label>

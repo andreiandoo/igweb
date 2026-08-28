@@ -177,6 +177,8 @@ export function document(p, parts, ctx) {
   const bootstrap = JSON.stringify({
     app: SITE.app,
     lead: SITE.lead,
+    /* doar aceste planuri pot fi facturate anual */
+    yearlyPlans: ctx.yearlyPlans ?? [],
     pages: Object.fromEntries(Object.entries(PAGES).map(([k, m]) => [k, url(m.path)])),
   });
 

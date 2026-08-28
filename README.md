@@ -21,7 +21,8 @@ igweb/
 │
 ├─ site/                    logica de template
 │  ├─ config.mjs            identitate, registrul de pagini, helper-e de URL
-│  ├─ pages.mjs             titluri, descrieri, CSS/JS, CTA-uri, ancore, planuri
+│  ├─ pages.mjs             titluri, descrieri, CSS/JS, CTA-uri, ancore
+│  ├─ plans.mjs            catalogul de preţuri, citit din backend la build
 │  ├─ seo.mjs               <head>, Open Graph, JSON-LD, sitemap
 │  └─ layout.mjs            header (din sportivi.html) + footer (din parinti.html)
 │
@@ -54,7 +55,8 @@ igweb/
 | Vrei să schimbi | Editezi |
 |---|---|
 | text dintr-o pagină | `content/<pagina>.html` |
-| titlu / descriere SEO, CTA, ancore, prețuri din JSON-LD | `site/pages.mjs` |
+| titlu / descriere SEO, CTA, ancore | `site/pages.mjs` |
+| **prețurile** | nicăieri — vin din `/public/plans`, vezi `site/plans.mjs` |
 | adresă, telefon, rețele sociale, URL-ul aplicației | `site/config.mjs` |
 | header, footer, meniu | `site/layout.mjs` |
 | textele legale | `site/pages.mjs`, câmpul `legal` |

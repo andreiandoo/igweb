@@ -145,11 +145,7 @@
           <h3>Alege cum vrei să începi</h3>
           <p class="rs-sub">Poți începe gratuit și face upgrade oricând. Fără card acum, dacă alegi Free.</p>
 
-          <div class="bill-toggle mini" role="group" aria-label="Perioadă de facturare">
-            <button type="button" id="rBtnM" class="active" onclick="setRegPeriod('m')">Lunar</button>
-            <button type="button" id="rBtnY" onclick="setRegPeriod('y')">Anual <span class="bill-save">−17%</span></button>
-          </div>
-          <input type="hidden" name="billing_period" value="month">
+          {{billingToggle}}
 
           <div class="plan-pick" role="radiogroup" aria-label="Plan">
             <label class="plan-opt" onclick="pickPlan(this)">
@@ -164,25 +160,25 @@
               <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
               <span class="po-ic" style="background:linear-gradient(135deg,#2FB673,#38c983)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg></span>
               <span class="po-t"><span class="n">Start</span><span class="d">Mai multe vieți + raport lunar</span></span>
-              <span class="po-price"><span class="pa" data-m="5,99 €" data-y="59,99 €">5,99 €</span><span class="pw" data-m="≈ 1,38 €/săpt" data-y="≈ 1,15 €/săpt">≈ 1,38 €/săpt</span></span>
+              <span class="po-price"><span class="pa" data-m="{{price:start:m}}" data-y="{{price:start:y}}">{{price:start:m}}</span><span class="pw" data-m="{{wk:start:m}}" data-y="{{wk:start:y}}">{{wk:start:m}}</span></span>
             </label>
             <label class="plan-opt sel" onclick="pickPlan(this)">
               <input type="radio" name="plan" value="campion" class="visually-hidden" checked>
               <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
               <span class="po-ic" style="background:linear-gradient(135deg,#5B4BD6,#6c5cf0)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-crown"/></svg></span>
               <span class="po-t"><span class="n">Campion <span class="tag">Recomandat</span></span><span class="d">Competiții cu premii + rapoarte</span></span>
-              <span class="po-price"><span class="pa" data-m="9,99 €" data-y="99,99 €">9,99 €</span><span class="pw" data-m="≈ 2,31 €/săpt" data-y="≈ 1,92 €/săpt">≈ 2,31 €/săpt</span></span>
+              <span class="po-price"><span class="pa" data-m="{{price:campion:m}}" data-y="{{price:campion:y}}">{{price:campion:m}}</span><span class="pw" data-m="{{wk:campion:m}}" data-y="{{wk:campion:y}}">{{wk:campion:m}}</span></span>
             </label>
             <label class="plan-opt" onclick="pickPlan(this)">
               <input type="radio" name="plan" value="elite" class="visually-hidden">
               <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
               <span class="po-ic" style="background:linear-gradient(135deg,#FFB020,#ff5d8f)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-gem"/></svg></span>
               <span class="po-t"><span class="n">Elită</span><span class="d">Tot ce oferim, la nivel maxim</span></span>
-              <span class="po-price"><span class="pa" data-m="18,99 €" data-y="189,99 €">18,99 €</span><span class="pw" data-m="≈ 4,38 €/săpt" data-y="≈ 3,65 €/săpt">≈ 4,38 €/săpt</span></span>
+              <span class="po-price"><span class="pa" data-m="{{price:elite:m}}" data-y="{{price:elite:y}}">{{price:elite:m}}</span><span class="pw" data-m="{{wk:elite:m}}" data-y="{{wk:elite:y}}">{{wk:elite:m}}</span></span>
             </label>
           </div>
 
-          <div style="margin-top:16px">
+          <div class="reg-consents" style="margin-top:18px">
             <label class="chk"><input type="checkbox" name="terms_accepted" value="1" required> Sunt de acord cu <a href="/termeni" target="_blank" rel="noopener">Termenii și condițiile</a>.</label>
             <label class="chk" style="margin-bottom:0"><input type="checkbox" name="privacy_accepted" value="1" required> Am citit <a href="/confidentialitate" target="_blank" rel="noopener">Politica de confidențialitate</a> și sunt de acord cu prelucrarea datelor copilului meu.</label>
           </div>

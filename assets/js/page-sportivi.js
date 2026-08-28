@@ -83,6 +83,7 @@
       idx = 0;
       rebuildFlow();
       render();
+      window.igPreselectPlan(e && e.currentTarget);
       modal.classList.add('open');
       doc.body.style.overflow = 'hidden';
       var first = modal.querySelector('input:not([type="hidden"]), select');
@@ -142,8 +143,8 @@
         window.igSubmitLead(form).then(function (res) {
           /* la plan platit se face redirect spre Stripe — lasam butonul blocat */
           if (res && res.ok && res.checkout_url) {
-            fwd.textContent = 'Te ducem la plată…';
-            window.location.assign(res.checkout_url);
+            window.igShowRedirecting(modal);
+            setTimeout(function () { window.location.assign(res.checkout_url); }, 900);
             return;
           }
           sending = false;

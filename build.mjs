@@ -17,6 +17,7 @@ import { SITE, PAGES, esc, url, icon, pageUrl, addressLine } from './site/config
 import { normalize, jsonLd, sitemap } from './site/seo.mjs';
 import { document } from './site/layout.mjs';
 import { PAGE_DEFS } from './site/pages.mjs';
+import { loadPlans, priceMarkers, yearlyCodes, schemaOffers } from './site/plans.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, process.argv[2] ?? 'dist');
@@ -26,6 +27,12 @@ const has  = (p) => existsSync(join(ROOT, p.replace(/^\//, '')));
 
 let problems = 0;
 const fail = (msg) => { problems++; console.log(`  ✗ ${msg}`); };
+
+/* Catalogul de planuri, luat din backend la build (vezi site/plans.mjs). */
+const API = process.env.IG_API_URL ?? 'https://igapp-production.up.railway.app';
+const { plans: PLANS, source: PLANS_SOURCE } = await loadPlans(API, 'athlete');
+const PRICE_MARKERS = priceMarkers(PLANS);
+const YEARLY = yearlyCodes(PLANS);
 
 /* ------------------------------------------------------------------ assets */
 
@@ -56,9 +63,24 @@ const VIDEO = has('/assets/video/story.mp4')
           </video>`
   : `<svg viewBox="0 0 1440 420" class="sv-fallback" aria-hidden="true" focusable="false" style="width:100%;height:100%;object-fit:cover"><use href="#scene-hills"/></svg>`;
 
-/** Rezolvă {{app}}, {{lead}}, {{video}} şi {{page:cheie}}. */
+/* Comutatorul lunar/anual din modal — apare doar dacă facturarea anuală e
+   activă. Altfel trimitem tăcut `month`, ca nimeni să nu aleagă o perioadă pe
+   care backend-ul nu o poate factura. */
+const BILLING_TOGGLE = SITE.yearlyBilling
+  ? `<div class="bill-toggle mini" role="group" aria-label="Perioadă de facturare">
+            <button type="button" id="rBtnM" class="active" onclick="setRegPeriod('m')">Lunar</button>
+            <button type="button" id="rBtnY" onclick="setRegPeriod('y')">Anual <span class="bill-save">−17%</span></button>
+          </div>
+          <input type="hidden" name="billing_period" value="month">`
+  : `<input type="hidden" name="billing_period" value="month">`;
+
+/** Rezolvă {{app}}, {{lead}}, {{video}}, {{billingToggle}} şi {{page:cheie}}. */
 function resolve(html) {
+  for (const [marker, value] of Object.entries(PRICE_MARKERS)) {
+    html = html.replaceAll(marker, value);
+  }
   return html
+    .replaceAll('{{billingToggle}}', BILLING_TOGGLE)
     .replaceAll('{{app}}', SITE.app)
     .replaceAll('{{lead}}', SITE.lead)
     .replaceAll('{{video}}', VIDEO)
@@ -220,6 +242,8 @@ function extractFaq(html) {
 console.log(`dist:   ${DIST}`);
 console.log(`mediu:  ${SITE.env}`);
 console.log(`site:   ${SITE.url}\n`);
+console.log(`planuri: ${PLANS.length} din ${PLANS_SOURCE}; cu preţ anual: ${YEARLY.join(', ') || '—'}`);
+if (PLANS_SOURCE.startsWith('copie')) fail(`catalog de planuri neactualizat — ${PLANS_SOURCE}`);
 
 rmSync(DIST, { recursive: true, force: true });
 mkdirSync(DIST, { recursive: true });
@@ -242,10 +266,12 @@ for (const [key, meta] of Object.entries(PAGES)) {
   const overlay = existsSync(join(ROOT, overlayPath)) ? resolve(read(overlayPath)) : '';
 
   const page = normalize({ key, ...def, faq: extractFaq(body) }, has);
+  /* preţurile din datele structurate vin din acelaşi catalog ca cele afişate */
+  if (page.offers && (key === 'parinti' || key === 'sportivi')) page.offers = schemaOffers(PLANS);
   const sprite = sprites[page.sprite];
   if (!sprite) fail(`lipseşte content/sprites/${page.sprite}.svg`);
 
-  const html = document(page, { sprite: sprite ?? '', body, overlay }, { asset });
+  const html = document(page, { sprite: sprite ?? '', body, overlay }, { asset, yearlyPlans: YEARLY });
   writeFileSync(join(DIST, meta.file), html);
 
   console.log(`  ${meta.file.padEnd(24)} ${(html.length / 1024).toFixed(1).padStart(6)} KB   ${page.faq.length ? page.faq.length + ' întrebări' : ''}`);

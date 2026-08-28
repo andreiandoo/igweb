@@ -71,7 +71,49 @@ atunci butonul **„Reia plata"**, care apelează `POST /api/checkout`
 Id-ul din URL nu e un secret: cu el se poate doar *porni* o plată pentru un abonament
 deja înregistrat, nu se poate citi sau modifica nimic.
 
-## 3. Configurare în Cloudflare
+## 3. Prețurile — o singură sursă
+
+Prețurile afișate **nu** mai sunt scrise în HTML. La fiecare build, generatorul citește
+catalogul din backend:
+
+```
+GET {IG_API_URL}/public/plans?audience=athlete
+```
+
+și completează marcajele din `content/`: `{{price:start:m}}`, `{{price:start:y}}`,
+`{{week:start:m}}` (nota săptămânală lungă), `{{wk:start:m}}` (varianta scurtă din modal).
+Aceleași valori intră și în `Product`/`Offer` din JSON-LD.
+
+De ce la build și nu în browser: prețurile ajung în HTML — bune pentru SEO, fără sărituri
+de layout, fără un request în plus.
+
+**A prins deja o eroare reală:** site-ul afișa Start la 5,99 €/lună și 59,99 €/an, în timp
+ce catalogul avea 5,79 € și 57,99 €. Prețuri scrise de mână se depărtează de realitate.
+
+### Când schimbi un preț în admin
+
+Site-ul îl preia **la următorul build**. Ai două variante:
+
+1. Manual — Cloudflare → Deployments → *Retry deployment*.
+2. Automat — Settings → Builds → **Deploy hooks** → creezi un hook și îi dai URL-ul
+   backend-ului, ca să-l apeleze după fiecare modificare de plan. Un `POST` gol declanșează
+   rebuild-ul.
+
+Dacă API-ul nu răspunde la build, se folosește ultima copie cunoscută
+(`site/plans.fallback.json`) și build-ul **eșuează cu mesaj clar** — ca să nu publici tăcut
+prețuri vechi.
+
+### Facturarea anuală
+
+`billing_period` se trimite `"year"` **doar** pentru planurile care au preț anual în
+catalog. Lista ajunge în browser ca `window.IG.yearlyPlans` și e verificată la fiecare
+schimbare de plan sau de perioadă. Free n-are preț anual, deci rămâne mereu pe `month`.
+
+Fără verificarea asta, backend-ul ar răspunde `400` pentru un plan fără variantă anuală.
+
+Comutatorul din modal se poate opri cu `yearlyBilling: false` în `site/config.mjs`.
+
+## 4. Configurare în Cloudflare
 
 **Settings → Environment variables**, pe *Production*:
 
@@ -101,7 +143,7 @@ Doar da/nu, niciodată valorile. Dacă `secret` e `false`, funcția **nu apeleaz
 deloc și marchează lead-ul `NECONFIGURAT: lipsește REGISTRATION_API_SECRET` — mai bine
 o eroare vizibilă decât un 401 tăcut.
 
-## 4. Ce vede omul când ceva nu merge
+## 5. Ce vede omul când ceva nu merge
 
 | Situație | Răspuns | Ce vede |
 |---|---|---|
@@ -114,7 +156,7 @@ Ultimul rând din mijloc e intenționat: dacă noi am greșit configurarea, omul
 pedepsit — datele lui sunt salvate în KV și ajung în notificare, iar tu îl poți contacta.
 **De aceea testul de după activare (§6) nu e opțional.**
 
-## 5. Parolele
+## 6. Parolele
 
 Formularele de la părinți și sportivi cer parolă, iar backend-ul o cere la înregistrare
 (`min 6 caractere`). Parola circulă doar pe traseul browser → funcție → API, peste HTTPS.
@@ -125,7 +167,7 @@ filtrează. Site-ul verifică și pe client că cele două câmpuri de parolă c
 > Notă istorică: într-o versiune anterioară recomandam scoaterea câmpurilor de parolă,
 > pentru că nu exista endpoint și n-aveau unde ajunge. Acum există; câmpurile rămân.
 
-## 6. Testul obligatoriu după activare
+## 7. Testul obligatoriu după activare
 
 Cu variabilele setate și deploy-ul făcut:
 
@@ -146,7 +188,7 @@ Dacă la pasul 5 nu ajungi la Stripe, răspunsul de la `/api/lead` conține moti
 (`payment.reason`), iar el apare și în **Cloudflare → proiect → Functions → Real-time
 logs**, prefixat cu `[lead]`.
 
-## 7. Ce lipsește încă
+## 8. Ce lipsește încă
 
 **Antrenorii.** Nu există `POST /auth/register-coach`. Până apare, formularul de pe
 `/antrenori` colectează lead-uri (KV + notificare) și răspunde „gata". Când endpoint-ul

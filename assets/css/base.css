@@ -115,6 +115,49 @@ button{font-family:inherit}
 }
 @keyframes igGlow{0%,100%{opacity:.4}50%{opacity:.75}}
 
+/* ---------- consimtaminte din formularele de inregistrare ----------
+   Doua randuri, unul sub altul, text mai mic decat restul formularului.
+   `.chk` e folosit de parinti / cluburi / antrenori, `.check` de sportivi. */
+.chk,
+.reg-consents .check{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:.82rem;line-height:1.5;color:var(--ig-muted);
+  font-weight:500;cursor:pointer;margin:0 0 10px;
+}
+.chk:last-child,
+.reg-consents .check:last-child{margin-bottom:0}
+.chk input[type="checkbox"],
+.reg-consents .check input[type="checkbox"]{
+  flex:none;margin-top:.15em;width:17px;height:17px;
+  accent-color:var(--ig-green);cursor:pointer;
+}
+.chk a,
+.reg-consents .check a{
+  color:var(--ig-green-2);font-weight:700;text-decoration:underline;
+  text-underline-offset:2px;
+}
+.chk a:hover,
+.reg-consents .check a:hover{color:var(--ig-purple)}
+
+/* ---------- ecranul de dinaintea redirectului catre Stripe ---------- */
+.reg-redirect{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:16px;padding:34px 8px 30px;
+}
+.reg-redirect .spin{
+  width:46px;height:46px;border-radius:50%;
+  border:4px solid var(--ig-line);border-top-color:var(--ig-green);
+  animation:igSpin .9s linear infinite;
+}
+@keyframes igSpin{to{transform:rotate(360deg)}}
+.reg-redirect h3{font-size:1.2rem;font-weight:900;color:var(--ig-navy)}
+.reg-redirect p{font-size:.94rem;color:var(--ig-muted);max-width:34ch}
+.reg-redirect .lock{
+  display:inline-flex;align-items:center;gap:.45em;
+  font-size:.8rem;font-weight:700;color:var(--ig-green-2);
+  background:var(--ig-green-soft);padding:.45em .9em;border-radius:999px;
+}
+
 /* eroare de trimitere in modalul de inregistrare */
 .reg-error{
   margin:0 22px;padding:.75em 1em;border-radius:12px;

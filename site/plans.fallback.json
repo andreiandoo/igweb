@@ -1,0 +1,46 @@
+[
+  {
+    "code": "free",
+    "name": "Free",
+    "description": null,
+    "currency": "EUR",
+    "features": [],
+    "is_free": true,
+    "price_cents_month": 0,
+    "price_cents_year": null,
+    "sort_order": 0
+  },
+  {
+    "code": "start",
+    "name": "Start",
+    "description": null,
+    "currency": "EUR",
+    "features": [],
+    "is_free": false,
+    "price_cents_month": 579,
+    "price_cents_year": 5799,
+    "sort_order": 1
+  },
+  {
+    "code": "campion",
+    "name": "Campion",
+    "description": null,
+    "currency": "EUR",
+    "features": [],
+    "is_free": false,
+    "price_cents_month": 999,
+    "price_cents_year": 9999,
+    "sort_order": 2
+  },
+  {
+    "code": "elite",
+    "name": "Elite",
+    "description": null,
+    "currency": "EUR",
+    "features": [],
+    "is_free": false,
+    "price_cents_month": 1899,
+    "price_cents_year": 18999,
+    "sort_order": 3
+  }
+]

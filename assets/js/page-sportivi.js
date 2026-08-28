@@ -107,8 +107,11 @@
       box.textContent = message;
     }
 
-    function done() {
+    function done(res) {
       show('done');
+      var note = window.igPaymentNote(res);
+      var msg = modal.querySelector('.reg-done .rs-sub');
+      if (msg && note) msg.textContent = note;
       num.textContent = 'Gata';
       dots.innerHTML = flow.map(function () { return '<span class="rp done"></span>'; }).join('');
       back.style.display = 'none';
@@ -147,7 +150,7 @@
           fwd.disabled = false;
           fwd.textContent = label;
           if (!window.igHandleLeadResult(res, showError)) return;
-          done();
+          done(res);
         });
         return;
       }

@@ -3,6 +3,9 @@
 > **Stare:** părinții și sportivii se înregistrează **direct în aplicație**, cu plată
 > prin Stripe. Cluburile la fel, prin endpoint-ul public existent. Antrenorii încă
 > nu au endpoint în backend — formularul lor colectează doar lead-uri.
+>
+> Conturile se creează **inactive**: se activează când omul apasă linkul din emailul
+> de confirmare. Site-ul nu trimite emailuri — o face backend-ul.
 
 ---
 
@@ -13,11 +16,18 @@ formular → igSubmitLead()            assets/js/site.js
          → POST /api/lead            functions/api/lead.js  (edge, same-origin)
          → validare + anti-spam
          → POST către API-ul igapp   cu X-Registration-Key
+         → cont creat, dar INACTIV (email_verified = false)
          → [plan plătit] POST /plan-checkout
          → { ok: true, checkout_url? }
-              ├─ cu checkout_url → browserul pleacă la Stripe
-              └─ fără            → ecranul „Gata, contul e pregătit"
+              ├─ cu checkout_url → Stripe → /cont-creat sau /plata-anulata
+              └─ fără (plan free) → ecranul „verifică emailul"
 ```
+
+**Ordinea e „plătește întâi, confirmă după".** Emailul de confirmare pleacă de la
+backend: imediat, pentru planurile gratuite; după plata reușită, pentru cele plătite.
+Activarea se face pe `app.sportiveducat.ro/verify-email`, care activează dintr-un click
+și contul părintelui, și pe al copilului. Site-ul nu are nimic de implementat acolo —
+doar mesajul „verifică emailul", care e deja în ecranele de confirmare.
 
 Secretul de înregistrare stă **doar** în variabilele de mediu ale funcției. Nu ajunge
 niciodată în browser, pentru că apelul către API se face server-to-server, din edge.
@@ -46,6 +56,20 @@ de făcut după redirect.
 
 `success_url` și `cancel_url` sunt paginile `/cont-creat` și `/plata-anulata`, generate
 din `site/pages.mjs` (câmpul `status`).
+
+### Dacă omul închide pagina Stripe
+
+Contul rămâne creat dar inactiv, iar emailul de confirmare nu a plecat — pentru că
+backend-ul îl trimite abia după plată. Fără o cale de întoarcere, acel cont ar rămâne
+blocat definitiv.
+
+De aceea `cancel_url` duce și id-ul: `/plata-anulata?a=<athlete_id>`. Pagina afișează
+atunci butonul **„Reia plata"**, care apelează `POST /api/checkout`
+(`functions/api/checkout.js`) — un al doilea proxy, minimal, care reia
+`/plan-checkout` cu același secret adăugat server-side.
+
+Id-ul din URL nu e un secret: cu el se poate doar *porni* o plată pentru un abonament
+deja înregistrat, nu se poate citi sau modifica nimic.
 
 ## 3. Configurare în Cloudflare
 
@@ -107,14 +131,20 @@ Cu variabilele setate și deploy-ul făcut:
 
 1. `https://sportiveducat.ro/api/lead` → toate cele patru `true`
 2. Pe `/cluburi`, înregistrează un club de test cu un **email real** al tău
-   → verifică în admin că a apărut clubul și că a sosit emailul de verificare
+   → clubul apare în admin, emailul de verificare sosește
 3. Pe `/parinti`, creează un cont cu planul **Free**
-   → cont creat, fără redirect la Stripe
-4. Pe `/parinti`, creează un cont cu planul **Campion**
-   → ajungi pe Stripe Checkout; plătește cu cardul de test `4242 4242 4242 4242`
-   → te întorci pe `/cont-creat`, iar abonamentul apare activ în admin
-5. Anulează o plată din Stripe → ajungi pe `/plata-anulata`, contul există deja
-6. Încearcă să te înregistrezi a doua oară cu același email → mesaj de conflict, clar
+   → fără redirect la Stripe; ecranul spune „verifică emailul"; emailul sosește
+4. Apasă linkul din email → ambele conturi se activează; abia acum merge login-ul
+5. Pe `/parinti`, creează un cont cu planul **Start**
+   → ajungi pe Stripe; plătește cu cardul de test `4242 4242 4242 4242`
+   → te întorci pe `/cont-creat`; emailul de confirmare sosește **după** plată
+6. Repetă, dar **anulează** plata pe Stripe
+   → ajungi pe `/plata-anulata`, apare butonul „Reia plata", iar el te duce înapoi la Stripe
+7. Încearcă să te înregistrezi a doua oară cu același email → mesaj de conflict, clar
+
+Dacă la pasul 5 nu ajungi la Stripe, răspunsul de la `/api/lead` conține motivul exact
+(`payment.reason`), iar el apare și în **Cloudflare → proiect → Functions → Real-time
+logs**, prefixat cu `[lead]`.
 
 ## 7. Ce lipsește încă
 

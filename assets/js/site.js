@@ -246,6 +246,15 @@
   }
   window.igHandleLeadResult = handleLeadResult;
 
+  /**
+   * Daca planul ales cerea plata dar checkout-ul n-a pornit, intoarce textul
+   * onest pentru ecranul de confirmare. Altfel null.
+   */
+  window.igPaymentNote = function (res) {
+    var p = res && res.payment;
+    return (p && p.expected && !p.started) ? 'Contul tău e creat, dar planul ales nu a putut fi pornit acum. Nu s-a reținut nicio sumă — poți activa planul din aplicație, de la Setări → Abonament.' : null;
+  };
+
   /* ======================================================================
      2. Initializari care depind de DOM si de datele din page-*.js
      ====================================================================== */
@@ -416,6 +425,9 @@
             var who = (nameEl && nameEl.value.trim()) || modal.getAttribute('data-done-fallback') || '';
             doneMsg.textContent = tpl.replace('{name}', who);
           }
+          /* planul platit n-a putut porni: spunem adevarul, nu „gata" */
+          var note = window.igPaymentNote(lastResult);
+          if (doneMsg && note) doneMsg.textContent = note;
         }
         var body = modal.querySelector('.modal-body');
         if (body) body.scrollTop = 0;
@@ -437,6 +449,7 @@
         if (opener && opener.focus) opener.focus();
       };
       var sending = false;
+      var lastResult = null;
 
       window.regNext = function (d) {
         if (sending) return;
@@ -462,6 +475,7 @@
               return;
             }
             sending = false;
+            lastResult = res;
             if (fwd) { fwd.disabled = false; fwd.textContent = label; }
             if (!handleLeadResult(res, function (m) { regError(modal, m); })) return;
             step = next;

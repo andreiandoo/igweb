@@ -126,9 +126,43 @@ function statusBody(s) {
     <p style="margin-top:16px;color:var(--muted);font-size:1.08rem;max-width:52ch;margin-inline:auto">${esc(s.lead)}</p>
 
     <div class="hero-cta" style="justify-content:center;margin-top:28px">
-      <a class="btn btn-primary btn-lg" href="${esc(url(s.cta.href.replace('{app}', SITE.app)))}" rel="noopener">${icon(s.cta.icon)} ${esc(s.cta.label)}</a>
+${s.resume ? `      <button type="button" class="btn btn-primary btn-lg" id="resumePay" hidden>${icon('i-card')} Reia plata</button>\n` : ''}      <a class="btn ${s.resume ? 'btn-ghost' : 'btn-primary'} btn-lg" href="${esc(url(s.cta.href.replace('{app}', SITE.app)))}" rel="noopener">${icon(s.cta.icon)} ${esc(s.cta.label)}</a>
       <a class="btn btn-ghost btn-lg" href="${esc(url('/'))}">${icon('i-home')} Înapoi pe site</a>
     </div>
+${s.resume ? `    <p class="reg-error" id="resumeError" style="margin:20px auto 0;max-width:44ch;display:none"></p>
+    <script>
+    /* Butonul apare doar daca /plata-anulata a primit ?a=<id> de la Stripe. */
+    (function () {
+      var id = new URLSearchParams(location.search).get('a');
+      var btn = document.getElementById('resumePay');
+      var err = document.getElementById('resumeError');
+      if (!id || !btn) return;
+      btn.hidden = false;
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        var label = btn.innerHTML;
+        btn.textContent = 'Te ducem la plată…';
+        err.style.display = 'none';
+        fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ athlete_id: id })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (res && res.ok && res.url) { location.assign(res.url); return; }
+            throw new Error((res && res.error) || 'Nu am putut porni plata.');
+          })
+          .catch(function (e) {
+            btn.disabled = false;
+            btn.innerHTML = label;
+            err.textContent = e.message;
+            err.style.display = 'block';
+          });
+      });
+    })();
+    </script>
+` : ''}
 
     <ul class="cards9" style="grid-template-columns:repeat(3,1fr);margin:44px 0 0;padding:0;text-align:left">
 ${points}

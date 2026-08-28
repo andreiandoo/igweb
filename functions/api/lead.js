@@ -335,28 +335,63 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: true });
   }
 
-  lead.status = 'cont creat';
-  await store(env, lead);
-  await notify(env, lead);
-
-  /* --- plan plătit: pornim Stripe Checkout --- */
+  /* --- plan plătit: pornim Stripe Checkout ---
+     Pasul ăsta NU trebuie să eșueze în tăcere: contul e deja creat, deci nu
+     blocăm omul, dar spunem clar de ce n-a pornit plata — în răspuns, în
+     jurnalul funcției și în lead. */
+  const planFromApi = reg.data?.plan ?? null;
   const athleteId = form.athleteId(reg.data);
-  if (reg.data?.plan?.requires_payment && athleteId) {
+  const payment = { expected: false, started: false, reason: null };
+
+  if (!planFromApi) {
+    payment.reason = 'API-ul nu a întors obiectul `plan`';
+  } else if (!planFromApi.requires_payment) {
+    payment.reason = `plan fără plată (${planFromApi.code ?? '?'}, requires_payment=false)`;
+    /* omul a ales un plan plătit, dar API-ul spune că nu cere plată —
+       de obicei planul n-are preț Stripe configurat în admin */
+    if (str(data.plan) && str(data.plan) !== 'free') {
+      console.error('[lead] plan plătit, dar requires_payment=false', {
+        trimis: { plan: str(data.plan), billing_period: str(data.billing_period) || 'month' },
+        primit: planFromApi,
+      });
+    }
+  } else if (!athleteId) {
+    payment.expected = true;
+    payment.reason = 'lipsește id-ul sportivului în răspunsul de înregistrare';
+  } else {
+    payment.expected = true;
     try {
       const co = await callApi(env, '/plan-checkout', true, {
         athlete_id: athleteId,
         success_url: `${origin}/cont-creat`,
-        cancel_url: `${origin}/plata-anulata`,
+        cancel_url: `${origin}/plata-anulata?a=${encodeURIComponent(athleteId)}`,
       });
       if (co.status === 200 && co.data?.url) {
-        return json({ ok: true, checkout_url: co.data.url });
+        payment.started = true;
+        lead.status = 'cont creat + plată pornită';
+        await store(env, lead);
+        await notify(env, lead);
+        return json({ ok: true, checkout_url: co.data.url, payment });
       }
-    } catch {
-      /* contul există deja; plata se poate face din aplicație */
+      payment.reason = `/plan-checkout a răspuns ${co.status}: ${co.data?.error ?? 'fără mesaj'}`;
+    } catch (e) {
+      payment.reason = `/plan-checkout inaccesibil: ${String(e && e.message ? e.message : e)}`;
     }
   }
 
-  return json({ ok: true });
+  lead.status = payment.expected && !payment.started
+    ? `cont creat, PLATA NU A PORNIT — ${payment.reason}`
+    : 'cont creat';
+  /* apare în Cloudflare → proiect → Functions → Real-time logs */
+  if (payment.expected && !payment.started) {
+    console.error('[lead] plata nu a pornit', {
+      type, athleteId, plan: planFromApi, reason: payment.reason,
+    });
+  }
+
+  await store(env, lead);
+  await notify(env, lead);
+  return json({ ok: true, payment });
 }
 
 async function store(env, lead) {

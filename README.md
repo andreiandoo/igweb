@@ -37,7 +37,9 @@ igweb/
 │  ├─ img/  favicon.svg · logo.svg · icon-*.png · og/*.png
 │  └─ video/  story.mp4 (opțional)
 │
-├─ functions/api/lead.js    Pages Function — primește înscrierile
+├─ functions/api/           Pages Functions (rulează pe edge)
+│  ├─ lead.js               primește înscrierile, le trimite în aplicație
+│  └─ checkout.js           reia plata dacă omul a închis pagina Stripe
 ├─ cloudflare/              _headers și _redirects, copiate în dist/
 ├─ robots.txt  site.webmanifest
 │

@@ -48,7 +48,8 @@ export const PAGE_DEFS = {
     description: 'Strânge XP la fiecare antrenament și quiz, urcă de la Începător la Legendă, prinde insigne și intră în clasamentele echipei, clubului și platformei. Gratuit pentru sportivi.',
     css: ['/assets/css/page-sportivi.css'],
     js: ['/assets/js/page-sportivi.js'],
-    footerDownload: true,
+    /* butoanele de download stau in sectiunea finala din pagina, nu in banda comuna */
+    footerDownload: false,
     navCta: { ghost: APP_LOGIN, primary: { label: 'Creează cont', icon: 'i-sparkles', class: 'js-reg' } },
     mobileCta: { ghost: APP_LOGIN, primary: { label: 'Creează cont', icon: 'i-sparkles', class: 'js-reg' } },
     anchors: [

@@ -310,9 +310,20 @@ console.log(`  ${'sitemap.xml'.padEnd(24)}`);
 
 console.log('');
 console.log(`  assets/ — ${copyDir(join(ROOT, 'assets'), join(DIST, 'assets'))} fişiere`);
-for (const f of ['robots.txt', 'site.webmanifest']) {
-  copyFileSync(join(ROOT, f), join(DIST, f));
-  console.log(`  ${f}`);
+copyFileSync(join(ROOT, 'robots.txt'), join(DIST, 'robots.txt'));
+console.log('  robots.txt');
+
+/* Iconiţele din manifest se versionează la fel ca restul asset-urilor: altfel
+   o aplicaţie deja instalată ar păstra marca veche un an (/assets/* e
+   immutable). Verificăm şi că fişierele chiar există. */
+{
+  const manifest = JSON.parse(read('site.webmanifest'));
+  for (const ic of manifest.icons ?? []) {
+    if (!has(ic.src)) fail(`site.webmanifest trimite la ${ic.src}, care lipseşte`);
+    ic.src = asset(ic.src);
+  }
+  writeFileSync(join(DIST, 'site.webmanifest'), JSON.stringify(manifest, null, 2) + '\n');
+  console.log(`  site.webmanifest (${(manifest.icons ?? []).length} iconiţe)`);
 }
 for (const f of ['_headers', '_redirects']) {
   copyFileSync(join(ROOT, 'cloudflare', f), join(DIST, f));

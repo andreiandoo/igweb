@@ -185,7 +185,7 @@ export function document(p, parts, ctx) {
   return `<!doctype html>
 <html lang="${esc(SITE.lang)}" class="no-js">
 <head>
-${headMeta(p)}
+${headMeta(p, ctx.asset)}
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

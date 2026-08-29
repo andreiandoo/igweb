@@ -33,7 +33,7 @@ export function normalize(page, assetExists) {
   return p;
 }
 
-export function headMeta(p) {
+export function headMeta(p, asset = url) {
   const robots = p.noindex
     ? 'noindex, nofollow'
     : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
@@ -66,9 +66,9 @@ export function headMeta(p) {
 <meta name="twitter:description" content="${esc(p.description)}">
 <meta name="twitter:image" content="${esc(abs(p.ogImage))}">
 
-<link rel="icon" href="${esc(url('/assets/img/favicon.svg'))}" type="image/svg+xml">
-<link rel="apple-touch-icon" href="${esc(url('/assets/img/apple-touch-icon.png'))}">
-<link rel="manifest" href="${esc(url('/site.webmanifest'))}">`;
+<link rel="icon" href="${esc(asset('/assets/img/favicon.svg'))}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="${esc(asset('/assets/img/apple-touch-icon.png'))}">
+<link rel="manifest" href="${esc(asset('/site.webmanifest'))}">`;
 }
 
 /** Nodul Organization — referit prin @id din restul grafului. */

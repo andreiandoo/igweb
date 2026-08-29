@@ -84,7 +84,7 @@ ${mnav}${anchors}
 </div>`;
 }
 
-function footer(p) {
+function footer(p, growieHtml) {
   const pages = Object.entries(PAGES)
     .filter(([, m]) => m.inFooter)
     .map(([k, m]) => `        <a href="${esc(url(m.path))}"${k === p.key ? ' aria-current="page"' : ''}>${icon(m.icon)} ${esc(m.navLong)}</a>`)
@@ -98,7 +98,7 @@ function footer(p) {
   const download = p.footerDownload ? `<section class="dl-bridge" aria-label="Descarcă aplicația">
   <div class="wrap">
     <div class="foot-download reveal">
-      <svg class="fd-mascot g-sway" viewBox="0 0 200 210" aria-hidden="true" focusable="false"><use href="#growie-dance"/></svg>
+      ${growieHtml('bucurie', 'fd-mascot g-sway')}
       <div class="fd-txt">
         <h2>Descarcă iGROWth și pornește azi</h2>
         <p>Gratuit la început. Copilul învață jucându-se, tu vezi progresul.</p>
@@ -216,7 +216,7 @@ ${header(p)}
 ${parts.body}
 </main>
 
-${footer(p)}
+${footer(p, ctx.growie)}
 ${parts.overlay ?? ''}
 </body>
 </html>

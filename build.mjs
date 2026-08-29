@@ -75,28 +75,48 @@ const BILLING_TOGGLE = SITE.yearlyBilling
           <input type="hidden" name="billing_period" value="month">`
   : `<input type="hidden" name="billing_period" value="month">`;
 
-/* Ilustraţiile din assets/img/ill/, produse de _tools/6-graphics.py. Manifestul
-   ţine dimensiunile reale, ca <img> să rezerve locul şi pagina să nu sară. */
+/* Imaginile în două formate: AVIF pentru cine îl acceptă, WebP pentru restul.
+   Manifestele ţin dimensiunile reale, ca <img> să rezerve locul şi pagina să
+   nu sară la încărcare. Le produc _tools/6-graphics.py şi _tools/8-growies.py. */
 const ILL = JSON.parse(readFileSync(join(ROOT, 'site/illustrations.json'), 'utf8'));
+const GROWIES = JSON.parse(readFileSync(join(ROOT, 'site/growies.json'), 'utf8'));
 
-/**
- * {{ill:slug|eager|Text alternativ}} → <picture> cu AVIF + WebP.
- *   eager — imagine din primul ecran (fără lazy, cu prioritate la descărcare)
- *   lazy  — imagine de mai jos în pagină
- */
-function illustration(slug, load, alt) {
-  const size = ILL[slug];
-  if (!size) fail(`marcaj {{ill:${slug}}} — lipseşte din site/illustrations.json (rulează _tools/6-graphics.py)`);
-  const attrs = load === 'eager'
-    ? 'fetchpriority="high" decoding="async"'
-    : 'loading="lazy" decoding="async"';
-  return `<picture class="ill">
-          <source srcset="${esc(asset(`/assets/img/ill/${slug}.avif`))}" type="image/avif">
-          <img src="${esc(asset(`/assets/img/ill/${slug}.webp`))}" width="${size.w}" height="${size.h}" alt="${esc(alt)}" ${attrs}>
+function picture(dir, manifest, marker, slug, cls, attrs, alt) {
+  const size = manifest[slug];
+  if (!size) {
+    fail(`marcaj {{${marker}:${slug}}} — lipseşte din manifest (rulează scriptul din _tools/)`);
+    return '';
+  }
+  return `<picture class="${cls}"${alt ? '' : ' aria-hidden="true"'}>
+          <source srcset="${esc(asset(`/assets/img/${dir}/${slug}.avif`))}" type="image/avif">
+          <img src="${esc(asset(`/assets/img/${dir}/${slug}.webp`))}" width="${size.w}" height="${size.h}" alt="${esc(alt)}" ${attrs}>
         </picture>`;
 }
 
-/** Rezolvă {{app}}, {{lead}}, {{video}}, {{ill:…}}, {{billingToggle}} şi {{page:cheie}}. */
+/**
+ * {{ill:slug|eager|Text alternativ}} → ilustraţie mare, din assets/img/ill/.
+ *   eager — imagine din primul ecran (fără lazy, cu prioritate la descărcare)
+ *   lazy  — imagine de mai jos în pagină
+ */
+const illustration = (slug, load, alt) => picture(
+  'ill', ILL, 'ill', slug, 'ill',
+  load === 'eager' ? 'fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"',
+  alt,
+);
+
+/**
+ * {{growie:ipostază|clase}} → mascota, din assets/img/growie/.
+ *
+ * E decor, nu conţinut: fără text alternativ şi ascunsă de cititoarele de
+ * ecran, exact ca simbolurile SVG pe care le înlocuieşte. Clasele vin din
+ * pagină, fiindcă ele dau poziţia şi animaţia.
+ */
+const growie = (slug, cls) => picture(
+  'growie', GROWIES, 'growie', slug, `growie ${cls}`.trim(),
+  'loading="lazy" decoding="async"', '',
+);
+
+/** Rezolvă {{app}}, {{lead}}, {{video}}, {{ill:…}}, {{growie:…}}, {{billingToggle}} şi {{page:cheie}}. */
 function resolve(html) {
   for (const [marker, value] of Object.entries(PRICE_MARKERS)) {
     html = html.replaceAll(marker, value);
@@ -104,6 +124,7 @@ function resolve(html) {
   return html
     .replace(/\{\{icon:([a-z0-9-]+)\}\}/g, (_, id) => icon(id))
     .replace(/\{\{ill:([a-z0-9-]+)\|(eager|lazy)\|([^}]+)\}\}/g, (_, slug, load, alt) => illustration(slug, load, alt))
+    .replace(/\{\{growie:([a-z0-9-]+)\|([^}]*)\}\}/g, (_, slug, cls) => growie(slug, cls.trim()))
     .replaceAll('{{billingToggle}}', BILLING_TOGGLE)
     .replaceAll('{{app}}', SITE.app)
     .replaceAll('{{lead}}', SITE.lead)
@@ -231,7 +252,7 @@ function errorBody() {
 
   return `<section class="band" style="text-align:center">
   <div class="wrap" style="max-width:680px">
-    <svg viewBox="0 0 240 260" aria-hidden="true" focusable="false" style="width:140px;height:auto;margin:0 auto 18px"><use href="#growie"/></svg>
+    <div style="width:140px;margin:0 auto 18px">${growie('intrebare', '')}</div>
     <p class="eyebrow eg" style="margin-bottom:18px">${icon('i-compass')} Eroare 404</p>
     <h1 style="font-size:clamp(1.9rem,4vw,2.7rem);font-weight:900;color:var(--navy)">Am căutat peste tot. Pagina asta nu există.</h1>
     <p style="margin-top:14px;color:var(--muted);font-size:1.06rem">
@@ -297,7 +318,7 @@ for (const [key, meta] of Object.entries(PAGES)) {
   const sprite = sprites[page.sprite];
   if (!sprite) fail(`lipseşte content/sprites/${page.sprite}.svg`);
 
-  const html = document(page, { sprite: sprite ?? '', body, overlay }, { asset, yearlyPlans: YEARLY });
+  const html = document(page, { sprite: sprite ?? '', body, overlay }, { asset, growie, yearlyPlans: YEARLY });
   writeFileSync(join(DIST, meta.file), html);
 
   console.log(`  ${meta.file.padEnd(24)} ${(html.length / 1024).toFixed(1).padStart(6)} KB   ${page.faq.length ? page.faq.length + ' întrebări' : ''}`);
@@ -337,23 +358,30 @@ if (SITE.env === 'preview') {
 /* ------------------------------------------------------------ verificări */
 
 console.log('');
-for (const [key, meta] of Object.entries(PAGES)) {
-  const html = readFileSync(join(DIST, meta.file), 'utf8');
+/* Verific tot ce am scris, nu doar paginile din registru: 404.html nu e în
+   PAGES şi aşa a scăpat cândva cu un <use> către un simbol şters. */
+for (const file of readdirSync(DIST).filter((f) => f.endsWith('.html')).sort()) {
+  const html = readFileSync(join(DIST, file), 'utf8');
 
-  if (/\{\{|<\?php|<\?=/.test(html)) fail(`${meta.file} — marcaje nerezolvate`);
+  if (/\{\{|<\?php|<\?=/.test(html)) fail(`${file} — marcaje nerezolvate`);
 
   const defined = new Set([...html.matchAll(/<symbol id="([^"]+)"/g)].map((m) => m[1]));
   const used = new Set([...html.matchAll(/<use href="#([^"]+)"/g)].map((m) => m[1]));
   const missing = [...used].filter((id) => !defined.has(id));
-  if (missing.length) fail(`${meta.file} — simboluri SVG lipsă: ${missing.join(' ')}`);
+  if (missing.length) fail(`${file} — simboluri SVG lipsă: ${missing.join(' ')}`);
+
+  /* orice imagine referită trebuie să existe pe disc */
+  for (const m of html.matchAll(/(?:src|srcset)="(\/assets\/[^"]+)"/g)) {
+    if (!has(m[1].split('?')[0])) fail(`${file} — imagine inexistentă: ${m[1]}`);
+  }
 
   const h1 = (html.match(/<h1[\s>]/g) ?? []).length;
-  if (h1 !== 1) fail(`${meta.file} — ${h1} elemente <h1> (aşteptat 1)`);
+  if (h1 !== 1) fail(`${file} — ${h1} elemente <h1> (aşteptat 1)`);
 
-  if (/href="\/[a-z0-9\-/]*\.php/.test(html)) fail(`${meta.file} — link către un fişier .php`);
+  if (/href="\/[a-z0-9\-/]*\.php/.test(html)) fail(`${file} — link către un fişier .php`);
 
   for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
-    try { JSON.parse(m[1]); } catch (e) { fail(`${meta.file} — JSON-LD invalid: ${e.message}`); }
+    try { JSON.parse(m[1]); } catch (e) { fail(`${file} — JSON-LD invalid: ${e.message}`); }
   }
 }
 

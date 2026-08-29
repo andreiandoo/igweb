@@ -39,6 +39,21 @@
   }
   window.igStars = stars;
 
+  /* --- afiliere: ?ref=COD ---------------------------------------------
+     Codul poate veni pe orice pagina, iar inscrierea se face mai tarziu, deci
+     il tinem pe durata sesiunii si il atasam la trimitere. */
+  var REF_KEY = 'ig-ref';
+  (function captureRef() {
+    try {
+      var ref = new URLSearchParams(window.location.search).get('ref');
+      if (ref) sessionStorage.setItem(REF_KEY, ref.trim().slice(0, 64));
+    } catch (e) { /* fara sessionStorage: mergem mai departe fara afiliere */ }
+  })();
+  function currentRef() {
+    try { return sessionStorage.getItem(REF_KEY) || ''; } catch (e) { return ''; }
+  }
+  window.igRef = currentRef;
+
   /** Umple un track de marquee cu continutul duplicat (pentru bucla continua). */
   window.igFillTrack = function (id, data, render) {
     var el = doc.getElementById(id);
@@ -184,6 +199,9 @@
       if (form.querySelector('[name="' + k + '"]')) data[k] = data[k] ? 1 : 0;
     });
 
+    var ref = currentRef();
+    if (ref) data.ref = ref;
+
     var type = form.getAttribute('data-lead-type') || 'lead';
     doc.dispatchEvent(new CustomEvent('ig:lead', { detail: { form: type, data: data } }));
 
@@ -269,7 +287,8 @@
   window.igPreselectPlan = function (trigger) {
     var code = trigger && trigger.getAttribute && trigger.getAttribute('data-plan');
     if (!code) return;
-    var input = doc.querySelector('#reg [name="plan"][value="' + code + '"]');
+    var input = doc.querySelector('#reg [name="plan"][value="' + code + '"]')
+             || doc.querySelector('#reg [name="plan_code"][value="' + code + '"]');
     if (!input) return;
     input.checked = true;
     var opt = input.closest('.plan-opt');

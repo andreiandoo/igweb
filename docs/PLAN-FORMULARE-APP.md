@@ -46,7 +46,7 @@ document.addEventListener('ig:lead', (e) => {
 |---|---|---|---|
 | `/parinti` → `parent` | `POST /auth/register-parent` | da | da, dacă planul e plătit |
 | `/sportivi` → `athlete` | `POST /auth/register-athlete` | da | da, dacă planul e plătit |
-| `/cluburi` → `club` | `POST /auth/register-club-admin` | nu | nu |
+| `/cluburi` → `club` | `POST /auth/register-club-admin` | nu | nu — facturare lunară, per sportiv |
 | `/antrenori` → `coach` | *(nu există încă)* | — | — |
 
 Pasul de plată: dacă răspunsul conține `plan.requires_payment === true`, funcția cheamă
@@ -71,7 +71,51 @@ atunci butonul **„Reia plata"**, care apelează `POST /api/checkout`
 Id-ul din URL nu e un secret: cu el se poate doar *porni* o plată pentru un abonament
 deja înregistrat, nu se poate citi sau modifica nimic.
 
-## 3. Prețurile — o singură sursă
+## 3. Cluburile
+
+Fluxul e diferit de cel al sportivilor: **fără Stripe la înregistrare**. Clubul alege un
+tier, se creează contul, iar facturarea e lunară, după numărul de sportivi activi.
+
+`POST /auth/register-club-admin` e public — nu cere `X-Registration-Key`. Trece totuși
+prin `/api/lead`, ca să beneficieze de aceleași verificări: honeypot, limitare pe IP,
+validare server-side, copie în KV.
+
+### Tier-urile
+
+Vin din `GET /public/plans?audience=club`, iar prețul e **per sportiv / lună**:
+
+| Cod | Pe pagină | Preț |
+|---|---|---|
+| `demo` | Demo | 0 € — 14 zile |
+| `basic` | Bază | 1 € / sportiv / lună |
+| `premium` | Premium | 2 € / sportiv / lună |
+
+Prețurile intră în pagină prin marcajele `{{club:basic:m}}` etc., la fel ca la sportivi.
+
+### Alegerea tier-ului
+
+Butoanele din zona de prețuri au `data-plan="demo|basic|premium"` și preselectează
+tier-ul în formular. La pasul 3 există un selector explicit, ca omul să vadă ce alege —
+înainte, formularul trimitea mereu `demo`, indiferent de butonul apăsat.
+
+Vechea alegere „Pornesc demo-ul / Vreau demo ghidat" a devenit o bifă separată
+(`guided_demo`), pentru că e o întrebare de vânzări, nu un tier. Rămâne în lead, nu se
+trimite la API.
+
+Funcția validează `plan_code` înainte de trimitere: orice altceva decât cele trei coduri
+devine `demo`.
+
+## 4. Afilierea — `?ref=COD`
+
+Dacă vizitatorul ajunge pe site cu `?ref=COD`, codul se reține în `sessionStorage` pe
+durata sesiunii și se atașează ca `ref` la înscriere. Contează pentru că omul poate intra
+pe `/parinti?ref=X`, mai citi câteva pagini și abia apoi să se înregistreze — un cod citit
+doar din URL-ul de la momentul trimiterii s-ar pierde.
+
+Se trimite doar la `register-parent` și `register-athlete`, singurele unde backend-ul îl
+acceptă.
+
+## 5. Prețurile — o singură sursă
 
 Prețurile afișate **nu** mai sunt scrise în HTML. La fiecare build, generatorul citește
 catalogul din backend:
@@ -113,7 +157,7 @@ Fără verificarea asta, backend-ul ar răspunde `400` pentru un plan fără var
 
 Comutatorul din modal se poate opri cu `yearlyBilling: false` în `site/config.mjs`.
 
-## 4. Configurare în Cloudflare
+## 6. Configurare în Cloudflare
 
 **Settings → Environment variables**, pe *Production*:
 
@@ -143,7 +187,7 @@ Doar da/nu, niciodată valorile. Dacă `secret` e `false`, funcția **nu apeleaz
 deloc și marchează lead-ul `NECONFIGURAT: lipsește REGISTRATION_API_SECRET` — mai bine
 o eroare vizibilă decât un 401 tăcut.
 
-## 5. Ce vede omul când ceva nu merge
+## 7. Ce vede omul când ceva nu merge
 
 | Situație | Răspuns | Ce vede |
 |---|---|---|
@@ -156,7 +200,7 @@ Ultimul rând din mijloc e intenționat: dacă noi am greșit configurarea, omul
 pedepsit — datele lui sunt salvate în KV și ajung în notificare, iar tu îl poți contacta.
 **De aceea testul de după activare (§6) nu e opțional.**
 
-## 6. Parolele
+## 8. Parolele
 
 Formularele de la părinți și sportivi cer parolă, iar backend-ul o cere la înregistrare
 (`min 6 caractere`). Parola circulă doar pe traseul browser → funcție → API, peste HTTPS.
@@ -167,13 +211,15 @@ filtrează. Site-ul verifică și pe client că cele două câmpuri de parolă c
 > Notă istorică: într-o versiune anterioară recomandam scoaterea câmpurilor de parolă,
 > pentru că nu exista endpoint și n-aveau unde ajunge. Acum există; câmpurile rămân.
 
-## 7. Testul obligatoriu după activare
+## 9. Testul obligatoriu după activare
 
 Cu variabilele setate și deploy-ul făcut:
 
 1. `https://sportiveducat.ro/api/lead` → toate cele patru `true`
-2. Pe `/cluburi`, înregistrează un club de test cu un **email real** al tău
-   → clubul apare în admin, emailul de verificare sosește
+2. Pe `/cluburi`, apasă **„Alege Premium"** în zona de prețuri
+   → în formular, la pasul 3, tier-ul preselectat trebuie să fie **Premium**
+   → înregistrează cu un **email real**; clubul apare în admin pe tier-ul corect,
+     fără să se ceară plată, iar emailul de verificare sosește
 3. Pe `/parinti`, creează un cont cu planul **Free**
    → fără redirect la Stripe; ecranul spune „verifică emailul"; emailul sosește
 4. Apasă linkul din email → ambele conturi se activează; abia acum merge login-ul
@@ -188,7 +234,7 @@ Dacă la pasul 5 nu ajungi la Stripe, răspunsul de la `/api/lead` conține moti
 (`payment.reason`), iar el apare și în **Cloudflare → proiect → Functions → Real-time
 logs**, prefixat cu `[lead]`.
 
-## 8. Ce lipsește încă
+## 10. Ce lipsește încă
 
 **Antrenorii.** Nu există `POST /auth/register-coach`. Până apare, formularul de pe
 `/antrenori` colectează lead-uri (KV + notificare) și răspunde „gata". Când endpoint-ul

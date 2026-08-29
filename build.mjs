@@ -31,7 +31,8 @@ const fail = (msg) => { problems++; console.log(`  ✗ ${msg}`); };
 /* Catalogul de planuri, luat din backend la build (vezi site/plans.mjs). */
 const API = process.env.IG_API_URL ?? 'https://igapp-production.up.railway.app';
 const { plans: PLANS, source: PLANS_SOURCE } = await loadPlans(API, 'athlete');
-const PRICE_MARKERS = priceMarkers(PLANS);
+const { plans: CLUB_PLANS, source: CLUB_SOURCE } = await loadPlans(API, 'club');
+const PRICE_MARKERS = { ...priceMarkers(PLANS), ...priceMarkers(CLUB_PLANS, 'club') };
 const YEARLY = yearlyCodes(PLANS);
 
 /* ------------------------------------------------------------------ assets */
@@ -80,6 +81,7 @@ function resolve(html) {
     html = html.replaceAll(marker, value);
   }
   return html
+    .replace(/\{\{icon:([a-z0-9-]+)\}\}/g, (_, id) => icon(id))
     .replaceAll('{{billingToggle}}', BILLING_TOGGLE)
     .replaceAll('{{app}}', SITE.app)
     .replaceAll('{{lead}}', SITE.lead)
@@ -243,7 +245,9 @@ console.log(`dist:   ${DIST}`);
 console.log(`mediu:  ${SITE.env}`);
 console.log(`site:   ${SITE.url}\n`);
 console.log(`planuri: ${PLANS.length} din ${PLANS_SOURCE}; cu preţ anual: ${YEARLY.join(', ') || '—'}`);
-if (PLANS_SOURCE.startsWith('copie')) fail(`catalog de planuri neactualizat — ${PLANS_SOURCE}`);
+console.log(`cluburi: ${CLUB_PLANS.length} tier-uri din ${CLUB_SOURCE}`);
+if (PLANS_SOURCE.startsWith('copie')) fail(`catalog sportivi neactualizat — ${PLANS_SOURCE}`);
+if (CLUB_SOURCE.startsWith('copie')) fail(`catalog cluburi neactualizat — ${CLUB_SOURCE}`);
 
 rmSync(DIST, { recursive: true, force: true });
 mkdirSync(DIST, { recursive: true });

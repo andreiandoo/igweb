@@ -1,0 +1,35 @@
+[
+  {
+    "code": "demo",
+    "name": "Demo",
+    "description": "Perioadă de probă",
+    "currency": "EUR",
+    "features": [],
+    "is_free": true,
+    "price_cents_month": 0,
+    "price_cents_year": null,
+    "sort_order": 0
+  },
+  {
+    "code": "basic",
+    "name": "Basic",
+    "description": "1 € / sportiv / lună",
+    "currency": "EUR",
+    "features": [],
+    "is_free": false,
+    "price_cents_month": 100,
+    "price_cents_year": null,
+    "sort_order": 1
+  },
+  {
+    "code": "premium",
+    "name": "Premium",
+    "description": "2 € / sportiv / lună",
+    "currency": "EUR",
+    "features": [],
+    "is_free": false,
+    "price_cents_month": 200,
+    "price_cents_year": null,
+    "sort_order": 2
+  }
+]

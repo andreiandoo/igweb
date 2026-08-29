@@ -117,22 +117,39 @@
             </select>
           </div>
 
-          <div class="plan-pick" role="radiogroup" aria-label="Cum vrei să începi">
+          <span class="field-label">Cum începi</span>
+          <div class="plan-pick" role="radiogroup" aria-label="Tipul de abonament">
             <label class="plan-opt sel" onclick="pickPlan(this)">
-              <input type="radio" name="demo_type" value="self" class="visually-hidden" checked>
-              <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
-              <span class="po-ic" style="background:linear-gradient(135deg,#2FB673,#38c983)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-rocket"/></svg></span>
-              <span class="po-t"><span class="n">Pornesc demo-ul acum <span class="tag">14 zile</span></span><span class="d">Acces imediat, fără obligații</span></span>
+              <input type="radio" name="plan_code" value="demo" class="visually-hidden" checked>
+              <span class="po-check">{{icon:i-check}}</span>
+              <span class="po-ic" style="background:linear-gradient(135deg,#2FB673,#38c983)">{{icon:i-rocket}}</span>
+              <span class="po-t"><span class="n">Demo <span class="tag">14 zile</span></span><span class="d">Acces complet, fără card și fără obligații</span></span>
+              <span class="po-price"><span class="pa">{{club:demo:m}}</span></span>
             </label>
             <label class="plan-opt" onclick="pickPlan(this)">
-              <input type="radio" name="demo_type" value="guided" class="visually-hidden">
-              <span class="po-check"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></span>
-              <span class="po-ic" style="background:linear-gradient(135deg,#5B4BD6,#6c5cf0)"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-users"/></svg></span>
-              <span class="po-t"><span class="n">Vreau un demo ghidat</span><span class="d">Îți arătăm noi platforma, la un apel</span></span>
+              <input type="radio" name="plan_code" value="basic" class="visually-hidden">
+              <span class="po-check">{{icon:i-check}}</span>
+              <span class="po-ic" style="background:linear-gradient(135deg,#38b6ff,#5aa9f5)">{{icon:i-zap}}</span>
+              <span class="po-t"><span class="n">Bază</span><span class="d">Tot ce ține de club, facturat lunar</span></span>
+              <span class="po-price"><span class="pa">{{club:basic:m}}</span><span class="pw">/sportiv/lună</span></span>
+            </label>
+            <label class="plan-opt" onclick="pickPlan(this)">
+              <input type="radio" name="plan_code" value="premium" class="visually-hidden">
+              <span class="po-check">{{icon:i-check}}</span>
+              <span class="po-ic" style="background:linear-gradient(135deg,#7c6cff,#5B4BD6)">{{icon:i-crown}}</span>
+              <span class="po-t"><span class="n">Premium <span class="tag">Recomandat</span></span><span class="d">Plus rapoarte avansate și prioritate la suport</span></span>
+              <span class="po-price"><span class="pa">{{club:premium:m}}</span><span class="pw">/sportiv/lună</span></span>
             </label>
           </div>
 
-          <div style="margin-top:16px">
+          <p class="trust-mini" style="justify-content:flex-start;margin-top:12px">{{icon:i-lock}} Nu se cere card la înregistrare. La Bază și Premium, facturarea e lunară, după numărul de sportivi activi.</p>
+
+          <label class="chk" style="margin-top:14px">
+            <input type="checkbox" name="guided_demo" value="1">
+            Vreau un demo ghidat — îmi arătați voi platforma, la un apel.
+          </label>
+
+          <div class="reg-consents" style="margin-top:18px">
             <label class="chk"><input type="checkbox" name="terms_accepted" value="1" required> Sunt de acord cu <a href="/termeni" target="_blank" rel="noopener">Termenii și condițiile</a>.</label>
             <label class="chk" style="margin-bottom:0"><input type="checkbox" name="privacy_accepted" value="1" required> Am citit <a href="/confidentialitate" target="_blank" rel="noopener">Politica de confidențialitate</a> și sunt de acord cu prelucrarea datelor.</label>
           </div>

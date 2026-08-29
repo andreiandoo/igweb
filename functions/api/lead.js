@@ -5,6 +5,9 @@
  * trimite mai departe către API-ul aplicației (Railway), server-to-server.
  * Secretul de înregistrare NU ajunge niciodată în browser.
  *
+ * Afiliere: dacă vizitatorul a venit cu ?ref=COD, site-ul îl trimite ca `ref`
+ * la register-parent / register-athlete (backend-ul îl acceptă doar acolo).
+ *
  * Traseu:
  *   formular → /api/lead → validare + anti-spam
  *                        → POST către API (cu X-Registration-Key)
@@ -94,6 +97,7 @@ const FORMS = {
       terms_accepted: true,
       privacy_accepted: true,
       source: 'web:parinti',
+      ...(str(d.ref) ? { ref: str(d.ref) } : {}),
     }),
     /** id-ul pe care îl cere /plan-checkout */
     athleteId: (res) => res?.child?.id,
@@ -138,6 +142,7 @@ const FORMS = {
       terms_accepted: true,
       privacy_accepted: true,
       source: 'web:sportivi',
+      ...(str(d.ref) ? { ref: str(d.ref) } : {}),
     }),
     athleteId: (res) => res?.athlete?.id,
   },
@@ -165,10 +170,13 @@ const FORMS = {
       city: orNull(d.city),
       county: orNull(d.county),
       heard_about_us: orNull(d.heard_about_us),
+      /* tier-ul din /public/plans?audience=club; implicit „demo" */
+      plan_code: ['demo', 'basic', 'premium'].includes(str(d.plan_code)) ? str(d.plan_code) : 'demo',
       terms_accepted: true,
       privacy_accepted: true,
     }),
-    athleteId: () => null,     // cluburile nu trec prin /plan-checkout
+    /* cluburile nu trec prin /plan-checkout: facturarea e lunară, per sportiv */
+    athleteId: () => null,
   },
 
   /* Antrenorii nu au încă endpoint în aplicație — se colectează ca lead. */

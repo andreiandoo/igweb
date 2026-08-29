@@ -10,7 +10,7 @@
  * vezi „Deploy hook" în docs/PLAN-DEPLOYMENT.md.
  *
  * Dacă API-ul nu răspunde, build-ul NU pică: folosim ultima copie cunoscută din
- * `site/plans.fallback.json` și afișăm un avertisment.
+ * `site/plans.<audience>.json` și afișăm un avertisment.
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -18,12 +18,15 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const FALLBACK = join(HERE, 'plans.fallback.json');
+const fallbackFile = (audience) => join(HERE, `plans.${audience}.json`);
 
-/** 579 → „5,79 €" */
+/** 579 → „5,79 €"  ·  100 → „1 €"  (sumele rotunde se scriu fără zecimale) */
 export const money = (cents, currency = 'EUR') => {
   const symbol = currency === 'EUR' ? '€' : currency;
-  return `${(cents / 100).toFixed(2).replace('.', ',')} ${symbol}`;
+  const value = cents % 100 === 0
+    ? String(cents / 100)
+    : (cents / 100).toFixed(2).replace('.', ',');
+  return `${value} ${symbol}`;
 };
 
 /** Cost săptămânal aproximativ: luna are ~4,33 săptămâni, anul are 52. */
@@ -43,10 +46,10 @@ export async function loadPlans(apiUrl, audience = 'athlete') {
     if (!Array.isArray(plans) || !plans.length) throw new Error('răspuns fără planuri');
 
     /* copia locală se actualizează doar când API-ul a răspuns corect */
-    writeFileSync(FALLBACK, JSON.stringify(plans, null, 2) + '\n');
+    writeFileSync(fallbackFile(audience), JSON.stringify(plans, null, 2) + '\n');
     return { plans, source: 'API' };
   } catch (e) {
-    const plans = JSON.parse(readFileSync(FALLBACK, 'utf8'));
+    const plans = JSON.parse(readFileSync(fallbackFile(audience), 'utf8'));
     return { plans, source: `copie locală (API indisponibil: ${e.message})` };
   }
 }
@@ -57,15 +60,18 @@ export async function loadPlans(apiUrl, audience = 'athlete') {
  *   {{week:start:m}}  → ≈ 1,34 €/săptămână
  *   {{wk:start:m}}    → ≈ 1,34 €/săpt          (varianta scurtă, din modal)
  */
-export function priceMarkers(plans) {
+export function priceMarkers(plans, prefix = 'price') {
+  /* pentru sportivi pastram numele scurte din content: {{week:…}} / {{wk:…}} */
+  const weekKey = prefix === 'price' ? 'week' : `${prefix}Week`;
+  const wkKey = prefix === 'price' ? 'wk' : `${prefix}Wk`;
   const out = {};
   for (const p of plans) {
     const pairs = [['m', p.price_cents_month, 'month'], ['y', p.price_cents_year, 'year']];
     for (const [suffix, cents, period] of pairs) {
       if (cents === null || cents === undefined) continue;
-      out[`{{price:${p.code}:${suffix}}}`] = money(cents, p.currency);
-      out[`{{week:${p.code}:${suffix}}}`] = perWeek(cents, period, false);
-      out[`{{wk:${p.code}:${suffix}}}`] = perWeek(cents, period, true);
+      out[`{{${prefix}:${p.code}:${suffix}}}`] = money(cents, p.currency);
+      out[`{{${weekKey}:${p.code}:${suffix}}}`] = perWeek(cents, period, false);
+      out[`{{${wkKey}:${p.code}:${suffix}}}`] = perWeek(cents, period, true);
     }
   }
   return out;

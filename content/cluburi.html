@@ -296,12 +296,12 @@
           <li><svg class="icon"><use href="#i-check"/></svg> Fără obligații la înregistrare</li>
           <li><svg class="icon"><use href="#i-check"/></svg> Anulezi oricând</li>
         </ul>
-        <button class="btn btn-ghost btn-block js-reg">Pornește demo-ul</button>
+        <button class="btn btn-ghost btn-block js-reg" data-plan="demo">Pornește demo-ul</button>
       </div>
       <div class="pc">
         <div class="pc-n"><svg class="icon" style="color:var(--green)"><use href="#i-zap"/></svg> Bază</div>
         <div class="pc-d">Tot ce-ți trebuie ca să conduci un club complet.</div>
-        <div class="pc-price"><span class="amt">1 €</span><span class="per">/sportiv/lună</span></div>
+        <div class="pc-price"><span class="amt">{{club:basic:m}}</span><span class="per">/sportiv/lună</span></div>
         <div class="amort"><span class="old">1 €</span><span class="arrow"><svg class="icon"><use href="#i-trend"/></svg></span><span class="new">0 €</span><span class="lbl">cu abonament<br>în aplicație</span></div>
         <ul>
           <li><svg class="icon"><use href="#i-check"/></svg> 1 club · antrenori &amp; sportivi nelimitat</li>
@@ -310,13 +310,13 @@
           <li><svg class="icon"><use href="#i-check"/></svg> Rapoarte avansate &amp; export</li>
           <li><svg class="icon"><use href="#i-check"/></svg> Suport de bază</li>
         </ul>
-        <button class="btn btn-ghost btn-block js-reg">Alege Bază</button>
+        <button class="btn btn-ghost btn-block js-reg" data-plan="basic">Alege Bază</button>
       </div>
       <div class="pc pop">
         <span class="pc-tag"><svg class="icon"><use href="#i-crown"/></svg> Recomandat</span>
         <div class="pc-n"><svg class="icon" style="color:var(--purple)"><use href="#i-crown"/></svg> Premium</div>
         <div class="pc-d">Pentru cluburi care vor să scaleze și să arate profesionist.</div>
-        <div class="pc-price"><span class="amt">2 €</span><span class="per">/sportiv/lună</span></div>
+        <div class="pc-price"><span class="amt">{{club:premium:m}}</span><span class="per">/sportiv/lună</span></div>
         <div class="amort"><span class="old">2 €</span><span class="arrow"><svg class="icon"><use href="#i-trend"/></svg></span><span class="new">0 €</span><span class="lbl">acoperit din<br>comisioane</span></div>
         <ul>
           <li><svg class="icon"><use href="#i-check"/></svg> <b>Cluburi nelimitate</b> + tot ce e în Bază</li>
@@ -326,7 +326,7 @@
           <li class="star"><svg class="icon"><use href="#i-wallet"/></svg> Unelte premium plătibile din portofelul de comisioane</li>
           <li class="star"><svg class="icon"><use href="#i-shield"/></svg> Suport prioritar</li>
         </ul>
-        <button class="btn btn-purple btn-block js-reg">Alege Premium</button>
+        <button class="btn btn-purple btn-block js-reg" data-plan="premium">Alege Premium</button>
       </div>
     </div>
     <div class="commission reveal">

@@ -330,6 +330,15 @@ button{font-family:inherit}
   .foot-legal{justify-content:center}
 }
 
+/* ---------------------------------------------------- ilustraţii (img/ill/) */
+/* PNG-uri cu fundal transparent, exportate AVIF + WebP de _tools/6-graphics.py.
+   <img> are width/height reale, deci locul e rezervat înainte de descărcare. */
+.ill{display:block;line-height:0}
+.ill img{display:block;width:100%;height:auto}
+
+/* Hero-ul din „Părinţi": ilustraţia ţine locul întregului machetaj de telefon. */
+.hero-ill .ill{width:100%;max-width:520px;margin:0 auto}
+
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
   html{scroll-behavior:auto}

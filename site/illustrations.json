@@ -1,0 +1,34 @@
+{
+  "acasa-control": {
+    "w": 1100,
+    "h": 715
+  },
+  "acasa-motivatie": {
+    "w": 1100,
+    "h": 702
+  },
+  "acasa-siguranta": {
+    "w": 1100,
+    "h": 718
+  },
+  "hero-parinti": {
+    "w": 900,
+    "h": 927
+  },
+  "hero-rol-antrenor": {
+    "w": 620,
+    "h": 1125
+  },
+  "hero-rol-club": {
+    "w": 900,
+    "h": 616
+  },
+  "hero-rol-parinte": {
+    "w": 620,
+    "h": 1208
+  },
+  "hero-rol-sportiv": {
+    "w": 620,
+    "h": 1033
+  }
+}

@@ -63,6 +63,10 @@ header{position:sticky;top:0;z-index:80;backdrop-filter:blur(14px);background:rg
 .stage{position:relative;height:470px;display:flex;align-items:center;justify-content:center}
 .dev{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(20px) scale(.96);pointer-events:none;transition:opacity .5s ease,transform .5s ease}
 .dev.show{opacity:1;transform:none;pointer-events:auto}
+/* cele patru ilustraţii de rol au proporţii diferite (trei portret, clubul
+   peisaj) şi împart aceeaşi ramă — le încadrez după înălţime, nu după lăţime */
+.dev .ill{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.dev .ill img{width:auto;height:auto;max-width:min(100%,480px);max-height:100%;object-fit:contain}
 /* phone */
 .phone{width:250px;background:#0E2A5C;border-radius:36px;padding:10px;box-shadow:0 30px 60px rgba(14,42,92,.28)}
 .phone .notch{width:44%;height:6px;background:rgba(255,255,255,.25);border-radius:999px;margin:2px auto 8px}
@@ -150,9 +154,11 @@ header{position:sticky;top:0;z-index:80;backdrop-filter:blur(14px);background:rg
 .fx-copy .flist{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-direction:column;gap:9px}
 .fx-copy .flist li{display:flex;align-items:center;gap:.6em;font-weight:600;color:var(--txt);font-size:.99rem}
 .fx-copy .flist li .ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:#fff;background:var(--a);flex:none;font-size:.9rem}
-.fx-vis .panel{position:relative;background:linear-gradient(180deg,#fff,var(--card2));border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:0 24px 60px rgba(14,42,92,.1);overflow:hidden}
-.fx-vis .panel::before{content:"";position:absolute;inset:0;background:radial-gradient(420px 200px at 80% -10%,color-mix(in srgb,var(--a) 18%,transparent),transparent 60%);pointer-events:none}
-.fg-growie{position:absolute;width:70px;height:76px;right:-4px;bottom:-6px;filter:drop-shadow(0 10px 18px rgba(14,42,92,.18));z-index:3}
+/* Ilustraţiile au fundal transparent: în locul cardului alb de dinainte, pun
+   sub ele o aură în culoarea rândului (--a), ca secţiunea să-şi ţină ritmul. */
+.fx-vis{position:relative}
+.fx-vis::before{content:"";position:absolute;inset:8% 6%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--a) 24%,transparent),transparent);filter:blur(34px);pointer-events:none}
+.fx-vis .ill{position:relative}
 /* choose cards */
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .pcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px 20px 20px;box-shadow:0 10px 30px rgba(14,42,92,.06);transition:.2s ease;overflow:hidden;display:flex;flex-direction:column}
@@ -199,7 +205,7 @@ footer{background:#0b1f45;color:#c7d3ea;padding:52px 0 26px}
   .fx-copy{text-align:center}
   .fx-copy .k{margin:0 auto}
   .fx-copy .flist li{justify-content:center}
-  .fx-vis .panel{max-width:440px;margin:0 auto}
+  .fx-vis .ill{max-width:440px;margin:0 auto}
   .stats{grid-template-columns:1fr 1fr}
   .cards{grid-template-columns:1fr 1fr}
 }

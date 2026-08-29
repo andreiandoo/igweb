@@ -75,13 +75,35 @@ const BILLING_TOGGLE = SITE.yearlyBilling
           <input type="hidden" name="billing_period" value="month">`
   : `<input type="hidden" name="billing_period" value="month">`;
 
-/** Rezolvă {{app}}, {{lead}}, {{video}}, {{billingToggle}} şi {{page:cheie}}. */
+/* Ilustraţiile din assets/img/ill/, produse de _tools/6-graphics.py. Manifestul
+   ţine dimensiunile reale, ca <img> să rezerve locul şi pagina să nu sară. */
+const ILL = JSON.parse(readFileSync(join(ROOT, 'site/illustrations.json'), 'utf8'));
+
+/**
+ * {{ill:slug|eager|Text alternativ}} → <picture> cu AVIF + WebP.
+ *   eager — imagine din primul ecran (fără lazy, cu prioritate la descărcare)
+ *   lazy  — imagine de mai jos în pagină
+ */
+function illustration(slug, load, alt) {
+  const size = ILL[slug];
+  if (!size) fail(`marcaj {{ill:${slug}}} — lipseşte din site/illustrations.json (rulează _tools/6-graphics.py)`);
+  const attrs = load === 'eager'
+    ? 'fetchpriority="high" decoding="async"'
+    : 'loading="lazy" decoding="async"';
+  return `<picture class="ill">
+          <source srcset="${esc(asset(`/assets/img/ill/${slug}.avif`))}" type="image/avif">
+          <img src="${esc(asset(`/assets/img/ill/${slug}.webp`))}" width="${size.w}" height="${size.h}" alt="${esc(alt)}" ${attrs}>
+        </picture>`;
+}
+
+/** Rezolvă {{app}}, {{lead}}, {{video}}, {{ill:…}}, {{billingToggle}} şi {{page:cheie}}. */
 function resolve(html) {
   for (const [marker, value] of Object.entries(PRICE_MARKERS)) {
     html = html.replaceAll(marker, value);
   }
   return html
     .replace(/\{\{icon:([a-z0-9-]+)\}\}/g, (_, id) => icon(id))
+    .replace(/\{\{ill:([a-z0-9-]+)\|(eager|lazy)\|([^}]+)\}\}/g, (_, slug, load, alt) => illustration(slug, load, alt))
     .replaceAll('{{billingToggle}}', BILLING_TOGGLE)
     .replaceAll('{{app}}', SITE.app)
     .replaceAll('{{lead}}', SITE.lead)

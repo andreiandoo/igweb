@@ -39,6 +39,7 @@ GRAPHICS = {
 
     "new/hero antrenor.png":           ("hero-antrenori",      900),
     "new/hero cluburi.png":            ("hero-cluburi",        900),
+    "new/header sportiv.png":          ("hero-sportivi",       900),
     "new/Evoluție fizică.png":         ("antrenori-evolutie", 1100),
     "new/Banii clubulu.png":           ("cluburi-bani",       1100),
     "new/Program & evenimente.png":    ("cluburi-program",    1100),

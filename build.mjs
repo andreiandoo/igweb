@@ -58,11 +58,33 @@ function copyDir(from, to) {
 
 /* ------------------------------------------------------- marcaje în conţinut */
 
-const VIDEO = has('/assets/video/story.mp4')
-  ? `<video autoplay muted loop playsinline preload="metadata" poster="${esc(url('/assets/img/story-poster.jpg'))}" aria-label="Cum arată aplicaţia iGROWth">
-            <source src="${esc(url('/assets/video/story.mp4'))}" type="video/mp4">
-          </video>`
-  : `<svg viewBox="0 0 1440 420" class="sv-fallback" aria-hidden="true" focusable="false" style="width:100%;height:100%;object-fit:cover"><use href="#scene-hills"/></svg>`;
+/* Ilustraţia de rezervă, când pagina n-are încă un clip. */
+const VIDEO_FALLBACK = `<svg viewBox="0 0 1440 420" class="sv-fallback" aria-hidden="true" focusable="false" style="width:100%;height:100%;object-fit:cover"><use href="#scene-hills"/></svg>`;
+
+const VIDEOS = existsSync(join(ROOT, 'site/videos.json'))
+  ? JSON.parse(readFileSync(join(ROOT, 'site/videos.json'), 'utf8'))
+  : {};
+
+/**
+ * {{video:slug|Descriere}} → clipul din assets/video/<slug>.mp4.
+ *
+ * Clipurile sunt per pagină, nu unul comun: fiecare secţiune „cum funcţionează"
+ * îşi arată propriul rol. Dacă slug-ul n-are încă fişier, pun ilustraţia de
+ * rezervă — pagina nu se rupe şi nu se cere degeaba un fişier inexistent.
+ *
+ * `width`/`height` vin din site/videos.json (scris de _tools/9-video.py), ca
+ * locul să fie rezervat înainte de descărcare.
+ */
+function video(slug, label) {
+  const meta = VIDEOS[slug];
+  if (!meta || !has(`/assets/video/${slug}.mp4`)) return VIDEO_FALLBACK;
+  const poster = has(`/assets/img/video/${slug}.jpg`)
+    ? ` poster="${esc(asset(`/assets/img/video/${slug}.jpg`))}"`
+    : '';
+  return `<video autoplay muted loop playsinline preload="metadata" width="${meta.w}" height="${meta.h}"${poster} aria-label="${esc(label)}">
+            <source src="${esc(asset(`/assets/video/${slug}.mp4`))}" type="video/mp4">
+          </video>`;
+}
 
 /* Comutatorul lunar/anual din modal — apare doar dacă facturarea anuală e
    activă. Altfel trimitem tăcut `month`, ca nimeni să nu aleagă o perioadă pe
@@ -116,7 +138,7 @@ const growie = (slug, cls) => picture(
   'loading="lazy" decoding="async"', '',
 );
 
-/** Rezolvă {{app}}, {{lead}}, {{video}}, {{ill:…}}, {{growie:…}}, {{billingToggle}} şi {{page:cheie}}. */
+/** Rezolvă {{app}}, {{lead}}, {{video:…}}, {{ill:…}}, {{growie:…}}, {{billingToggle}} şi {{page:cheie}}. */
 function resolve(html) {
   for (const [marker, value] of Object.entries(PRICE_MARKERS)) {
     html = html.replaceAll(marker, value);
@@ -128,7 +150,8 @@ function resolve(html) {
     .replaceAll('{{billingToggle}}', BILLING_TOGGLE)
     .replaceAll('{{app}}', SITE.app)
     .replaceAll('{{lead}}', SITE.lead)
-    .replaceAll('{{video}}', VIDEO)
+    .replace(/\{\{video:([a-z0-9-]+)\|([^}]+)\}\}/g, (_, slug, label) => video(slug, label))
+    .replaceAll('{{video}}', VIDEO_FALLBACK)
     .replace(/\{\{page:([a-z]+)\}\}/g, (_, k) => {
       if (!PAGES[k]) fail(`marcaj {{page:${k}}} — cheie inexistentă în registru`);
       return pageUrl(k);

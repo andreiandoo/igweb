@@ -607,3 +607,46 @@ body{padding-bottom:76px}
 @media(prefers-reduced-motion:reduce){
 *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
 }
+
+/* ==========================================================================
+   Doar „Părinţi" · secţiunea „Învaţă prin joc"
+   theme.css e comun cu /cluburi şi /antrenori, aşa că totul de aici e legat
+   de `.page-parinti`. Când se decide şi pentru celelalte pagini, se scoate
+   prefixul şi regulile se mută mai sus, peste cele generice.
+   ========================================================================== */
+
+/* Clipul stă singur, fără ramă: fără colţuri rotunde, fără umbră şi fără
+   fundalul navy — acela se vedea doar când clipul nu umplea caseta. */
+.page-parinti .story-visual{border-radius:0;box-shadow:none;background:none}
+.page-parinti .story-visual .sv-ring{display:none}
+
+/* Casetele explicative. Marginea colorată din stânga a fost înlocuită cu o
+   pată difuză de culoare în colţul de sus — acelaşi accent pe fiecare casetă,
+   fără linia dură. Culoarea vine din --sc, setat mai jos pe fiecare casetă. */
+.page-parinti .step{
+  position:relative;
+  overflow:hidden;
+  border-left:1px solid var(--line);
+  padding:22px 24px;
+}
+.page-parinti .step::before{
+  content:"";
+  position:absolute;
+  width:210px;height:210px;left:-78px;top:-104px;border-radius:50%;
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--sc) 40%,transparent),transparent);
+  pointer-events:none;
+}
+.page-parinti .step > *{position:relative}
+
+/* Titlul şi cifra erau prea grele; le aduc la greutatea textului din jur. */
+.page-parinti .step h3{font-weight:600;letter-spacing:-.01em}
+.page-parinti .step .st-n{width:32px;height:32px;border-radius:10px;font-weight:600;font-size:.95rem}
+/* eticheta rămăsese mai grea decât titlul de deasupra ei */
+.page-parinti .step .st-tag{font-weight:600}
+
+.page-parinti .step:nth-child(1),
+.page-parinti .step:nth-child(6){--sc:var(--green)}
+.page-parinti .step:nth-child(2){--sc:var(--purple)}
+.page-parinti .step:nth-child(3){--sc:var(--amber)}
+.page-parinti .step:nth-child(4){--sc:var(--sky)}
+.page-parinti .step:nth-child(5){--sc:var(--pink)}

@@ -26,7 +26,7 @@ SRC = os.path.join(HERE, "..", "_sursa", "graphics")
 OUT = os.path.join(HERE, "..", "assets", "img", "ill")
 MANIFEST = os.path.join(HERE, "..", "site", "illustrations.json")
 
-# sursă  →  (nume final, lăţime maximă)
+# sursă (cale relativă la _sursa/graphics)  →  (nume final, lăţime maximă)
 GRAPHICS = {
     "parinti - hero image.png":        ("hero-parinti",        900),
     "home sus sportiv.png":            ("hero-rol-sportiv",    620),
@@ -36,6 +36,20 @@ GRAPHICS = {
     "Home  Motivație prin joc.png":    ("acasa-motivatie",    1100),
     "Home Control pentru echipă.png":  ("acasa-control",      1100),
     "Home  Sigur și transparent.png":  ("acasa-siguranta",    1100),
+
+    "new/hero antrenor.png":           ("hero-antrenori",      900),
+    "new/hero cluburi.png":            ("hero-cluburi",        900),
+    "new/Evoluție fizică.png":         ("antrenori-evolutie", 1100),
+    "new/Banii clubulu.png":           ("cluburi-bani",       1100),
+    "new/Program & evenimente.png":    ("cluburi-program",    1100),
+    "new/Gândește repede.png":         ("sportivi-quiz",      1100),
+    "new/clasament cub.png":           ("sportivi-clasament", 1100),
+
+    # cardurile din „Tur în aplicaţie" se văd la ~260 px, deci 560 acoperă 2x
+    "new/acasa 1.png":                 ("tur-acasa",           560),
+    "new/quizz 2.png":                 ("tur-quizuri",         560),
+    "new/Clasament 3.png":             ("tur-clasament",       560),
+    "new/Prezența ta4.png":            ("tur-prezenta",        560),
 }
 
 QUALITY_WEBP = 82

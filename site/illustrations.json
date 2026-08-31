@@ -11,6 +11,26 @@
     "w": 1100,
     "h": 718
   },
+  "antrenori-evolutie": {
+    "w": 1100,
+    "h": 724
+  },
+  "cluburi-bani": {
+    "w": 1100,
+    "h": 725
+  },
+  "cluburi-program": {
+    "w": 1100,
+    "h": 764
+  },
+  "hero-antrenori": {
+    "w": 900,
+    "h": 619
+  },
+  "hero-cluburi": {
+    "w": 900,
+    "h": 580
+  },
   "hero-parinti": {
     "w": 900,
     "h": 927
@@ -30,5 +50,29 @@
   "hero-rol-sportiv": {
     "w": 620,
     "h": 1033
+  },
+  "sportivi-clasament": {
+    "w": 1100,
+    "h": 716
+  },
+  "sportivi-quiz": {
+    "w": 1100,
+    "h": 734
+  },
+  "tur-acasa": {
+    "w": 560,
+    "h": 374
+  },
+  "tur-clasament": {
+    "w": 560,
+    "h": 373
+  },
+  "tur-prezenta": {
+    "w": 560,
+    "h": 370
+  },
+  "tur-quizuri": {
+    "w": 560,
+    "h": 361
   }
 }

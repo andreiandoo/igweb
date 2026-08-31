@@ -156,13 +156,9 @@ header{position:sticky;top:0;z-index:80;backdrop-filter:blur(14px);background:rg
 .badge .got{position:absolute;top:12px;right:12px;color:var(--green);font-size:1.1rem}
 /* leaderboard */
 .lb-wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:center}
-.lb-copy .toggles{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
-.lb-copy .toggles .t{font-weight:700;font-size:.85rem;padding:.5em 1em;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--muted)}
-.lb-copy .toggles .t.on{background:var(--navy);color:#fff;border-color:var(--navy)}
-.lb-copy .prizes{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
-.prize{display:inline-flex;align-items:center;gap:.5em;font-weight:800;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:12px;padding:.6em .9em;font-size:.9rem}
-.prize .m{font-size:1.1rem}
-.lb-card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 60px rgba(14,42,92,.1);overflow:hidden}
+/* Cardul alb a rămas fără chenar: ilustraţia din el are deja propriul card
+   desenat, iar un al doilea cadru în jur l-ar dubla. */
+.lb-card{border-radius:22px;overflow:hidden}
 .lb-head{background:linear-gradient(135deg,#0E2A5C,#123a7a);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
 .lb-head b{font-size:1.05rem}
 .lb-head span{font-size:.8rem;opacity:.85;font-weight:500}
@@ -229,7 +225,6 @@ footer{background:#0b1f45;color:#c7d3ea;padding:52px 0 26px}
   .lb-wrap{grid-template-columns:1fr;gap:26px}
   .lb-copy{text-align:center}
   .lb-copy .k{margin:0 auto}
-  .lb-copy .toggles,.lb-copy .prizes{justify-content:center}
   .soonwrap{grid-template-columns:1fr}
   .cross{grid-template-columns:1fr}
 }
@@ -242,6 +237,9 @@ footer{background:#0b1f45;color:#c7d3ea;padding:52px 0 26px}
 .tcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 10px 30px rgba(14,42,92,.06);overflow:hidden;transition:.2s}
 .tcard:hover{transform:translateY(-5px);box-shadow:0 20px 44px rgba(14,42,92,.12)}
 .tcard .scr{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px;height:170px;overflow:hidden;position:relative}
+/* Ilustraţia ţine acum locul machetajului. Proporţia fixă egalizează cele
+   patru carduri, ca titlurile de sub ele să rămână pe aceeaşi linie. */
+.tcard .ill img{aspect-ratio:3/2;object-fit:contain}
 .tcard .ti{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;font-size:1.2rem;margin-bottom:12px}
 .tcard h4{font-size:1.02rem;font-weight:800}
 .tcard p{margin-top:5px;color:var(--muted);font-size:.86rem;font-weight:500}

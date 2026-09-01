@@ -336,6 +336,26 @@ button{font-family:inherit}
 .ill{display:block;line-height:0}
 .ill img{display:block;width:100%;height:auto}
 
+/* Doar prima pagină: banda de download trece pe toată lăţimea ecranului.
+   Gradientul se mută de pe card pe secţiune, iar `.wrap` din interior ţine în
+   continuare conţinutul aliniat cu restul paginii. Cad odată cu cardul şi
+   colţurile rotunde, umbra şi suprapunerea peste footer — un card care
+   pluteşte peste footer nu mai are sens când banda merge din margine în
+   margine. Pe /parinti rămâne cardul de dinainte. */
+.page-acasa .dl-bridge{
+  background:radial-gradient(420px 240px at 6% 15%,rgba(47,182,115,.32),transparent 60%),linear-gradient(120deg,#6a5bea,#4740c0 60%,#3a44b5);
+  overflow:hidden;
+}
+.page-acasa .foot-download{
+  background:none;border-radius:0;box-shadow:none;
+  margin-bottom:0;padding:30px 0;
+}
+.page-acasa .foot-download::after{right:-40px;top:-70px}
+
+@media(max-width:760px){
+  .page-acasa .foot-download{padding:26px 0;margin-bottom:0}
+}
+
 /* Hero-ul din „Părinţi": ilustraţia ţine locul întregului machetaj de telefon. */
 .hero-ill .ill{width:100%;max-width:520px;margin:0 auto}
 

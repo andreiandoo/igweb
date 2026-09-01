@@ -163,11 +163,13 @@ header{position:sticky;top:0;z-index:80;backdrop-filter:blur(14px);background:rg
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .pcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px 20px 20px;box-shadow:0 10px 30px rgba(14,42,92,.06);transition:.2s ease;overflow:hidden;display:flex;flex-direction:column}
 .pcard:hover{transform:translateY(-5px);box-shadow:0 22px 46px rgba(14,42,92,.13);border-color:color-mix(in srgb,var(--a) 45%,var(--line))}
-.pcard::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--a)}
+/* pata de culoare din colt, in locul barei colorate de sus */
+.pcard::before{content:"";position:absolute;width:180px;height:180px;left:-64px;top:-88px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--a) 38%,transparent),transparent);pointer-events:none}
+.pcard > *{position:relative}
 .pcard .pic{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;color:#fff;background:var(--a);font-size:1.5rem;box-shadow:0 10px 22px color-mix(in srgb,var(--a) 40%,transparent)}
-.pcard h3{margin-top:15px;font-size:1.22rem;font-weight:800}
+.pcard h3{margin-top:15px;font-size:1.22rem;font-weight:600;letter-spacing:-.01em}
 .pcard p{margin-top:8px;color:var(--muted);font-size:.94rem;font-weight:500;flex:1}
-.pcard .go{margin-top:16px;display:inline-flex;align-items:center;gap:.4em;font-weight:800;color:var(--a);font-size:.94rem}
+.pcard .go{margin-top:16px;display:inline-flex;align-items:center;gap:.4em;font-weight:600;color:var(--a);font-size:.94rem}
 .pcard:hover .go .icon{transform:translateX(4px)}
 .pcard .go .icon{transition:transform .2s ease}
 .pcard .soon{position:absolute;top:16px;right:16px}

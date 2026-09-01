@@ -201,24 +201,29 @@ header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.85);backdro
 .story-visual:has(video){aspect-ratio:9/16;max-height:min(76vh,660px);width:auto;margin:0 auto}
 .story-visual .sv-ring{position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
 .story-steps{display:grid;gap:20px}
-.step{background:var(--card);border-radius:var(--radius);padding:24px 24px 24px 26px;box-shadow:var(--shadow-sm);border:1px solid var(--line);border-left:5px solid var(--green);opacity:0;transform:translateY(24px)}
+/* Casetele explicative de langa clip. In loc de marginea colorata din stanga,
+   fiecare are o pata difuza de culoare care porneste din coltul de sus —
+   acelasi accent, fara linia dura. Culoarea vine din --sc, o data pe caseta. */
+.step{background:var(--card);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm);border:1px solid var(--line);opacity:0;transform:translateY(24px);position:relative;overflow:hidden}
+.step::before{content:"";position:absolute;width:210px;height:210px;left:-78px;top:-104px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--sc) 40%,transparent),transparent);pointer-events:none}
+.step > *{position:relative}
 .step.in{opacity:1;transform:none;transition:all .6s cubic-bezier(.2,.7,.2,1)}
 .step .st-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.step .st-n{width:36px;height:36px;border-radius:11px;background:var(--green-soft);color:var(--green-2);display:grid;place-items:center;font-weight:900;flex:none}
-.step h3{font-size:1.18rem;color:var(--navy);font-weight:800}
+.step .st-n{width:32px;height:32px;border-radius:10px;background:var(--green-soft);color:var(--green-2);display:grid;place-items:center;font-weight:600;font-size:.95rem;flex:none}
+.step h3{font-size:1.18rem;color:var(--navy);font-weight:600;letter-spacing:-.01em}
 .step p{color:var(--muted);font-size:.98rem;margin-top:2px}
-.step .st-tag{display:inline-flex;align-items:center;gap:.4em;margin-top:12px;font-size:.8rem;font-weight:700;padding:.4em .8em;border-radius:999px}
-.step:nth-child(1){border-left-color:var(--green)}
+.step .st-tag{display:inline-flex;align-items:center;gap:.4em;margin-top:12px;font-size:.8rem;font-weight:600;padding:.4em .8em;border-radius:999px}
+.step:nth-child(1){--sc:var(--green)}
 .step:nth-child(1) .st-n{background:var(--green-soft);color:var(--green-2)}
-.step:nth-child(2){border-left-color:var(--purple)}
+.step:nth-child(2){--sc:var(--purple)}
 .step:nth-child(2) .st-n{background:var(--purple-soft);color:var(--purple)}
-.step:nth-child(3){border-left-color:var(--amber)}
+.step:nth-child(3){--sc:var(--amber)}
 .step:nth-child(3) .st-n{background:var(--amber-soft);color:#a9710b}
-.step:nth-child(4){border-left-color:var(--sky)}
+.step:nth-child(4){--sc:var(--sky)}
 .step:nth-child(4) .st-n{background:#e2f4ff;color:#1b8dd1}
-.step:nth-child(5){border-left-color:var(--pink)}
+.step:nth-child(5){--sc:var(--pink)}
 .step:nth-child(5) .st-n{background:#ffe6ee;color:#d63c6b}
-.step:nth-child(6){border-left-color:var(--green)}
+.step:nth-child(6){--sc:var(--green)}
 .step:nth-child(6) .st-n{background:var(--green-soft);color:var(--green-2)}
 /* split */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line)}
@@ -608,45 +613,9 @@ body{padding-bottom:76px}
 *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
 }
 
-/* ==========================================================================
-   Doar „Părinţi" · secţiunea „Învaţă prin joc"
-   theme.css e comun cu /cluburi şi /antrenori, aşa că totul de aici e legat
-   de `.page-parinti`. Când se decide şi pentru celelalte pagini, se scoate
-   prefixul şi regulile se mută mai sus, peste cele generice.
-   ========================================================================== */
-
-/* Clipul stă singur, fără ramă: fără colţuri rotunde, fără umbră şi fără
-   fundalul navy — acela se vedea doar când clipul nu umplea caseta. */
+/* Doar „Părinţi": clipul stă singur, fără ramă — fără colţuri rotunde, fără
+   umbră şi fără fundalul navy, care se vedea doar când clipul nu umplea
+   caseta. Pe /cluburi şi /antrenori slotul arată încă ilustraţia de rezervă,
+   deci rama îi rămâne. */
 .page-parinti .story-visual{border-radius:0;box-shadow:none;background:none}
 .page-parinti .story-visual .sv-ring{display:none}
-
-/* Casetele explicative. Marginea colorată din stânga a fost înlocuită cu o
-   pată difuză de culoare în colţul de sus — acelaşi accent pe fiecare casetă,
-   fără linia dură. Culoarea vine din --sc, setat mai jos pe fiecare casetă. */
-.page-parinti .step{
-  position:relative;
-  overflow:hidden;
-  border-left:1px solid var(--line);
-  padding:22px 24px;
-}
-.page-parinti .step::before{
-  content:"";
-  position:absolute;
-  width:210px;height:210px;left:-78px;top:-104px;border-radius:50%;
-  background:radial-gradient(closest-side,color-mix(in srgb,var(--sc) 40%,transparent),transparent);
-  pointer-events:none;
-}
-.page-parinti .step > *{position:relative}
-
-/* Titlul şi cifra erau prea grele; le aduc la greutatea textului din jur. */
-.page-parinti .step h3{font-weight:600;letter-spacing:-.01em}
-.page-parinti .step .st-n{width:32px;height:32px;border-radius:10px;font-weight:600;font-size:.95rem}
-/* eticheta rămăsese mai grea decât titlul de deasupra ei */
-.page-parinti .step .st-tag{font-weight:600}
-
-.page-parinti .step:nth-child(1),
-.page-parinti .step:nth-child(6){--sc:var(--green)}
-.page-parinti .step:nth-child(2){--sc:var(--purple)}
-.page-parinti .step:nth-child(3){--sc:var(--amber)}
-.page-parinti .step:nth-child(4){--sc:var(--sky)}
-.page-parinti .step:nth-child(5){--sc:var(--pink)}

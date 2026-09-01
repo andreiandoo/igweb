@@ -95,11 +95,13 @@ header{position:sticky;top:0;z-index:80;backdrop-filter:blur(14px);background:rg
 /* XP earn cards */
 .xpcards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .xpc{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px 22px;box-shadow:0 10px 30px rgba(14,42,92,.06);position:relative;overflow:hidden}
-.xpc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--a)}
+/* pata de culoare din colt, in locul barei colorate din stanga */
+.xpc::before{content:"";position:absolute;width:180px;height:180px;left:-64px;top:-88px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--a) 38%,transparent),transparent);pointer-events:none}
+.xpc > *{position:relative}
 .xpc .ic{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;color:#fff;background:var(--a);font-size:1.5rem;box-shadow:0 10px 22px color-mix(in srgb,var(--a) 40%,transparent)}
-.xpc h3{margin-top:15px;font-size:1.2rem;font-weight:800}
+.xpc h3{margin-top:15px;font-size:1.2rem;font-weight:600;letter-spacing:-.01em}
 .xpc p{margin-top:8px;color:var(--muted);font-size:.95rem;font-weight:500}
-.xpc .amt{display:inline-flex;align-items:center;gap:.4em;margin-top:14px;font-weight:800;color:var(--a);background:color-mix(in srgb,var(--a) 12%,#fff);padding:.42em .85em;border-radius:999px;font-size:.92rem}
+.xpc .amt{display:inline-flex;align-items:center;gap:.4em;margin-top:14px;font-weight:600;color:var(--a);background:color-mix(in srgb,var(--a) 12%,#fff);padding:.42em .85em;border-radius:999px;font-size:.92rem}
 /* level ladder */
 .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .lvl{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 16px;text-align:center;box-shadow:0 8px 24px rgba(14,42,92,.05);transition:.2s}

@@ -382,6 +382,16 @@ footer{background:#0b1f45;color:#c7d3ea;padding:52px 0 26px}
 .reg-done{text-align:center;padding:14px 0 6px}
 .reg-done .rd-ic{width:76px;height:76px;border-radius:50%;margin:0 auto 16px;background:linear-gradient(135deg,#4ee6a0,#2FB673);display:grid;place-items:center;color:#fff;font-size:2.2rem;box-shadow:0 14px 30px rgba(47,182,115,.34)}
 .modal-foot{padding:14px 22px 20px;display:flex;gap:10px;border-top:1px solid var(--line);margin-top:8px}
+/* Derularea din modal.
+   .modal-box e coloana flex si e limitata la max-height, dar intre ea si
+   sectiuni sta <form>. Formularul e singurul copil flex, are min-height:auto
+   implicit, deci creste cat continutul si refuza sa se micsoreze — asa ca
+   .modal-body nu primeste niciodata o inaltime limitata si nu deruleaza, iar
+   ce trece de marginea cutiei (inclusiv butoanele) e taiat de overflow:hidden
+   si devine inaccesibil. Formularul trebuie sa preia el rolul de coloana. */
+.modal-box > form{display:flex;flex-direction:column;min-height:0;flex:1 1 auto;overflow:hidden}
+.modal-head,.modal-foot{flex:none}
+.modal-body{flex:1 1 auto;min-height:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .modal-foot .btn{flex:1}
 @media(max-width:980px){
 .tour{grid-template-columns:1fr 1fr}

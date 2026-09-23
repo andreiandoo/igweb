@@ -9,7 +9,7 @@
 
 <div class="modal" id="reg" role="dialog" aria-modal="true" aria-labelledby="regTitle"
      data-submit-label="Pornește demo-ul"
-     data-done-template="{name} e gata de configurat. Îți trimitem pe email pașii de acces și invitațiile pentru antrenori."
+     data-done-template="Am trimis un email de verificare la {email}. Deschide linkul din el ca să-ți alegi parola și să intri în cont — linkul e valabil 24 de ore. Până atunci contul nu poate fi folosit."
      data-done-fallback="Clubul tău">
   <div class="modal-backdrop"></div>
   <div class="modal-box">
@@ -28,8 +28,15 @@
 
           <div class="card-soft">
             <div class="cs-h"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-shield"/></svg> Identitatea clubului</div>
+            <div class="field" id="cuiField">
+              <label for="clubCui">Cod fiscal (CUI/CIF) <span class="hint">*</span></label>
+              <input type="text" id="clubCui" name="cui" required autofocus inputmode="numeric"
+                     autocomplete="off" placeholder="ex: RO12345678"
+                     aria-describedby="cuiState">
+              <div class="cui-state" id="cuiState" aria-live="polite"></div>
+            </div>
             <div class="field">
-              <label for="clubLegalName">Denumire legală <span class="hint">*</span></label>
+              <label for="clubLegalName">Denumire oficială club <span class="hint">*</span></label>
               <input type="text" id="clubLegalName" name="legal_name" required autocomplete="organization" placeholder="ex. Asociația Sportivă Club XYZ" data-done-name>
             </div>
             <div class="field">
@@ -55,10 +62,7 @@
 
           <div class="card-soft" style="margin-bottom:4px">
             <div class="cs-h"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-file"/></svg> Date fiscale <span class="hint" style="font-weight:600;color:var(--muted)">(opțional)</span></div>
-            <div class="field-row">
-              <div class="field"><label for="clubCui">CUI</label><input type="text" id="clubCui" name="cui" placeholder="ex. RO12345678"></div>
-              <div class="field"><label for="clubCis">Cod CIS</label><input type="text" id="clubCis" name="cis_code" placeholder="ex. CIS-1234"></div>
-            </div>
+            <div class="field"><label for="clubCis">Cod CIS</label><input type="text" id="clubCis" name="cis_code" placeholder="ex. CIS-1234"></div>
             <div class="field" style="margin-bottom:0"><label for="clubSite">Website</label><input type="url" id="clubSite" name="website" placeholder="ex. https://clubxyz.ro"></div>
           </div>
         </div>
@@ -80,7 +84,7 @@
               </div>
               <div class="field">
                 <label for="clubEmail">Email <span class="hint">*</span></label>
-                <input type="email" id="clubEmail" name="email" required autocomplete="email" placeholder="ex. contact@clubxyz.ro">
+                <input type="email" id="clubEmail" name="email" required autocomplete="email" placeholder="ex. contact@clubxyz.ro" data-done-email>
               </div>
             </div>
           </div>
@@ -163,8 +167,8 @@
         <div class="rstep" id="rstep4">
           <div style="text-align:center;padding:10px 0 6px">
             <div class="reg-done-ic"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"/></svg></div>
-            <h3 style="text-align:center">Gata, demo-ul e pregătit! 🎉</h3>
-            <p class="rs-sub" style="text-align:center;max-width:36ch;margin-inline:auto" id="doneMsg">Clubul tău e gata de configurat. Îți trimitem pe email pașii de acces și invitațiile pentru antrenori.</p>
+            <h3 style="text-align:center">Verifică-ți emailul 📬</h3>
+            <p class="rs-sub" style="text-align:center;max-width:40ch;margin-inline:auto" id="doneMsg">Am trimis un email de verificare. Deschide linkul din el ca să-ți alegi parola și să intri în cont — linkul e valabil 24 de ore. Până atunci contul nu poate fi folosit.</p>
           </div>
         </div>
 

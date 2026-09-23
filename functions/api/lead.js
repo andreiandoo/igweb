@@ -150,7 +150,13 @@ const FORMS = {
   club: {
     endpoint: '/auth/register-club-admin',
     needsKey: false,          // endpoint public, nu cere secretul
-    required: ['legal_name', 'short_name', 'president_name', 'phone', 'email'],
+    /* `legal_name` nu mai e obligatoriu: serverul ia denumirea oficială de la
+       ANAF, pe baza codului fiscal, și ignoră ce trimitem noi. Codul fiscal, în
+       schimb, e condiția întregii înregistrări. */
+    required: ['cui', 'short_name', 'president_name', 'phone', 'email'],
+    /* ANAF indisponibil (503) nu se înghite: nu s-a creat nimic, iar omul
+       trebuie să reîncerce. Vezi tratarea răspunsurilor de la API. */
+    passThrough: [503],
     check(d) {
       if (!isEmail(d.email)) return ['Adresa de email nu pare validă.', ['email']];
       if (!str(d.sports)) return ['Selectează cel puțin un sport.', ['sports']];
@@ -160,7 +166,7 @@ const FORMS = {
       legal_name: str(d.legal_name),
       short_name: str(d.short_name),
       sports: str(d.sports).split(',').map((s) => s.trim()).filter(Boolean),
-      cui: orNull(d.cui),
+      cui: str(d.cui).replace(/\D+/g, '') || null,
       cis_code: orNull(d.cis_code),
       president_name: str(d.president_name),
       phone: str(d.phone),
@@ -323,6 +329,14 @@ export async function onRequestPost({ request, env }) {
     lead.status = 'api indisponibil';
     await store(env, lead);
     await notify(env, lead);
+    /* Pentru formularele care nu acceptă un 503 tăcut, nici aici nu putem
+       spune „gata": contul chiar nu s-a creat, iar omul trebuie să reîncerce. */
+    if (form.passThrough?.includes(503)) {
+      return json({
+        ok: false,
+        error: 'Nu am putut finaliza înregistrarea acum. Încearcă din nou în câteva minute.',
+      }, 503);
+    }
     return json({ ok: true });
   }
 
@@ -331,13 +345,15 @@ export async function onRequestPost({ request, env }) {
     await store(env, lead);
     await notify(env, lead);
 
-    /* 409 și 422 au mesaje utile pentru om — le trimitem mai departe */
-    if (reg.status === 409 || reg.status === 422 || reg.status === 400) {
+    /* 409 și 422 au mesaje utile pentru om — le trimitem mai departe.
+       La fel și codurile din `passThrough`: acolo tăcerea ar fi o minciună. */
+    const passes = form.passThrough?.includes(reg.status) ?? false;
+    if (reg.status === 409 || reg.status === 422 || reg.status === 400 || passes) {
       return json({
         ok: false,
         error: reg.data?.error ?? 'Datele nu au putut fi înregistrate.',
         conflict: reg.status === 409,
-      }, reg.status === 409 ? 409 : 422);
+      }, reg.status === 409 ? 409 : (passes ? reg.status : 422));
     }
     /* 401/5xx: e problema noastră, nu a lui — confirmăm, avem datele salvate */
     return json({ ok: true });

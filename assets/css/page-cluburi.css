@@ -337,3 +337,26 @@ input[type=range].rng::-moz-range-thumb{width:20px;height:20px;border-radius:50%
 .chk{display:flex;align-items:flex-start;gap:10px;font-size:.84rem;color:#3a495f;cursor:pointer;margin-bottom:11px;font-weight:500;line-height:1.4}
 .chk input{margin-top:2px;width:17px;height:17px;accent-color:var(--purple);flex:none}
 .chk a{color:var(--purple);text-decoration:underline}
+
+/* --------------------------------------------- verificarea la ANAF (modal)
+   Codul fiscal e prima întrebare din formular, iar starea lui se anunţă sub
+   input, într-o zonă cu aria-live. Bordura inputului urmează aceeaşi stare. */
+.cui-state{display:flex;flex-direction:column;gap:2px;margin-top:7px;font-size:.82rem;line-height:1.4}
+.cui-idle{color:var(--muted)}
+.cui-checking{color:var(--purple);font-weight:600}
+.cui-error{color:#c8323f;font-weight:600}
+
+/* Verdictul bun: casetă verde cu denumirea oficială. Unele denumiri sunt foarte
+   lungi şi n-au spaţii utile, deci le rupem oriunde, ca să nu lăţească modalul. */
+.cui-ok{background:var(--green-soft);border-radius:11px;padding:10px 12px;color:var(--green-2)}
+.cui-ok .cui-name{font-weight:800;color:var(--navy);overflow-wrap:anywhere;word-break:break-word}
+.cui-ok .cui-note{font-weight:600}
+.cui-error .cui-note{color:inherit;text-decoration:underline;align-self:flex-start}
+
+#clubCui.is-ok{border-color:var(--green)}
+#clubCui.is-ok:focus{box-shadow:0 0 0 3px var(--green-soft)}
+#clubCui.is-err{border-color:#e0596a}
+#clubCui.is-err:focus{border-color:#e0596a;box-shadow:0 0 0 3px #ffe6e9}
+
+/* Butonul blocat cât timp codul nu e confirmat — altfel pare doar „mort". */
+#regFwd:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;filter:none}

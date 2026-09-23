@@ -497,7 +497,9 @@
           var nameEl = modal.querySelector('[data-done-name]');
           if (doneMsg && tpl) {
             var who = (nameEl && nameEl.value.trim()) || modal.getAttribute('data-done-fallback') || '';
-            doneMsg.textContent = tpl.replace('{name}', who);
+            var mailEl = modal.querySelector('[data-done-email]');
+            var mail = (mailEl && mailEl.value.trim()) || 'adresa ta de email';
+            doneMsg.textContent = tpl.replace('{name}', who).replace('{email}', mail);
           }
           /* planul platit n-a putut porni: spunem adevarul, nu „gata" */
           var note = window.igPaymentNote(lastResult);
@@ -515,7 +517,8 @@
         window.igPreselectPlan(e && e.currentTarget);
         modal.classList.add('open');
         doc.body.style.overflow = 'hidden';
-        var first = modal.querySelector('input:not([type="hidden"]), select, button');
+        var first = modal.querySelector('[autofocus]')
+                 || modal.querySelector('input:not([type="hidden"]), select, button');
         if (first) first.focus();
       };
       window.closeReg = function () {
@@ -531,9 +534,18 @@
         var next = step + d;
         if (next < 1) return;
         if (next > TOTAL + 1) { window.closeReg(); return; }
-        if (d > 0 && step <= TOTAL && !window.igValidate(doc.getElementById('rstep' + step))) return;
-
         regError(modal, '');
+
+        /* Pagina poate pune o conditie peste validarea obisnuita — la cluburi,
+           codul fiscal confirmat de ANAF. Se verifica INAINTEA validarii
+           native: e conditia pentru tot restul, deci mesajul ei trebuie vazut
+           primul, nu dupa ce browserul se plange de alte campuri goale. */
+        if (d > 0 && step <= TOTAL && typeof window.igRegGate === 'function') {
+          var blocaj = window.igRegGate();
+          if (blocaj) { regError(modal, blocaj); return; }
+        }
+
+        if (d > 0 && step <= TOTAL && !window.igValidate(doc.getElementById('rstep' + step))) return;
 
         /* ultimul pas: trimitem, si abia dupa raspuns aratam confirmarea */
         if (next === TOTAL + 1) {

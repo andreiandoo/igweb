@@ -43,4 +43,145 @@
     window.igFillTrack('ownersTrack', OWNERS, window.igQuoteCard);
     window.igFillTrack('coachesTrack', COACHES, window.igQuoteCard);
   });
+  /* ==================================================================
+     Verificarea clubului la ANAF
+
+     Codul fiscal e prima intrebare si conditia pentru tot restul: pana
+     cand serviciul nu confirma firma, formularul nu merge mai departe.
+     Motivul e concret — pana acum campurile acceptau orice text si s-au
+     strecurat inregistrari cu date inventate.
+
+     Verdictul vine INTOTDEAUNA de la server. Cifra de control se poate
+     potrivi si pentru un cod care nu exista, deci nu validam local.
+
+     Interogarea trece prin /api/anaf (functie Pages), nu direct catre API:
+     CSP-ul paginii are `connect-src 'self'`, deci un fetch catre alt domeniu
+     ar fi blocat de browser.
+     ================================================================== */
+  onReady(function () {
+    var input = document.getElementById('clubCui');
+    var out   = document.getElementById('cuiState');
+    if (!input || !out) return;
+
+    var AJUTOR = 'Îl verificăm în registrul ANAF și completăm automat datele necesare';
+    var BLOCAT = 'Începe cu codul fiscal (CUI/CIF) al clubului — facem o verificare automată și completăm noi datele necesare.';
+    var DEBOUNCE = 500;   /* limita e 120 de cereri / 5 min / IP */
+
+    var state = 'idle';
+    var timer = null;
+    /* Ultimul cod pentru care am cerut un verdict. Un raspuns lent pentru un
+       cod vechi nu are voie sa suprascrie unul mai nou. */
+    var asteptat = '';
+
+    var doar_cifre = function (v) { return String(v || '').replace(/\D+/g, ''); };
+
+    function buton() { return document.getElementById('regFwd'); }
+
+    function setState(next) {
+      state = next;
+      input.classList.toggle('is-ok', next === 'ok');
+      input.classList.toggle('is-err', next === 'error');
+      input.setAttribute('aria-invalid', next === 'error' ? 'true' : 'false');
+      var b = buton();
+      if (b) b.disabled = (next !== 'ok');
+    }
+
+    function scrie(next, noduri) {
+      setState(next);
+      out.className = 'cui-state cui-' + next;
+      out.replaceChildren.apply(out, noduri);
+    }
+
+    var text = function (t, cls) {
+      var el = document.createElement('span');
+      if (cls) el.className = cls;
+      el.textContent = t;
+      return el;
+    };
+
+    function idle()     { scrie('idle', [text(AJUTOR)]); }
+    function checking() { scrie('checking', [text('Verificăm la ANAF…')]); }
+
+    function ok(company) {
+      var nume = document.createElement('b');
+      nume.className = 'cui-name';
+      nume.textContent = company.legal_name || '';
+      scrie('ok', [nume, text('Datele oficiale au fost preluate de la ANAF.', 'cui-note')]);
+    }
+
+    /* Mesajul vine de la server ca text, nu ca HTML: il punem prin
+       textContent, iar linkul il construim noi. */
+    function eroare(mesaj, cuLogin) {
+      var noduri = [text(mesaj)];
+      if (cuLogin) {
+        var a = document.createElement('a');
+        a.className = 'cui-note';
+        a.href = ((window.IG && window.IG.app) || '') + '/login';
+        a.rel = 'noopener';
+        a.textContent = 'Intră în cont';
+        noduri.push(a);
+      }
+      scrie('error', noduri);
+    }
+
+    function completeaza(company) {
+      /* Denumirea clubului NU se precompleteaza: nu e neaparat aceeasi cu
+         numele persoanei juridice din spate. Restul, doar daca e gol —
+         nu suprascriem ce a scris omul. Adresa de antrenament ramane a lui:
+         sediul social din ANAF nu e locul unde se antreneaza clubul. */
+      [['clubShortName', company.legal_name],
+       ['clubCity',      company.city],
+       ['clubCounty',    company.county]].forEach(function (pereche) {
+        var el = document.getElementById(pereche[0]);
+        if (el && !el.value.trim() && pereche[1]) el.value = pereche[1];
+      });
+    }
+
+    function intreaba(cui) {
+      asteptat = cui;
+      checking();
+      fetch('/api/anaf?cui=' + encodeURIComponent(cui), { headers: { Accept: 'application/json' } })
+        .then(function (r) {
+          return r.json().catch(function () { return {}; })
+            .then(function (d) { return { status: r.status, data: d }; });
+        })
+        .catch(function () {
+          return { status: 0, data: { error: 'Conexiune întreruptă. Încearcă din nou.', reason: 'unavailable' } };
+        })
+        .then(function (res) {
+          /* intre timp s-a schimbat codul: verdictul asta nu mai e al nostru */
+          if (asteptat !== cui || doar_cifre(input.value) !== cui) return;
+
+          if (res.status === 200 && res.data && res.data.company) {
+            if (res.data.already_registered) {
+              eroare('Acest club este deja înregistrat pe iGROWth. Autentifică-te sau recuperează-ți parola.', true);
+              return;
+            }
+            completeaza(res.data.company);
+            ok(res.data.company);
+            return;
+          }
+          eroare((res.data && res.data.error) || 'Nu am putut verifica acest cod. Încearcă din nou.');
+        });
+    }
+
+    function laScriere() {
+      clearTimeout(timer);
+      var cui = doar_cifre(input.value);
+      asteptat = '';                    /* orice raspuns in zbor devine vechi */
+      if (cui.length < 2) { idle(); return; }
+      setState('idle');                 /* butonul se blocheaza pana la verdict */
+      timer = setTimeout(function () { intreaba(cui); }, DEBOUNCE);
+    }
+
+    input.addEventListener('input', laScriere);
+    idle();
+
+    /* Poarta citita de regNext din site.js inainte de fiecare pas. */
+    window.igRegGate = function () {
+      if (state === 'ok') return '';
+      if (state !== 'checking') { try { input.focus(); } catch (e) {} }
+      return state === 'checking' ? 'Așteaptă verificarea codului fiscal.' : BLOCAT;
+    };
+  });
 })();

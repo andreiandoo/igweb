@@ -125,8 +125,12 @@ GET {IG_API_URL}/public/plans?audience=athlete
 ```
 
 și completează marcajele din `content/`: `{{price:start:m}}`, `{{price:start:y}}`,
-`{{week:start:m}}` (nota săptămânală lungă), `{{wk:start:m}}` (varianta scurtă din modal).
-Aceleași valori intră și în `Product`/`Offer` din JSON-LD.
+`{{day:start:m}}` (prețul pe zi), `{{eur:start:m}}` (prețul real, în EUR).
+
+Pentru sportivi, prețurile se afișează **în lei**, convertite la build la cursul BNR
+(`https://curs.bnr.ro/nbrfxrates.xml`; rezervă: `site/rate.json`; forțare: `IG_EUR_RON=5,34`).
+Plata rămâne în EUR, deci `Product`/`Offer` din JSON-LD păstrează valorile în EUR.
+Cluburile (`{{club:…}}`) rămân afișate în EUR.
 
 De ce la build și nu în browser: prețurile ajung în HTML — bune pentru SEO, fără sărituri
 de layout, fără un request în plus.

@@ -17,7 +17,7 @@ import { SITE, PAGES, esc, url, icon, pageUrl, addressLine } from './site/config
 import { normalize, jsonLd, sitemap } from './site/seo.mjs';
 import { document } from './site/layout.mjs';
 import { PAGE_DEFS } from './site/pages.mjs';
-import { loadPlans, priceMarkers, yearlyCodes, schemaOffers } from './site/plans.mjs';
+import { loadPlans, loadRate, priceMarkers, yearlyCodes, schemaOffers } from './site/plans.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, process.argv[2] ?? 'dist');
@@ -32,7 +32,13 @@ const fail = (msg) => { problems++; console.log(`  ✗ ${msg}`); };
 const API = process.env.IG_API_URL ?? 'https://igapp-production.up.railway.app';
 const { plans: PLANS, source: PLANS_SOURCE } = await loadPlans(API, 'athlete');
 const { plans: CLUB_PLANS, source: CLUB_SOURCE } = await loadPlans(API, 'club');
-const PRICE_MARKERS = { ...priceMarkers(PLANS), ...priceMarkers(CLUB_PLANS, 'club') };
+/* Sportivii văd preţurile în lei (orientativ, la cursul de mai jos); cluburile rămân în EUR. */
+const { rate: EUR_RON, source: RATE_SOURCE } = await loadRate();
+const PRICE_MARKERS = {
+  ...priceMarkers(PLANS, 'price', EUR_RON),
+  ...priceMarkers(CLUB_PLANS, 'club'),
+  '{{eurRon}}': EUR_RON.toFixed(2).replace('.', ','),
+};
 const YEARLY = yearlyCodes(PLANS);
 
 /* ------------------------------------------------------------------ assets */
@@ -138,7 +144,7 @@ const growie = (slug, cls) => picture(
   'loading="lazy" decoding="async"', '',
 );
 
-/** Rezolvă {{app}}, {{lead}}, {{video:…}}, {{ill:…}}, {{growie:…}}, {{billingToggle}} şi {{page:cheie}}. */
+/** Rezolvă {{app}}, {{appStore}}, {{googlePlay}}, {{lead}}, {{video:…}}, {{ill:…}}, {{growie:…}}, {{billingToggle}} şi {{page:cheie}}. */
 function resolve(html) {
   for (const [marker, value] of Object.entries(PRICE_MARKERS)) {
     html = html.replaceAll(marker, value);
@@ -149,6 +155,8 @@ function resolve(html) {
     .replace(/\{\{growie:([a-z0-9-]+)\|([^}]*)\}\}/g, (_, slug, cls) => growie(slug, cls.trim()))
     .replaceAll('{{billingToggle}}', BILLING_TOGGLE)
     .replaceAll('{{app}}', SITE.app)
+    .replaceAll('{{appStore}}', esc(SITE.appStore))
+    .replaceAll('{{googlePlay}}', esc(SITE.googlePlay))
     .replaceAll('{{lead}}', SITE.lead)
     .replace(/\{\{video:([a-z0-9-]+)\|([^}]+)\}\}/g, (_, slug, label) => video(slug, label))
     .replaceAll('{{video}}', VIDEO_FALLBACK)
@@ -312,6 +320,7 @@ console.log(`mediu:  ${SITE.env}`);
 console.log(`site:   ${SITE.url}\n`);
 console.log(`planuri: ${PLANS.length} din ${PLANS_SOURCE}; cu preţ anual: ${YEARLY.join(', ') || '—'}`);
 console.log(`cluburi: ${CLUB_PLANS.length} tier-uri din ${CLUB_SOURCE}`);
+console.log(`curs EUR/RON: ${EUR_RON} din ${RATE_SOURCE}`);
 if (PLANS_SOURCE.startsWith('copie')) fail(`catalog sportivi neactualizat — ${PLANS_SOURCE}`);
 if (CLUB_SOURCE.startsWith('copie')) fail(`catalog cluburi neactualizat — ${CLUB_SOURCE}`);
 

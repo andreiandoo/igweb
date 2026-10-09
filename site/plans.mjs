@@ -29,12 +29,42 @@ export const money = (cents, currency = 'EUR') => {
   return `${value} ${symbol}`;
 };
 
-/** Cost săptămânal aproximativ: luna are ~4,33 săptămâni, anul are 52. */
-export const perWeek = (cents, period, short = false) => {
-  const weeks = period === 'year' ? 52 : 4.33;
-  const value = (cents / 100 / weeks).toFixed(2).replace('.', ',');
-  return `≈ ${value} €/${short ? 'săpt' : 'săptămână'}`;
+/** Zile într-o lună medie (365 / 12) — pentru prețul pe zi. */
+const DAYS = { month: 365 / 12, year: 365 };
+
+/** Cenți EUR → lei, la cursul dat. */
+const toLei = (cents, rate) => (cents / 100) * rate;
+
+/** 579 la 5,34 → „31 lei"  (prețul în lei e orientativ, deci rotunjit la leu) */
+export const lei = (cents, rate) => `${Math.round(toLei(cents, rate))} lei`;
+
+/** Cost zilnic aproximativ, în lei: „≈ 1 leu/zi", „≈ 1,7 lei/zi". */
+export const perDay = (cents, period, rate) => {
+  const value = (toLei(cents, rate) / DAYS[period]).toFixed(1);
+  return value === '1.0' ? '≈ 1 leu/zi' : `≈ ${value.replace(/\.0$/, '').replace('.', ',')} lei/zi`;
 };
+
+/**
+ * Cursul EUR/RON folosit la afișarea în lei (plata rămâne în EUR).
+ * Ordinea: IG_EUR_RON din mediu → cursul BNR al zilei → ultima copie din
+ * `site/rate.json`. Ca la planuri, build-ul nu pică dacă BNR nu răspunde.
+ */
+export async function loadRate() {
+  const file = join(HERE, 'rate.json');
+  const fixed = Number(String(process.env.IG_EUR_RON ?? '').replace(',', '.'));
+  if (fixed > 0) return { rate: fixed, source: 'IG_EUR_RON' };
+  try {
+    const res = await fetch('https://curs.bnr.ro/nbrfxrates.xml', { signal: AbortSignal.timeout(10000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rate = Number((await res.text()).match(/<Rate currency="EUR">([0-9.]+)<\/Rate>/)?.[1]);
+    if (!(rate > 0)) throw new Error('răspuns fără curs EUR');
+    writeFileSync(file, JSON.stringify({ eurRon: rate }, null, 2) + '\n');
+    return { rate, source: 'BNR' };
+  } catch (e) {
+    const { eurRon } = JSON.parse(readFileSync(file, 'utf8'));
+    return { rate: eurRon, source: `copie locală (BNR indisponibil: ${e.message})` };
+  }
+}
 
 export async function loadPlans(apiUrl, audience = 'athlete') {
   const url = `${apiUrl.replace(/\/$/, '')}/public/plans?audience=${audience}`;
@@ -55,23 +85,28 @@ export async function loadPlans(apiUrl, audience = 'athlete') {
 }
 
 /**
- * Marcajele {{price:…}} / {{week:…}} / {{wk:…}} folosite în content/.
- *   {{price:start:m}} → 5,79 €      {{price:start:y}} → 57,99 €
- *   {{week:start:m}}  → ≈ 1,34 €/săptămână
- *   {{wk:start:m}}    → ≈ 1,34 €/săpt          (varianta scurtă, din modal)
+ * Marcajele de preț folosite în content/.
+ *
+ * Fără `rate` (cluburi) prețurile rămân în EUR:
+ *   {{club:basic:m}} → 1 €
+ *
+ * Cu `rate` (sportivi) prețul afișat e în lei, iar cel real, în EUR, rămâne
+ * disponibil separat — plata se procesează în EUR:
+ *   {{price:start:m}} → 31 lei      {{price:start:y}} → 310 lei
+ *   {{day:start:m}}   → ≈ 1 leu/zi  {{day:start:y}}   → ≈ 0,8 lei/zi
+ *   {{eur:start:m}}   → 5,79 €
  */
-export function priceMarkers(plans, prefix = 'price') {
-  /* pentru sportivi pastram numele scurte din content: {{week:…}} / {{wk:…}} */
-  const weekKey = prefix === 'price' ? 'week' : `${prefix}Week`;
-  const wkKey = prefix === 'price' ? 'wk' : `${prefix}Wk`;
+export function priceMarkers(plans, prefix = 'price', rate = null) {
   const out = {};
   for (const p of plans) {
     const pairs = [['m', p.price_cents_month, 'month'], ['y', p.price_cents_year, 'year']];
     for (const [suffix, cents, period] of pairs) {
       if (cents === null || cents === undefined) continue;
-      out[`{{${prefix}:${p.code}:${suffix}}}`] = money(cents, p.currency);
-      out[`{{${weekKey}:${p.code}:${suffix}}}`] = perWeek(cents, period, false);
-      out[`{{${wkKey}:${p.code}:${suffix}}}`] = perWeek(cents, period, true);
+      const key = `${p.code}:${suffix}}}`;
+      if (!rate) { out[`{{${prefix}:${key}`] = money(cents, p.currency); continue; }
+      out[`{{${prefix}:${key}`] = lei(cents, rate);
+      out[`{{day:${key}`] = perDay(cents, period, rate);
+      out[`{{eur:${key}`] = money(cents, p.currency);
     }
   }
   return out;

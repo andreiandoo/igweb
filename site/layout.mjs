@@ -104,8 +104,8 @@ function footer(p, growieHtml) {
         <p>Gratuit la început. Copilul învață jucându-se, tu vezi progresul.</p>
       </div>
       <div class="store-badges fd-badges">
-        <a class="store-badge" href="${esc(SITE.app)}/" rel="noopener">${icon('b-apple')}<span class="sb-t"><span class="s">Descarcă din</span><span class="b">App Store</span></span></a>
-        <a class="store-badge" href="${esc(SITE.app)}/" rel="noopener">${icon('b-gplay')}<span class="sb-t"><span class="s">Disponibil pe</span><span class="b">Google Play</span></span></a>
+        <a class="store-badge" href="${esc(SITE.appStore)}" target="_blank" rel="noopener">${icon('b-apple')}<span class="sb-t"><span class="s">Descarcă din</span><span class="b">App Store</span></span></a>
+        <a class="store-badge" href="${esc(SITE.googlePlay)}" target="_blank" rel="noopener">${icon('b-gplay')}<span class="sb-t"><span class="s">Disponibil pe</span><span class="b">Google Play</span></span></a>
       </div>
     </div>
   </div>

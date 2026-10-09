@@ -231,7 +231,7 @@
       <div class="pcard">
         <div class="pname"><svg class="icon" style="color:var(--muted)"><use href="#i-sparkles"/></svg> Free</div>
         <div class="pdesc">Un început bun, gratuit pentru totdeauna.</div>
-        <div class="pprice"><span class="amt">0 €</span><span class="per">/lună</span></div>
+        <div class="pprice"><span class="amt">0 lei</span><span class="per">/lună</span></div>
         <div class="pfree">Fără card. Fără termen.</div>
         <ul>
           <li><svg class="icon"><use href="#i-check"/></svg> Quiz-uri și lecții zilnice</li>
@@ -246,7 +246,7 @@
         <div class="pname"><svg class="icon" style="color:var(--green)"><use href="#i-zap"/></svg> Start</div>
         <div class="pdesc">Primul pas serios spre progres.</div>
         <div class="pprice"><span class="amt" data-m="{{price:start:m}}" data-y="{{price:start:y}}">{{price:start:m}}</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
-        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="{{week:start:m}}" data-yw="{{week:start:y}}">{{week:start:m}}</span></div>
+        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="{{day:start:m}}" data-yw="{{day:start:y}}">{{day:start:m}}</span></div>
         <ul>
           <li><svg class="icon"><use href="#i-check"/></svg> Tot ce e în Free</li>
           <li><svg class="icon"><use href="#i-check"/></svg> 5 vieți, regenerare mai rapidă</li>
@@ -261,7 +261,7 @@
         <div class="pname"><svg class="icon" style="color:var(--purple)"><use href="#i-crown"/></svg> Campion</div>
         <div class="pdesc">Experiența completă pentru un copil ambițios.</div>
         <div class="pprice"><span class="amt" data-m="{{price:campion:m}}" data-y="{{price:campion:y}}">{{price:campion:m}}</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
-        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="{{week:campion:m}}" data-yw="{{week:campion:y}}">{{week:campion:m}}</span></div>
+        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="{{day:campion:m}}" data-yw="{{day:campion:y}}">{{day:campion:m}}</span></div>
         <ul>
           <li><svg class="icon"><use href="#i-check"/></svg> Tot ce e în Start</li>
           <li><svg class="icon"><use href="#i-check"/></svg> 15 vieți, regenerare rapidă</li>
@@ -275,7 +275,7 @@
         <div class="pname"><svg class="icon" style="color:var(--amber)"><use href="#i-gem"/></svg> Elită</div>
         <div class="pdesc">Tot ce oferim, la nivel maxim.</div>
         <div class="pprice"><span class="amt" data-m="{{price:elite:m}}" data-y="{{price:elite:y}}">{{price:elite:m}}</span><span class="per" data-m="/lună" data-y="/an">/lună</span></div>
-        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="{{week:elite:m}}" data-yw="{{week:elite:y}}">{{week:elite:m}}</span></div>
+        <div class="pweek"><svg class="icon"><use href="#i-clock"/></svg> <span class="week" data-mw="{{day:elite:m}}" data-yw="{{day:elite:y}}">{{day:elite:m}}</span></div>
         <ul>
           <li><svg class="icon"><use href="#i-check"/></svg> Tot ce e în Campion</li>
           <li><svg class="icon"><use href="#i-check"/></svg> 60 vieți, regenerare la 5 min</li>
@@ -286,6 +286,7 @@
         <button class="btn btn-ghost btn-block js-reg" data-plan="elite">Alege Elită</button>
       </div>
     </div>
+    <p class="price-note" style="margin-top:14px;text-align:center;color:var(--muted);font-size:.84rem;font-weight:500">Prețurile în lei sunt orientative, la cursul de {{eurRon}} lei/€. Plata se procesează în euro: Start {{eur:start:m}}, Campion {{eur:campion:m}}, Elită {{eur:elite:m}} pe lună.</p>
     <div class="family rev">
       <div class="fic"><svg class="icon"><use href="#i-users"/></svg></div>
       <div class="ft"><h4>Plan de familie — mai mulți copii, preț mai mic</h4><p>Ai frați care joacă și ei? Reducerea se aplică automat și se adună cu planul anual.</p></div>
@@ -388,8 +389,8 @@
       <a href="{{page:parinti}}" class="btn btn-glass btn-lg"><svg class="icon"><use href="#i-heart"/></svg> Sunt părinte</a>
     </div>
     <div class="store-badges final-badges">
-      <a class="store-badge" href="{{app}}/" rel="noopener">{{icon:b-apple}}<span class="sb-t"><span class="s">Descarcă din</span><span class="b">App Store</span></span></a>
-      <a class="store-badge" href="{{app}}/" rel="noopener">{{icon:b-gplay}}<span class="sb-t"><span class="s">Disponibil pe</span><span class="b">Google Play</span></span></a>
+      <a class="store-badge" href="{{appStore}}" target="_blank" rel="noopener">{{icon:b-apple}}<span class="sb-t"><span class="s">Descarcă din</span><span class="b">App Store</span></span></a>
+      <a class="store-badge" href="{{googlePlay}}" target="_blank" rel="noopener">{{icon:b-gplay}}<span class="sb-t"><span class="s">Disponibil pe</span><span class="b">Google Play</span></span></a>
     </div>
     <div class="micro">
       <span><svg class="icon"><use href="#i-check"/></svg> Gratuit pentru sportivi</span>

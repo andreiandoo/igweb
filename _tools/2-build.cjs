@@ -93,8 +93,9 @@ function transform(html, page) {
   /* videoul de prezentare — generatorul decide ce randează */
   s = s.replace(/<video autoplay muted loop playsinline><source src="__VIDEO1__" type="video\/mp4"><\/video>/g, '{{video}}');
 
-  /* insignele de magazin duc în aplicație, nu deschid modalul */
-  s = s.replace(/<a class="store-badge js-reg" href="#">/g, '<a class="store-badge" href="{{app}}/" rel="noopener">');
+  /* insignele de magazin duc în App Store / Google Play, nu deschid modalul */
+  s = s.replace(/<a class="store-badge js-reg" href="#">(?=<svg class="icon"><use href="#b-apple")/g, '<a class="store-badge" href="{{appStore}}" target="_blank" rel="noopener">');
+  s = s.replace(/<a class="store-badge js-reg" href="#">(?=<svg class="icon"><use href="#b-gplay")/g, '<a class="store-badge" href="{{googlePlay}}" target="_blank" rel="noopener">');
 
   /* termeni / confidențialitate */
   s = s.replace(/<a href="#"([^>]*)>Termenii<\/a>/g, '<a href="{{page:termeni}}"$1>Termenii</a>');

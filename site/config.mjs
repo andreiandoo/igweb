@@ -11,6 +11,9 @@ export const SITE = {
   env:      env('IG_ENV', 'production'),          // production | preview
   url:      env('IG_SITE_URL', 'https://sportiveducat.ro').replace(/\/$/, ''),
   app:      env('IG_APP_URL', 'https://app.sportiveducat.ro').replace(/\/$/, ''),
+  /** paginile aplicației din magazine — aceleași ca în igapp (AuthShell.tsx, routes/version.ts) */
+  appStore:   'https://apps.apple.com/ro/app/igrowth/id6767212760',
+  googlePlay: 'https://play.google.com/store/apps/details?id=com.sportiveducat.app',
   /** endpoint-ul Pages Function pentru formulare (vezi functions/api/lead.js) */
   lead:     '/api/lead',
 

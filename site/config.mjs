@@ -44,8 +44,8 @@ export const SITE = {
   locale: 'ro_RO',
 
   social: {
-    linkedin:  'https://www.linkedin.com/company/igrowth-nexus/',
-    instagram: 'https://www.instagram.com/igrowth.nexus',
+    linkedin:  'https://www.linkedin.com/company/igrowth-nexus/about/',
+    instagram: 'https://www.instagram.com/sportiv.educat/',
     facebook:  'https://www.facebook.com/profile.php?id=61560906159867',
   },
 };

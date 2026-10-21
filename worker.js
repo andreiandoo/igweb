@@ -45,7 +45,7 @@ export default {
     /* endpoint-ul formularelor */
     if (url.pathname === '/api/lead') {
       if (request.method === 'POST') return onRequestPost({ request, env });
-      return onRequestGet();
+      return onRequestGet({ env });
     }
 
     /* fişiere statice; html_handling din wrangler.jsonc face URL-urile curate */
@@ -56,6 +56,8 @@ export default {
 
     if (url.pathname.startsWith('/assets/')) {
       out.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+    } else if (url.pathname === '/parteneri' || url.pathname === '/parteneri.html') {
+      out.headers.set('X-Robots-Tag', 'noindex, nofollow');
     } else if (url.pathname === '/sitemap.xml') {
       out.headers.set('Cache-Control', 'public, max-age=3600');
       out.headers.set('X-Robots-Tag', 'noindex');

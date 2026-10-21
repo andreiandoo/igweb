@@ -26,7 +26,54 @@ const DEFAULT_CTA = {
   primary: { label: 'Creează cont', icon: 'i-sparkles', class: 'js-reg' },
 };
 
+/**
+ * Header-ul paginilor de tip landing (`landing: true` în pages.mjs): doar
+ * logo și CTA. Fără meniu — vizitatorul venit din reclamă nu are pe unde să
+ * plece din pagină, iar pagina nu trimite nici ea spre restul site-ului.
+ */
+function landingHeader(p) {
+  const c = p.navCta ?? DEFAULT_CTA;
+  return `<header class="site-header lp-header">
+  <div class="wrap nav">
+    <span class="logo">
+      <span class="mark"><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#growie-mark"/></svg></span>
+      ${esc(SITE.brand)}${p.landingTag ? ` <span class="lp-tag">${esc(p.landingTag)}</span>` : ''}
+    </span>
+    <div class="ncta lp-ncta">
+      ${c.primary ? cta(c.primary, 'primary') : ''}
+    </div>
+  </div>
+</header>`;
+}
+
+function landingFooter(p) {
+  const mobileCta = p.mobileCta === false ? '' : (() => {
+    const c = p.mobileCta ?? DEFAULT_CTA;
+    return `\n<div class="mobile-cta">\n  ${c.primary ? cta(c.primary, 'primary') : ''}\n</div>\n`;
+  })();
+
+  return `<footer class="site-footer no-bridge lp-footer">
+  <div class="wrap">
+    <div class="foot-bottom">
+      <span class="logo">
+        <span class="mark"><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#growie-mark"/></svg></span>
+        ${esc(SITE.brandFull)}
+      </span>
+      <span class="foot-legal">
+        <a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a>
+        <a href="tel:${esc(SITE.phone)}">${esc(SITE.phoneHuman)}</a>
+        <a href="${esc(pageUrl('confidentialitate'))}" target="_blank" rel="noopener">Confidențialitate</a>
+        <a href="${esc(pageUrl('termeni'))}" target="_blank" rel="noopener">Termeni</a>
+      </span>
+      <span>© ${new Date().getUTCFullYear()} ${esc(SITE.brand)} · ${esc(SITE.address.city)}, România</span>
+    </div>
+  </div>
+</footer>
+${mobileCta}`;
+}
+
 function header(p) {
+  if (p.landing) return landingHeader(p);
   const nav = Object.entries(PAGES)
     .filter(([, m]) => m.inNav)
     .map(([k, m]) => `      <a href="${esc(url(m.path))}"${k === p.key ? ' aria-current="page"' : ''}>${esc(m.nav)}</a>`)
@@ -85,6 +132,7 @@ ${mnav}${anchors}
 }
 
 function footer(p, growieHtml) {
+  if (p.landing) return landingFooter(p);
   const pages = Object.entries(PAGES)
     .filter(([, m]) => m.inFooter)
     .map(([k, m]) => `        <a href="${esc(url(m.path))}"${k === p.key ? ' aria-current="page"' : ''}>${icon(m.icon)} ${esc(m.navLong)}</a>`)

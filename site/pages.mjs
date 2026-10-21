@@ -99,6 +99,23 @@ export const PAGE_DEFS = {
   },
 
   /* --------------------------------------------------------------------
+   * Landing page pentru reclame (Meta / Google). Nelistată și `noindex` —
+   * vezi registrul din config.mjs. Header și footer minimale (`landing`).
+   * Înscrierile ajung în Google Sheets: functions/api/lead.js, tipul `partner`.
+   * ----------------------------------------------------------------- */
+  parteneri: {
+    title: 'Program de parteneriat pentru antrenori și cluburi · Sportiv Educat',
+    ogTitle: 'Recomanzi Sportiv Educat. Câștigi lunar, pentru fiecare abonament activ.',
+    description: 'Program de parteneriat pentru antrenori și cluburi sportive: recomanzi aplicația educațională Sportiv Educat familiilor din grupele tale și primești comision lunar pentru fiecare abonament activ.',
+    css: ['/assets/css/page-parteneri.css'],
+    js: ['/assets/js/page-parteneri.js'],
+    landing: true,
+    landingTag: 'Parteneri',
+    navCta: { primary: { label: 'Programează discuția', icon: 'i-calendar', href: '#inscriere' } },
+    mobileCta: { primary: { label: 'Vreau să devin partener', icon: 'i-handshake', href: '#inscriere' } },
+  },
+
+  /* --------------------------------------------------------------------
    * Pagini legale — schelet, marcate `noindex` în registru până la
    * publicarea textelor finale. Există ca să nu rămână linkuri moarte.
    * ----------------------------------------------------------------- */

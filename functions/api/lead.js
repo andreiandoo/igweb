@@ -20,6 +20,8 @@
  *   IG_FORWARD               "on" ⇒ trimite către API; altfel doar colectează
  *   LEAD_WEBHOOK             opțional     copie a lead-ului (Zapier / Make / Slack)
  *   POSTMARK_TOKEN + LEAD_EMAIL_TO + LEAD_EMAIL_FROM   opțional, notificare email
+ *   PARTNER_SHEET_URL + PARTNER_SHEET_TOKEN   formularul /parteneri → Google Sheets
+ *                                             (vezi docs/google-sheets-parteneri.gs)
  *
  * Binding-uri (recomandat):
  *   LEADS   KV Namespace — copie de siguranță a înscrierilor + limitare pe IP
@@ -194,6 +196,25 @@ const FORMS = {
     payload: null,
     athleteId: () => null,
   },
+
+  /* Landing page-ul /parteneri: antrenori și cluburi care vor să recomande
+     aplicația. Nu creează cont — lead-ul ajunge în Google Sheets (vezi
+     `toSheet` mai jos) și în copiile obișnuite (KV, webhook, email). */
+  partner: {
+    endpoint: null,
+    needsKey: false,
+    required: ['full_name', 'role', 'city', 'athletes', 'phone', 'email'],
+    sheet: true,
+    check(d) {
+      if (!['antrenor', 'club'].includes(str(d.role))) return ['Alege dacă ești antrenor sau club.', ['role']];
+      if (str(d.role) === 'club' && !str(d.club_name)) return ['Scrie numele clubului.', ['club_name']];
+      if (!isEmail(d.email)) return ['Adresa de email nu pare validă.', ['email']];
+      if (str(d.phone).replace(/\D+/g, '').length < 9) return ['Numărul de telefon nu pare complet.', ['phone']];
+      return null;
+    },
+    payload: null,
+    athleteId: () => null,
+  },
 };
 
 /* ------------------------------------------------- stocare și notificări */
@@ -208,8 +229,40 @@ async function rateLimited(env, ip) {
   return false;
 }
 
+/**
+ * Un rând nou în Google Sheets, prin Apps Script-ul publicat ca Web App
+ * (codul și pașii: docs/google-sheets-parteneri.gs). Cheia din
+ * PARTNER_SHEET_TOKEN trebuie să fie aceeași cu TOKEN din script — fără ea,
+ * oricine ar putea scrie în tabel.
+ *
+ * Apps Script răspunde la POST cu un 302 către googleusercontent.com;
+ * fetch-ul îl urmează, iar rândul e deja scris în acel moment.
+ */
+async function toSheet(env, lead) {
+  if (!FORMS[lead.type]?.sheet || !env.PARTNER_SHEET_URL) return;
+  try {
+    const res = await fetch(env.PARTNER_SHEET_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: env.PARTNER_SHEET_TOKEN ?? '',
+        created_at: lead.created_at,
+        country: lead.country,
+        page: lead.page,
+        ...lead.data,
+      }),
+      redirect: 'follow',
+    });
+    const out = await res.json().catch(() => null);
+    if (!out?.ok) console.error('[lead] Google Sheets a refuzat rândul', res.status, out);
+  } catch (e) {
+    /* tabelul nu trebuie să blocheze înscrierea — avem copia din KV */
+    console.error('[lead] Google Sheets inaccesibil', String(e?.message ?? e));
+  }
+}
+
 async function notify(env, lead) {
-  const tasks = [];
+  const tasks = [toSheet(env, lead)];
 
   if (env.LEAD_WEBHOOK) {
     tasks.push(fetch(env.LEAD_WEBHOOK, {
@@ -439,6 +492,7 @@ export function onRequestGet({ env }) {
       forward: env.IG_FORWARD === 'on',
       secret: Boolean(env.REGISTRATION_API_SECRET),
       stocare_kv: Boolean(env.LEADS),
+      sheet_parteneri: Boolean(env.PARTNER_SHEET_URL && env.PARTNER_SHEET_TOKEN),
     },
   }, 405);
 }

@@ -24,3 +24,9 @@
 /sitemap.xml
   Cache-Control: public, max-age=3600
   X-Robots-Tag: noindex
+
+# Landing page-ul pentru reclame: nelistat, în afara indexului (dublura
+# meta robots din pagină — antetul acoperă și cazul în care HTML-ul e
+# parcurs fără să fie interpretat).
+/parteneri
+  X-Robots-Tag: noindex, nofollow

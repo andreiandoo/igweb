@@ -67,6 +67,23 @@ igweb/
 O pagină nouă se adaugă **într-un singur loc**: registrul `PAGES` din
 `site/config.mjs`. De acolo apare automat în navigație, în footer și în `sitemap.xml`.
 
+## Landing page-ul `/parteneri`
+
+Pagină de conversie pentru reclame (programul de parteneriat pentru antrenori și
+cluburi). **Nelistată**: `noindex` (meta + antet HTTP), în afara meniului, a
+footer-ului și a sitemap-ului; are header/footer minimale (`landing: true` în
+`site/pages.mjs`).
+
+| Ce | Unde |
+|---|---|
+| textele, comisioanele (2 / 3 / 4 €) | `content/parteneri.html` (comentariul din capăt arată cele 3 locuri) |
+| stil, animații | `assets/css/page-parteneri.css` |
+| calculator, formular, UTM | `assets/js/page-parteneri.js` |
+| unde ajung înscrierile | Google Sheets, prin `docs/google-sheets-parteneri.gs` + `PARTNER_SHEET_URL` / `PARTNER_SHEET_TOKEN` în Cloudflare |
+
+Formularul trimite și sursa reclamei (`utm_*`, `gclid`, `fbclid`, pagina de
+intrare) și estimarea din calculator — apar ca coloane în tabel.
+
 ## Întrebările frecvente
 
 Nu se scriu separat. Generatorul le citește direct din `<details>`-urile paginii și le

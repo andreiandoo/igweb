@@ -80,6 +80,13 @@ export const PAGES = {
     nav: 'Antrenori', navLong: 'Pentru antrenori', icon: 'i-whistle',
     priority: '0.9', inNav: true, inFooter: true,
   },
+  /* Landing page pentru reclame: nelistată — fără meniu, fără footer, fără
+     sitemap, `noindex`. Ajungi pe ea doar cu linkul direct. */
+  parteneri: {
+    path: '/parteneri', file: 'parteneri.html',
+    nav: 'Parteneri', navLong: 'Program de parteneriat', icon: 'i-handshake',
+    priority: null, inNav: false, inFooter: false, noindex: true,
+  },
   termeni: {
     path: '/termeni', file: 'termeni.html',
     nav: 'Termeni', navLong: 'Termeni și condiții', icon: 'i-file',

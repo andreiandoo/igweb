@@ -1,0 +1,651 @@
+<!--
+  Landing page · Program de parteneriat (antrenori + cluburi)
+  Nelistată și noindex — vezi PAGES.parteneri în site/config.mjs.
+
+  COMISIOANELE (2 / 3 / 4 €) apar în trei locuri din pagina asta:
+    1. cardul din hero (.lp-earn)
+    2. atributele data-com din calculator (#calc) — de aici calculează JS-ul
+    3. întrebarea „Cât primesc pentru fiecare abonament?" din FAQ
+  Prețurile plătite de părinți vin din catalog: {{price:start:m}} etc.
+-->
+
+<!-- ============================================================ HERO -->
+<section class="lp-hero" id="top">
+  <div class="lp-hero-bg" aria-hidden="true">
+    <span class="lp-orb o1"></span><span class="lp-orb o2"></span><span class="lp-orb o3"></span>
+    <span class="lp-grid"></span>
+  </div>
+
+  <div class="wrap lp-hero-in">
+    <div class="lp-hero-copy">
+      <p class="lp-pill reveal">{{icon:i-lock}} Program de parteneriat · confidențial</p>
+      <p class="lp-kicker reveal" style="--d:.06s">Ești antrenor sau conduci un club sportiv?</p>
+      <h1 class="reveal" style="--d:.12s">Câștigă lunar recomandând <span class="lp-grad">Sportiv&nbsp;Educat</span>.</h1>
+      <p class="lp-lead reveal" style="--d:.18s">
+        Aplicația educațională gamificată care îi învață pe copiii sportivi despre mișcare, nutriție
+        și mentalitate de campion — prin quiz-uri, clasamente și provocări zilnice.
+        <strong>Tu o recomanzi familiilor din grupa sau clubul tău, noi îți plătim un comision pentru
+        fiecare abonament activ.</strong> Lună de lună.
+      </p>
+
+      <div class="lp-cta reveal" style="--d:.24s">
+        <a class="btn btn-primary btn-lg glow" href="#inscriere">{{icon:i-handshake}} Vreau să devin partener</a>
+        <a class="btn btn-glass btn-lg" href="#calculator">{{icon:i-euro}} Calculează cât câștigi</a>
+      </div>
+
+      <ul class="lp-checks reveal" style="--d:.3s">
+        <li>{{icon:i-check-circle}} Zero costuri, zero obligații</li>
+        <li>{{icon:i-check-circle}} Discuție online de 15 minute</li>
+        <li>{{icon:i-check-circle}} Nu vinzi și nu încasezi nimic</li>
+      </ul>
+    </div>
+
+    <div class="lp-hero-vis reveal" style="--d:.2s">
+      <div class="lp-earn" id="heroCard">
+        <div class="lp-earn-head">
+          <span class="lp-earn-ic">{{icon:i-wallet}}</span>
+          <div>
+            <p class="lp-earn-t">Comisionul tău lunar</p>
+            <p class="lp-earn-s">pentru fiecare abonament activ</p>
+          </div>
+          <span class="lp-live"><i></i> lunar</span>
+        </div>
+
+        <ul class="lp-earn-rows">
+          <li class="r-start">
+            <span class="lp-plan"><b>Start</b><small>părintele plătește {{price:start:m}}/lună</small></span>
+            <span class="lp-com">2 €</span>
+          </li>
+          <li class="r-campion">
+            <span class="lp-plan"><b>Campion</b><small>părintele plătește {{price:campion:m}}/lună</small></span>
+            <span class="lp-com">3 €</span>
+          </li>
+          <li class="r-elite">
+            <span class="lp-plan"><b>Elită</b><small>părintele plătește {{price:elite:m}}/lună</small></span>
+            <span class="lp-com">4 €</span>
+          </li>
+        </ul>
+
+        <div class="lp-earn-foot">
+          <span>Partenerii câștigă</span>
+          <strong>100 – 1.500 € <small>/ lună</small></strong>
+        </div>
+
+        <svg class="lp-spark" viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="lpSparkFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2FB673" stop-opacity=".35"/>
+              <stop offset="1" stop-color="#2FB673" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path class="area" d="M0 62 L25 58 L50 55 L75 52 L100 47 L125 44 L150 38 L175 33 L200 27 L225 22 L250 15 L275 10 L300 4 L300 70 L0 70 Z" fill="url(#lpSparkFill)"/>
+          <path class="line" d="M0 62 L25 58 L50 55 L75 52 L100 47 L125 44 L150 38 L175 33 L200 27 L225 22 L250 15 L275 10 L300 4" fill="none" stroke="#2FB673" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- notificări ilustrative, rotite din page-parteneri.js -->
+      <div class="lp-toast t1" aria-hidden="true"><span class="ti">{{icon:i-bell}}</span><span><b>+3 € comision</b><small>Abonament Campion activat</small></span></div>
+      <div class="lp-toast t2" aria-hidden="true"><span class="ti">{{icon:i-repeat}}</span><span><b>+4 € comision</b><small>Abonament Elită reînnoit</small></span></div>
+
+      {{growie:trofeu|lp-hero-mascot}}
+    </div>
+  </div>
+
+  <div class="lp-ticker" aria-hidden="true">
+    <div class="lp-ticker-track">
+      <span>{{icon:i-repeat}} Comision lunar recurent</span><span>{{icon:i-gift}} Zero costuri de intrare</span><span>{{icon:i-handshake}} Fără vânzare, doar recomandare</span><span>{{icon:i-lock}} Totul rămâne confidențial</span><span>{{icon:i-shield}} Plăți securizate prin Stripe</span><span>{{icon:i-heart}} Familiile pot începe gratuit</span>
+      <span>{{icon:i-repeat}} Comision lunar recurent</span><span>{{icon:i-gift}} Zero costuri de intrare</span><span>{{icon:i-handshake}} Fără vânzare, doar recomandare</span><span>{{icon:i-lock}} Totul rămâne confidențial</span><span>{{icon:i-shield}} Plăți securizate prin Stripe</span><span>{{icon:i-heart}} Familiile pot începe gratuit</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CUM FUNCȚIONEAZĂ -->
+<section class="lp-band" id="cum">
+  <div class="wrap">
+    <header class="lp-head reveal">
+      <p class="lp-eyebrow">{{icon:i-rocket}} Simplu, în 4 pași</p>
+      <h2>Tu recomanzi. <span class="lp-grad-d">Noi ne ocupăm de rest.</span></h2>
+      <p>
+        Nu trebuie să devii vânzător și nici să-ți schimbi felul în care lucrezi cu sportivii.
+        Recomandarea ta ajunge la familii prin canalele pe care le folosești deja — grupul de
+        WhatsApp al părinților, ședința de început de sezon sau o discuție după antrenament.
+      </p>
+    </header>
+
+    <ol class="lp-steps" id="lpSteps">
+      <li class="lp-step reveal" style="--d:0s">
+        <span class="lp-step-n">1</span>
+        <span class="lp-step-ic">{{icon:i-chat}}</span>
+        <h3>Discutăm 15 minute</h3>
+        <p>Ne povestești despre grupele sau clubul tău. Îți arătăm aplicația pe viu, cum funcționează
+        parteneriatul și cât poți câștiga realist, cu sportivii pe care îi ai acum. Fără prezentări
+        lungi, fără presiune.</p>
+      </li>
+      <li class="lp-step reveal" style="--d:.1s">
+        <span class="lp-step-n">2</span>
+        <span class="lp-step-ic">{{icon:i-link}}</span>
+        <h3>Primești linkul tău de partener</h3>
+        <p>Un link și un cod personal. Fiecare familie care își face cont prin el rămâne asociată cu
+        tine, automat. Îl trimiți părinților o singură dată — restul se întâmplă de la sine.</p>
+      </li>
+      <li class="lp-step reveal" style="--d:.2s">
+        <span class="lp-step-n">3</span>
+        <span class="lp-step-ic">{{icon:i-users}}</span>
+        <h3>Familiile încep gratuit</h3>
+        <p>Părinții își fac cont în câteva minute și pot începe cu planul gratuit. Când văd că cel mic
+        deschide aplicația singur, în fiecare zi, aleg un abonament: Start, Campion sau Elită.</p>
+      </li>
+      <li class="lp-step reveal" style="--d:.3s">
+        <span class="lp-step-n">4</span>
+        <span class="lp-step-ic">{{icon:i-wallet}}</span>
+        <h3>Tu primești comisionul, lunar</h3>
+        <p>Pentru fiecare abonament activ venit prin tine primești comision, în fiecare lună, cât timp
+        abonamentul rămâne activ. Conturile, plățile, facturarea și suportul sunt treaba noastră.</p>
+      </li>
+    </ol>
+
+    <div class="lp-quote reveal">
+      {{growie:salut|lp-quote-mascot}}
+      <p><strong>Nu e nevoie să fii vânzător.</strong> Părinții au încredere în antrenorul copilului
+      lor — o recomandare de la tine cântărește mai mult decât orice reclamă. Tu doar le arăți un
+      instrument bun; decizia și plata rămân la ei.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CALCULATOR -->
+<section class="lp-band lp-soft" id="calculator">
+  <div class="wrap">
+    <header class="lp-head reveal">
+      <p class="lp-eyebrow">{{icon:i-euro}} Calculator de câștig</p>
+      <h2>Cât poți câștiga <span class="lp-grad-d">cu grupele tale?</span></h2>
+      <p>
+        Alege scenariul care seamănă cel mai bine cu situația ta, apoi ajustează cursoarele după câte
+        familii crezi că ar alege fiecare abonament. Nu toți părinții vor plăti — și e în regulă:
+        calculul pornește de la abonamentele active, nu de la numărul total de sportivi.
+      </p>
+    </header>
+
+    <div class="lp-presets reveal" role="group" aria-label="Scenarii predefinite">
+      <button type="button" class="lp-chip" data-preset="6,4,2">{{icon:i-whistle}} Antrenor · o grupă</button>
+      <button type="button" class="lp-chip" data-preset="18,12,5">{{icon:i-users}} Antrenor · 3 grupe</button>
+      <button type="button" class="lp-chip active" data-preset="40,30,10">{{icon:i-shield}} Club · ~150 sportivi</button>
+      <button type="button" class="lp-chip" data-preset="110,80,30">{{icon:i-crown}} Club mare · 400+</button>
+    </div>
+
+    <div class="lp-calc reveal" id="calc">
+      <div class="lp-calc-in">
+        <label class="lp-slider s-start" data-com="2">
+          <span class="lp-sl-top">
+            <span class="lp-sl-name"><i class="dot"></i><b>Start</b> <small>2 € / abonament</small></span>
+            <output class="lp-sl-val"><b data-n>40</b> abonați</output>
+          </span>
+          <input type="range" min="0" max="300" step="1" value="40" aria-label="Număr de abonamente Start">
+          <span class="lp-sl-meta">Părintele plătește {{price:start:m}} / lună · tu primești <strong data-t>80 €</strong> / lună</span>
+        </label>
+
+        <label class="lp-slider s-campion" data-com="3">
+          <span class="lp-sl-top">
+            <span class="lp-sl-name"><i class="dot"></i><b>Campion</b> <small>3 € / abonament</small></span>
+            <output class="lp-sl-val"><b data-n>30</b> abonați</output>
+          </span>
+          <input type="range" min="0" max="300" step="1" value="30" aria-label="Număr de abonamente Campion">
+          <span class="lp-sl-meta">Părintele plătește {{price:campion:m}} / lună · tu primești <strong data-t>90 €</strong> / lună</span>
+        </label>
+
+        <label class="lp-slider s-elite" data-com="4">
+          <span class="lp-sl-top">
+            <span class="lp-sl-name"><i class="dot"></i><b>Elită</b> <small>4 € / abonament</small></span>
+            <output class="lp-sl-val"><b data-n>10</b> abonați</output>
+          </span>
+          <input type="range" min="0" max="300" step="1" value="10" aria-label="Număr de abonamente Elită">
+          <span class="lp-sl-meta">Părintele plătește {{price:elite:m}} / lună · tu primești <strong data-t>40 €</strong> / lună</span>
+        </label>
+      </div>
+
+      <aside class="lp-result" aria-live="polite">
+        <span class="lp-result-glow" aria-hidden="true"></span>
+        <p class="lp-result-k">Câștigi aproximativ</p>
+        <p class="lp-result-v"><span id="calcMonthly">210</span> <span class="cur">€</span></p>
+        <p class="lp-result-s">în fiecare lună</p>
+
+        <div class="lp-mix" aria-hidden="true">
+          <span class="m-start" id="mixS"></span><span class="m-campion" id="mixC"></span><span class="m-elite" id="mixE"></span>
+        </div>
+
+        <dl class="lp-result-rows">
+          <div><dt>Abonamente active</dt><dd id="calcCount">80</dd></div>
+          <div><dt>Pe un an</dt><dd><span id="calcYear">2.520</span> €</dd></div>
+          <div><dt>Pe 3 ani, la fel</dt><dd><span id="calc3y">7.560</span> €</dd></div>
+        </dl>
+
+        <a class="btn btn-primary btn-block btn-lg" href="#inscriere" id="calcCta">{{icon:i-handshake}} Vreau să câștig asta</a>
+      </aside>
+    </div>
+
+    <p class="lp-note reveal">
+      Estimare orientativă, cu abonamente lunare. Comisionul se plătește lunar pentru fiecare abonament
+      activ; detaliile exacte le discutăm la întâlnire.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ RECURENT -->
+<section class="lp-band" id="recurent">
+  <div class="wrap">
+    <div class="lp-recur reveal">
+      <div class="lp-recur-copy">
+        <span class="lp-recur-ic">{{icon:i-repeat}}</span>
+        <p class="lp-eyebrow">Venit recurent, nu o primă unică</p>
+        <h2>Chiar dacă sportivul renunță la antrenamente, <span class="lp-grad-d">tu câștigi în continuare.</span></h2>
+        <p>
+          Comisionul nu e legat de prezența copilului la sală sau pe teren, ci de abonamentul familiei.
+          Cât timp părinții păstrează abonamentul activ, tu primești comisionul — chiar dacă cel mic ia o
+          pauză, se mută la altă grupă sau se apucă de alt sport.
+        </p>
+        <p>
+          Și pentru că fiecare familie nouă se adaugă peste cele existente, venitul tău crește de la o
+          lună la alta, fără să o iei de la zero în fiecare sezon.
+        </p>
+      </div>
+
+      <figure class="lp-bars" aria-label="Exemplu: venitul lunar crește pe măsură ce se adaugă familii noi">
+        <div class="lp-bars-in" id="lpBars">
+          <span style="--h:12%"><i>L1</i></span><span style="--h:20%"><i>L2</i></span><span style="--h:27%"><i>L3</i></span>
+          <span style="--h:35%"><i>L4</i></span><span style="--h:41%"><i>L5</i></span><span style="--h:49%"><i>L6</i></span>
+          <span style="--h:56%"><i>L7</i></span><span style="--h:64%"><i>L8</i></span><span style="--h:71%"><i>L9</i></span>
+          <span style="--h:79%"><i>L10</i></span><span style="--h:88%"><i>L11</i></span><span style="--h:100%"><i>L12</i></span>
+        </div>
+        <figcaption>{{icon:i-graph-up}} Ilustrativ: câteva familii noi pe lună, care rămân abonate</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ VALOARE PENTRU FAMILII -->
+<section class="lp-band lp-soft" id="familii">
+  <div class="wrap">
+    <header class="lp-head reveal">
+      <p class="lp-eyebrow">{{icon:i-heart}} De ce spun părinții „da"</p>
+      <h2>Le recomanzi ceva valoros, <span class="lp-grad-d">nu o reclamă.</span></h2>
+      <p>
+        Partea cea mai ușoară a parteneriatului e că recomanzi ceva în care poți crede. Sportiv Educat
+        completează ce faci tu la antrenament: copiii învață acasă, în 5–10 minute pe zi, lucrurile
+        pentru care la sală nu e niciodată timp.
+      </p>
+    </header>
+
+    <div class="lp-feat reveal">
+      <div class="lp-feat-ill">{{ill:sportivi-quiz|lazy|Quiz despre hidratare în aplicația Sportiv Educat, cu XP și vieți}}</div>
+      <div class="lp-feat-copy">
+        <span class="lp-tagc t-green">{{icon:i-book}} Educație</span>
+        <h3>Quiz-uri și lecții zilnice, în limba română</h3>
+        <p>
+          Nutriție, hidratare, somn, recuperare, prevenirea accidentărilor și mentalitate sportivă —
+          explicate pe înțelesul copiilor, în pași mici, ca la joacă. Copilul află de ce contează ce
+          mănâncă înainte de meci sau de ce somnul îl face mai rapid, nu doar că „așa trebuie".
+        </p>
+        <ul class="lp-mini">
+          <li>{{icon:i-check}} Conținut adaptat vârstei și sportului</li>
+          <li>{{icon:i-check}} Câteva minute pe zi, fără să înlocuiască antrenamentul</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="lp-feat rev-dir reveal">
+      <div class="lp-feat-ill">{{ill:sportivi-clasament|lazy|Clasamentul echipei și insigne în aplicația Sportiv Educat}}</div>
+      <div class="lp-feat-copy">
+        <span class="lp-tagc t-purple">{{icon:i-trophy}} Motivație</span>
+        <h3>Clasamente, avatar, insigne și competiții</h3>
+        <p>
+          Fiecare quiz și fiecare provocare aduce puncte de experiență. Copiii urcă în niveluri,
+          colecționează insigne, își țin seria zilnică și se compară cu colegii de echipă și de club.
+          Competițiile cu premii reale îi fac să revină în aplicație din proprie inițiativă — exact
+          motivul pentru care părinții păstrează abonamentul.
+        </p>
+        <ul class="lp-mini">
+          <li>{{icon:i-check}} Clasamente pe echipă, club și la nivel național</li>
+          <li>{{icon:i-check}} Vieți, serii și recompense care creează obiceiuri</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="lp-feat reveal">
+      <div class="lp-feat-ill">{{ill:acasa-siguranta|lazy|Progresul copilului, starea de bine și activitatea recentă, văzute de părinte în aplicație}}</div>
+      <div class="lp-feat-copy">
+        <span class="lp-tagc t-sky">{{icon:i-graph-up}} Progres vizibil</span>
+        <h3>Rapoarte pentru părinte, clasamente pentru club</h3>
+        <p>
+          Părintele vede negru pe alb ce a învățat copilul, cât de constant a fost și unde a progresat.
+          Iar pentru tine, ca antrenor, clasamentele de club arată cine e implicat — un subiect bun de
+          discuție la următorul antrenament.
+        </p>
+        <ul class="lp-mini">
+          <li>{{icon:i-check}} Progresul se vede clar, lună de lună</li>
+          <li>{{icon:i-check}} Date protejate, fără reclame țintite către copii</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="lp-prices reveal">
+      <div class="lp-prices-copy">
+        <h3>Familiile pot începe gratuit</h3>
+        <p>Nimeni nu e obligat să plătească ca să încerce. Abonamentele pornesc de la {{day:start:m}}.</p>
+      </div>
+      <ul class="lp-prices-list">
+        <li><span>Free</span><b>0 lei</b></li>
+        <li><span>Start</span><b>{{price:start:m}}</b></li>
+        <li><span>Campion</span><b>{{price:campion:m}}</b></li>
+        <li><span>Elită</span><b>{{price:elite:m}}</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ AVANTAJE PENTRU TINE -->
+<section class="lp-band" id="avantaje">
+  <div class="wrap">
+    <header class="lp-head reveal">
+      <p class="lp-eyebrow">{{icon:i-sparkles}} Ce câștigi tu</p>
+      <h2>Mai mult decât <span class="lp-grad-d">un comision.</span></h2>
+      <p>Banii sunt motivul evident. Dar un parteneriat bun se simte și la antrenament, și în relația cu părinții.</p>
+    </header>
+
+    <div class="lp-cards">
+      <article class="lp-card reveal" style="--d:0s">
+        <span class="lp-card-ic c-green">{{icon:i-repeat}}</span>
+        <h3>Venit recurent, aproape pasiv</h3>
+        <p>Recomanzi o dată, primești lunar. Nu ai stoc, nu ai încasări de urmărit, nu ai facturi de emis. O sursă de venit în plus față de salariu sau de taxele de antrenament.</p>
+      </article>
+      <article class="lp-card reveal" style="--d:.08s">
+        <span class="lp-card-ic c-purple">{{icon:i-flame}}</span>
+        <h3>Sportivi mai implicați</h3>
+        <p>Un copil care înțelege de ce să se hidrateze, să doarmă suficient și să mănânce bine vine mai pregătit la antrenament. Aplicația lucrează pentru tine și între antrenamente.</p>
+      </article>
+      <article class="lp-card reveal" style="--d:.16s">
+        <span class="lp-card-ic c-sky">{{icon:i-medal}}</span>
+        <h3>Autoritate în fața părinților</h3>
+        <p>Ești antrenorul care aduce un instrument modern, educativ și sigur pentru copii. Părinții apreciază când antrenorul se gândește la dezvoltarea copilului și dincolo de teren.</p>
+      </article>
+      <article class="lp-card reveal" style="--d:.24s">
+        <span class="lp-card-ic c-amber">{{icon:i-shield}}</span>
+        <h3>Zero muncă administrativă</h3>
+        <p>Conturile, plățile prin Stripe, facturarea și suportul pentru părinți sunt în grija noastră. Tu nu răspunzi de nimic din partea tehnică — doar faci recomandarea.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ PENTRU CINE -->
+<section class="lp-band lp-soft" id="pentru-cine">
+  <div class="wrap">
+    <header class="lp-head reveal">
+      <p class="lp-eyebrow">{{icon:i-users}} Pentru cine e programul</p>
+      <h2>Antrenor sau club, <span class="lp-grad-d">ai un loc aici.</span></h2>
+      <p>Indiferent de sport și de mărimea grupelor, parteneriatul se adaptează felului în care lucrezi.</p>
+    </header>
+
+    <div class="lp-who">
+      <article class="lp-who-card reveal">
+        {{ill:hero-antrenori|lazy|Antrenor care urmărește progresul sportivilor în aplicație}}
+        <div>
+          <span class="lp-tagc t-green">{{icon:i-whistle}} Antrenori</span>
+          <h3>Independenți sau din cadrul unui club</h3>
+          <p>Recomanzi aplicația direct familiilor din grupele tale. Comisionul vine la tine, personal, pentru fiecare abonament activ adus prin linkul tău.</p>
+          <ul class="lp-mini">
+            <li>{{icon:i-check}} Ideal dacă lucrezi cu una sau mai multe grupe de copii</li>
+            <li>{{icon:i-check}} Potrivit și pentru antrenori personali sau de pregătire fizică</li>
+          </ul>
+        </div>
+      </article>
+      <article class="lp-who-card reveal" style="--d:.1s">
+        {{ill:hero-rol-club|lazy|Club sportiv care folosește aplicația Sportiv Educat}}
+        <div>
+          <span class="lp-tagc t-purple">{{icon:i-shield}} Cluburi sportive</span>
+          <h3>Pentru toți sportivii clubului</h3>
+          <p>Clubul recomandă aplicația tuturor familiilor, prin canalele lui oficiale. Comisionul ajunge la club — o sursă de venit în plus, fără costuri și fără muncă pentru staff.</p>
+          <ul class="lp-mini">
+            <li>{{icon:i-check}} Potrivit pentru academii, cluburi și asociații sportive</li>
+            <li>{{icon:i-check}} Un bonus real pentru cluburile cu sute de sportivi</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CONFIDENȚIAL -->
+<section class="lp-band" id="confidential" aria-labelledby="confTitle">
+  <div class="wrap">
+    <div class="lp-conf reveal">
+      <span class="lp-conf-dots" aria-hidden="true"></span>
+      <span class="lp-conf-glow" aria-hidden="true"></span>
+
+      <div class="lp-lock">
+        <span class="lp-lock-ring" aria-hidden="true"></span>
+        <span class="lp-lock-in">{{icon:i-lock}}</span>
+      </div>
+
+      <p class="lp-conf-k">Confidențial</p>
+      <h2 id="confTitle">Totul rămâne între noi.</h2>
+      <p class="lp-conf-p">
+        Parteneriatul tău cu Sportiv Educat este o discuție privată. Nimeni din club, dintre părinți sau
+        dintre ceilalți antrenori nu află ce câștigi.
+      </p>
+
+      <div class="lp-conf-grid">
+        <div class="reveal" style="--d:.05s">
+          {{icon:i-eye-off}}
+          <h3>Pagină nelistată</h3>
+          <p>Nu apare în meniul site-ului și nici în Google. Ajunge aici doar cine primește linkul.</p>
+        </div>
+        <div class="reveal" style="--d:.12s">
+          {{icon:i-fingerprint}}
+          <h3>Câștigurile tale, doar ale tale</h3>
+          <p>Nu publicăm numele partenerilor și nici sumele pe care le primesc. Datele tale nu ajung la terți.</p>
+        </div>
+        <div class="reveal" style="--d:.19s">
+          {{icon:i-chat}}
+          <h3>Discuție unu-la-unu</h3>
+          <p>15 minute online, doar tu și noi. Fără obligații și fără să semnezi nimic pe loc.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ ÎNTREBĂRI -->
+<section class="lp-band lp-soft" id="intrebari">
+  <div class="wrap lp-faq-wrap">
+    <header class="lp-head reveal">
+      <p class="lp-eyebrow">{{icon:i-compass}} Întrebări frecvente</p>
+      <h2>Ce ne întreabă <span class="lp-grad-d">antrenorii și cluburile.</span></h2>
+    </header>
+
+    <div class="lp-faq reveal">
+      <details open>
+        <summary>Cât costă să devin partener?</summary>
+        <div class="fa-body">Nimic. Nu există taxă de înscriere, abonament sau un număr minim de familii pe care trebuie să le aduci. Dacă după discuție hotărăști că nu e pentru tine, nu datorezi nimic.</div>
+      </details>
+      <details>
+        <summary>Cât primesc pentru fiecare abonament?</summary>
+        <div class="fa-body">2 € pe lună pentru fiecare abonament Start activ, 3 € pentru Campion și 4 € pentru Elită. Comisionul se plătește lunar, cât timp abonamentul familiei rămâne activ.</div>
+      </details>
+      <details>
+        <summary>Trebuie să vând ceva sau să încasez bani de la părinți?</summary>
+        <div class="fa-body">Nu. Tu doar recomanzi aplicația. Părinții își fac singuri contul și plătesc direct în aplicație, prin plată securizată Stripe. Conturile, facturarea și suportul sunt în grija noastră.</div>
+      </details>
+      <details>
+        <summary>Cum se știe că o familie a venit prin mine?</summary>
+        <div class="fa-body">Primești un link personal de partener. Familiile care își fac cont prin el rămân asociate automat cu tine, iar abonamentele lor active intră în calculul comisionului tău.</div>
+      </details>
+      <details>
+        <summary>Ce se întâmplă dacă un copil renunță la antrenamente?</summary>
+        <div class="fa-body">Comisionul e legat de abonamentul familiei, nu de prezența la antrenamente. Cât timp familia păstrează abonamentul activ, tu primești comisionul în continuare.</div>
+      </details>
+      <details>
+        <summary>Cum și când primesc banii?</summary>
+        <div class="fa-body">Comisionul se calculează lunar. Forma de plată (ca persoană fizică, PFA, firmă sau prin club) și detaliile contractului le stabilim împreună la discuție, în funcție de situația ta.</div>
+      </details>
+      <details>
+        <summary>Ce faceți cu datele din formular?</summary>
+        <div class="fa-body">Le folosim doar ca să te contactăm în legătură cu parteneriatul. Nu le vindem și nu le dăm mai departe. Poți cere oricând ștergerea lor, scriindu-ne la contact@sportiveducat.ro.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ ÎNSCRIERE -->
+<section class="lp-band lp-form-band" id="inscriere">
+  <div class="lp-form-bg" aria-hidden="true"><span class="lp-orb o1"></span><span class="lp-orb o3"></span></div>
+  <div class="wrap lp-form-in">
+    <div class="lp-form-copy reveal">
+      <p class="lp-eyebrow lp-eyebrow-light">{{icon:i-handshake}} Înscriere parteneri</p>
+      <h2>Hai să stabilim o discuție de 15 minute.</h2>
+      <p>
+        Îți arătăm aplicația, cum funcționează parteneriatul și cât poți câștiga concret cu grupele
+        tale. Pleci din discuție cu toate cifrele pe masă — și decizi tu dacă mergem mai departe.
+      </p>
+
+      <ol class="lp-next">
+        <li><span>1</span><div><b>Completezi formularul</b><small>Durează sub un minut.</small></div></li>
+        <li><span>2</span><div><b>Te sunăm ca să alegem ora</b><small>În intervalul pe care ni-l spui.</small></div></li>
+        <li><span>3</span><div><b>Discutăm 15 minute online</b><small>Confidențial, fără nicio obligație.</small></div></li>
+      </ol>
+
+      <p class="lp-direct">
+        Preferi să ne scrii direct?
+        <a href="mailto:contact@sportiveducat.ro">{{icon:i-mail}} contact@sportiveducat.ro</a>
+        <a href="tel:+40726412932">{{icon:i-phone}} +40 726 412 932</a>
+      </p>
+    </div>
+
+    <div class="lp-form-card reveal" style="--d:.1s">
+      <form id="partnerForm" class="lp-form" data-lead-type="partner" novalidate>
+        <div class="lp-form-step" id="pfFields">
+          <fieldset class="lp-seg" aria-describedby="roleHint">
+            <legend>Ești</legend>
+            <label><input type="radio" name="role" value="antrenor" checked> {{icon:i-whistle}} Antrenor</label>
+            <label><input type="radio" name="role" value="club"> {{icon:i-shield}} Club sportiv</label>
+            <span class="lp-seg-pill" aria-hidden="true"></span>
+          </fieldset>
+          <p class="lp-hint" id="roleHint">Alege varianta care ți se potrivește — adaptăm discuția.</p>
+
+          <div class="lp-row">
+            <label class="lp-field">
+              <span>Prenume și nume</span>
+              <input type="text" name="full_name" required autocomplete="name" placeholder="Ex: Andrei Popescu">
+            </label>
+            <label class="lp-field" id="clubField">
+              <span><b id="clubLabel">Club / echipă</b> <em id="clubOpt">(opțional)</em></span>
+              <input type="text" name="club_name" autocomplete="organization" placeholder="Ex: CS Viitorul">
+            </label>
+          </div>
+
+          <div class="lp-row">
+            <label class="lp-field">
+              <span>Oraș</span>
+              <input type="text" name="city" required autocomplete="address-level2" placeholder="Ex: Ploiești">
+            </label>
+            <label class="lp-field">
+              <span>Sport <em>(opțional)</em></span>
+              <input type="text" name="sport" list="lpSports" placeholder="Ex: fotbal">
+              <datalist id="lpSports">
+                <option value="Fotbal"></option><option value="Baschet"></option><option value="Handbal"></option>
+                <option value="Volei"></option><option value="Tenis"></option><option value="Înot"></option>
+                <option value="Atletism"></option><option value="Gimnastică"></option><option value="Arte marțiale"></option>
+                <option value="Dans sportiv"></option><option value="Patinaj"></option><option value="Schi"></option>
+              </datalist>
+            </label>
+          </div>
+
+          <label class="lp-field">
+            <span>Cu câți sportivi copii lucrezi? <em>(aproximativ)</em></span>
+            <select name="athletes" required>
+              <option value="" disabled selected>Alege un interval</option>
+              <option>Sub 20</option>
+              <option>20 – 50</option>
+              <option>50 – 100</option>
+              <option>100 – 300</option>
+              <option>Peste 300</option>
+            </select>
+          </label>
+
+          <div class="lp-row">
+            <label class="lp-field">
+              <span>Telefon</span>
+              <input type="tel" name="phone" required autocomplete="tel" inputmode="tel" placeholder="07xx xxx xxx" pattern="[0-9 +().\-]{9,}">
+            </label>
+            <label class="lp-field">
+              <span>Email</span>
+              <input type="email" name="email" required autocomplete="email" placeholder="nume@exemplu.ro">
+            </label>
+          </div>
+
+          <fieldset class="lp-when">
+            <legend>Când preferi să te sunăm? <em>(opțional)</em></legend>
+            <label><input type="radio" name="call_time" value="Dimineața (9–12)"> Dimineața</label>
+            <label><input type="radio" name="call_time" value="Prânz (12–15)"> La prânz</label>
+            <label><input type="radio" name="call_time" value="După-amiaza (15–18)"> După-amiaza</label>
+            <label><input type="radio" name="call_time" value="Seara (18–20)"> Seara</label>
+          </fieldset>
+
+          <label class="chk">
+            <input type="checkbox" name="privacy_accepted" value="1" required>
+            <span>Sunt de acord să fiu contactat în legătură cu programul de parteneriat, conform
+            <a href="{{page:confidentialitate}}" target="_blank" rel="noopener">Politicii de confidențialitate</a>.</span>
+          </label>
+
+          <!-- câmpuri tehnice: atribuirea reclamelor + anti-spam -->
+          <input type="hidden" name="terms_accepted" value="1">
+          <input type="hidden" name="estimated_monthly" value="">
+          <input type="hidden" name="utm_source" value="">
+          <input type="hidden" name="utm_medium" value="">
+          <input type="hidden" name="utm_campaign" value="">
+          <input type="hidden" name="utm_content" value="">
+          <input type="hidden" name="utm_term" value="">
+          <input type="hidden" name="gclid" value="">
+          <input type="hidden" name="fbclid" value="">
+          <input type="hidden" name="landing_url" value="">
+          <input type="hidden" name="referrer" value="">
+          <div class="lp-hp" aria-hidden="true">
+            <label>Nu completa acest câmp <input type="text" name="website_confirm" tabindex="-1" autocomplete="off"></label>
+          </div>
+
+          <p class="lp-form-err" id="pfError" role="alert" hidden></p>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block lp-submit" id="pfSubmit">
+            <span class="lbl">{{icon:i-calendar}} Programează discuția</span>
+            <span class="spin" aria-hidden="true"></span>
+          </button>
+          <p class="lp-safe">{{icon:i-lock}} Datele tale rămân confidențiale. Fără spam, fără obligații.</p>
+        </div>
+
+        <div class="lp-done" id="pfDone" hidden tabindex="-1">
+          <div class="lp-done-ic">{{icon:i-check}}</div>
+          <h3>Mulțumim<span id="pfName"></span>! Am primit datele tale.</h3>
+          <p>Te contactăm în curând ca să stabilim împreună ora discuției online de 15 minute.</p>
+          <ul class="lp-mini">
+            <li>{{icon:i-phone}} Te sunăm de pe +40 726 412 932 — salvează numărul, ca să ne recunoști.</li>
+            <li>{{icon:i-mail}} Verifică și emailul: uneori ajungem în Promoții sau Spam.</li>
+          </ul>
+          {{growie:bucurie|lp-done-mascot}}
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CTA FINAL -->
+<section class="lp-band lp-final">
+  <div class="wrap">
+    <div class="lp-final-card reveal">
+      {{growie:medalie|lp-final-mascot}}
+      <div>
+        <h2>Familiile din grupele tale caută deja ceva care să-i țină pe copii motivați.</h2>
+        <p>Fii tu cel care le-o recomandă — și primește comision pentru fiecare abonament, lună de lună.</p>
+      </div>
+      <a class="btn btn-white btn-lg" href="#inscriere">{{icon:i-calendar}} Programează discuția</a>
+    </div>
+  </div>
+</section>

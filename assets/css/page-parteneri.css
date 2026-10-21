@@ -588,12 +588,14 @@
 @keyframes lpFall{to{transform:translate(var(--x,0),110vh) rotate(var(--r,540deg));opacity:.9}}
 
 /* ============================================================ CTA FINAL */
-.lp-final{padding-top:0}
-.lp-final-card{
-  display:flex;align-items:center;gap:28px;border-radius:32px;padding:36px 40px;color:#fff;position:relative;overflow:hidden;
-  background:radial-gradient(420px 240px at 6% 15%,rgba(47,182,115,.4),transparent 60%),linear-gradient(120deg,#6a5bea,#4740c0 60%,#3a44b5);
-  box-shadow:0 30px 60px rgba(58,50,120,.35);
+/* bandă pe toată lățimea, lipită de footer: gradientul stă pe secțiune, nu pe card */
+.lp-band.lp-final{
+  padding:56px 0;overflow:hidden;
+  background:radial-gradient(520px 300px at 8% 20%,rgba(47,182,115,.4),transparent 60%),
+             radial-gradient(420px 260px at 92% 90%,rgba(56,182,255,.28),transparent 60%),
+             linear-gradient(120deg,#6a5bea,#4740c0 60%,#3a44b5);
 }
+.lp-final-card{display:flex;align-items:center;gap:28px;color:#fff;position:relative}
 .lp-final-mascot{width:96px;flex:none;animation:lpBob 4.5s ease-in-out infinite}
 .lp-final-card h2{font-size:clamp(1.3rem,2.4vw,1.75rem);font-weight:900}
 .lp-final-card p{margin-top:8px;color:#dcd9f7}
@@ -665,7 +667,7 @@
   .lp-form-card{padding:26px 18px;border-radius:26px}
   .lp-row{grid-template-columns:1fr}
   .lp-done-mascot{width:70px}
-  .lp-final-card{padding:30px 22px}
+  .lp-band.lp-final{padding:44px 0}
   .lp-prices-list{display:grid;grid-template-columns:1fr 1fr}
   .lp-footer .foot-bottom{text-align:center}
 }

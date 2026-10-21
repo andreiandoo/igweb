@@ -20,8 +20,9 @@
  *      PARTNER_SHEET_URL    = Web app URL de la pasul 4
  *      PARTNER_SHEET_TOKEN  = același TOKEN ca la pasul 3   (tip: Secret)
  *    și refă deploy-ul (sau așteaptă următorul push).
- * 6. Verificare: https://sportiveducat.ro/api/lead în browser trebuie să
- *    arate "sheet_parteneri": true. Apoi trimite un formular de test.
+ * 6. Verificare: deschide https://sportiveducat.ro/api/lead?check=sheet în
+ *    browser. Trebuie să vezi "Legătura funcționează." — altfel mesajul spune
+ *    exact ce pas lipsește. Apoi trimite un formular de test.
  *
  * „Anyone" e necesar ca funcția Cloudflare să poată apela scriptul fără
  * login Google. Scrierea e protejată de TOKEN: fără el, cererea e refuzată.
@@ -35,6 +36,9 @@
 
 const TOKEN = 'SCHIMBA-MA-cu-un-sir-lung-si-aleatoriu';
 const SHEET_NAME = 'Înscrieri';
+/* Tabelul „Parteneri — înscrieri sportiveducat.ro". Folosit dacă scriptul nu
+   e creat din tabel (Extensii → Apps Script), ci separat. */
+const SPREADSHEET_ID = '1w5PINaCNt7EpyANL2M6bMXbvvi7v-HH1Lxu3amjwMik';
 
 /** Ordinea coloanelor din tabel: [cheia din formular, titlul coloanei]. */
 const COLUMNS = [
@@ -72,34 +76,42 @@ function doPost(e) {
   }
   if (!data || data.token !== TOKEN) return reply({ ok: false, error: 'unauthorized' });
 
-  const lock = LockService.getScriptLock();
-  lock.waitLock(10000);
   try {
     const sheet = getSheet();
-    const row = COLUMNS.map(([key]) => {
-      if (key === '_status') return 'Nou';
-      if (key === '_notes') return '';
-      if (key === 'role') return data.role === 'club' ? 'Club' : 'Antrenor';
-      if (key === 'created_at') return data.created_at ? new Date(data.created_at) : new Date();
-      /* apostroful oprește Sheets să transforme telefonul în număr
-         (și să piardă 0-ul de la început) sau să execute „=formule" */
-      const v = String(data[key] ?? '').slice(0, 500);
-      return /^[=+\-@0]/.test(v) ? "'" + v : v;
-    });
-    sheet.appendRow(row);
-  } finally {
-    lock.releaseLock();
+    /* verificarea din /api/lead?check=sheet: confirmă token-ul și accesul la
+       tabel, fără să scrie vreun rând */
+    if (data.ping) return reply({ ok: true, sheet: sheet.getParent().getName() + ' / ' + sheet.getName() });
+
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    try {
+      const row = COLUMNS.map(([key]) => {
+        if (key === '_status') return 'Nou';
+        if (key === '_notes') return '';
+        if (key === 'role') return data.role === 'club' ? 'Club' : 'Antrenor';
+        if (key === 'created_at') return data.created_at ? new Date(data.created_at) : new Date();
+        /* apostroful oprește Sheets să transforme telefonul în număr
+           (și să piardă 0-ul de la început) sau să execute „=formule" */
+        const v = String(data[key] ?? '').slice(0, 500);
+        return /^[=+\-@0]/.test(v) ? "'" + v : v;
+      });
+      sheet.appendRow(row);
+    } finally {
+      lock.releaseLock();
+    }
+    return reply({ ok: true });
+  } catch (err) {
+    return reply({ ok: false, error: String(err && err.message ? err.message : err) });
   }
-  return reply({ ok: true });
 }
 
 /** GET pe URL-ul scriptului — verificare rapidă din browser. */
 function doGet() {
-  return reply({ ok: true, info: 'iGROWth · parteneri → Google Sheets' });
+  return reply({ ok: true, ping: true, info: 'iGROWth · parteneri → Google Sheets' });
 }
 
 function getSheet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     /* prima foaie, goală, a unui fișier nou se refolosește, ca să nu rămână „Sheet1" gol */

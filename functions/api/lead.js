@@ -482,9 +482,13 @@ async function store(env, lead) {
  * GET pe endpoint nu trimite date, dar spune dacă e configurat — util imediat
  * după deploy, ca să vezi din browser că variabilele au ajuns la funcție.
  * Întoarce doar da/nu, niciodată valorile.
+ *
+ * `?check=sheet` verifică în plus legătura cu Google Sheets, fără să scrie
+ * nimic în tabel: formatul URL-ului, dacă Web App-ul e public și dacă
+ * token-ul e acceptat (ping-ul din docs/google-sheets-parteneri.gs).
  */
-export function onRequestGet({ env }) {
-  return json({
+export async function onRequestGet({ request, env }) {
+  const body = {
     ok: false,
     error: 'Metodă neacceptată.',
     configurat: {
@@ -494,5 +498,74 @@ export function onRequestGet({ env }) {
       stocare_kv: Boolean(env.LEADS),
       sheet_parteneri: Boolean(env.PARTNER_SHEET_URL && env.PARTNER_SHEET_TOKEN),
     },
-  }, 405);
+  };
+  const check = request ? new URL(request.url).searchParams.get('check') : null;
+  if (check === 'sheet') body.sheet = await checkSheet(env);
+  return json(body, 405);
+}
+
+/** Diagnosticul legăturii cu Google Sheets, pas cu pas. */
+async function checkSheet(env) {
+  const url = str(env.PARTNER_SHEET_URL);
+  if (!url) return { pas: 'url', problema: 'PARTNER_SHEET_URL lipsește din Cloudflare.' };
+  if (!str(env.PARTNER_SHEET_TOKEN)) return { pas: 'token', problema: 'PARTNER_SHEET_TOKEN lipsește din Cloudflare.' };
+  if (url !== url.trim() || /\s/.test(env.PARTNER_SHEET_URL)) {
+    return { pas: 'url', problema: 'PARTNER_SHEET_URL conține spații — șterge-le.' };
+  }
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(url)) {
+    return {
+      pas: 'url',
+      problema: 'PARTNER_SHEET_URL nu e un URL de Web App. Trebuie să arate ca '
+        + 'https://script.google.com/macros/s/…/exec (nu adresa editorului și nici …/dev).',
+      incepe_cu: url.slice(0, 45),
+    };
+  }
+  if (env.PARTNER_SHEET_TOKEN !== env.PARTNER_SHEET_TOKEN.trim()) {
+    return { pas: 'token', problema: 'PARTNER_SHEET_TOKEN are spații la început sau la sfârșit.' };
+  }
+
+  const read = async (res) => {
+    const text = await res.text();
+    try { return { json: JSON.parse(text) }; } catch { return { html: text.slice(0, 160).replace(/\s+/g, ' ') }; }
+  };
+
+  try {
+    const res = await fetch(url, { redirect: 'follow' });
+    const out = await read(res);
+    if (!out.json) {
+      return {
+        pas: 'acces',
+        problema: 'Web App-ul nu e public: Google cere login. La Implementare → Gestionați '
+          + 'implementările → Editare, pune „Cine are acces: Oricine" (nu „Oricine cu cont Google").',
+        status: res.status,
+      };
+    }
+    if (!out.json.ping) {
+      return {
+        pas: 'versiune',
+        problema: 'Scriptul publicat e o versiune veche. Lipește din nou codul din '
+          + 'docs/google-sheets-parteneri.gs, apoi Implementare → Gestionați implementările → '
+          + 'Editare → Versiune: Versiune nouă → Implementare.',
+      };
+    }
+  } catch (e) {
+    return { pas: 'retea', problema: `URL-ul nu răspunde: ${String(e?.message ?? e)}` };
+  }
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: env.PARTNER_SHEET_TOKEN, ping: true }),
+      redirect: 'follow',
+    });
+    const out = await read(res);
+    if (out.json?.ok) return { ok: true, mesaj: 'Legătura funcționează.', tabel: out.json.sheet ?? null };
+    if (out.json?.error === 'unauthorized') {
+      return { pas: 'token', problema: 'Token-ul din Cloudflare diferă de TOKEN din script.' };
+    }
+    return { pas: 'script', problema: out.json?.error ?? 'Răspuns neașteptat de la script.', detalii: out.html ?? null };
+  } catch (e) {
+    return { pas: 'retea', problema: `Ping eșuat: ${String(e?.message ?? e)}` };
+  }
 }

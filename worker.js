@@ -45,7 +45,7 @@ export default {
     /* endpoint-ul formularelor */
     if (url.pathname === '/api/lead') {
       if (request.method === 'POST') return onRequestPost({ request, env });
-      return onRequestGet({ env });
+      return onRequestGet({ request, env });
     }
 
     /* fişiere statice; html_handling din wrangler.jsonc face URL-urile curate */

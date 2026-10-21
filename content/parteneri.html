@@ -423,11 +423,13 @@
 
       <div class="lp-lock">
         <span class="lp-lock-ring" aria-hidden="true"></span>
-        <span class="lp-lock-in">{{icon:i-lock}}</span>
+        <span class="lp-lock-in">
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10.5" width="16" height="11" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/><path d="M12 15v2.5"/></svg>
+        </span>
       </div>
 
-      <p class="lp-conf-k">Confidențial</p>
-      <h2 id="confTitle">Totul rămâne între noi.</h2>
+      <p class="lp-conf-k">Totul rămâne între noi</p>
+      <h2 id="confTitle" class="lp-stamp"><span>Confidențial</span></h2>
       <p class="lp-conf-p">
         Parteneriatul tău cu Sportiv Educat este o discuție privată. Nimeni din club, dintre părinți sau
         dintre ceilalți antrenori nu află ce câștigi.
@@ -440,14 +442,19 @@
           <p>Nu apare în meniul site-ului și nici în Google. Ajunge aici doar cine primește linkul.</p>
         </div>
         <div class="reveal" style="--d:.12s">
-          {{icon:i-fingerprint}}
+          {{icon:i-shield}}
           <h3>Câștigurile tale, doar ale tale</h3>
-          <p>Nu publicăm numele partenerilor și nici sumele pe care le primesc. Datele tale nu ajung la terți.</p>
+          <p>Nu publicăm numele partenerilor și nici sumele pe care le primesc.</p>
         </div>
         <div class="reveal" style="--d:.19s">
           {{icon:i-chat}}
           <h3>Discuție unu-la-unu</h3>
           <p>15 minute online, doar tu și noi. Fără obligații și fără să semnezi nimic pe loc.</p>
+        </div>
+        <div class="reveal lp-conf-alert" style="--d:.26s">
+          {{icon:i-lock}}
+          <h3>Datele tale, protejate</h3>
+          <p>Ce completezi în formular folosim doar ca să te contactăm. Nu le dăm nimănui.</p>
         </div>
       </div>
     </div>

@@ -33,7 +33,15 @@ const DEFAULT_CTA = {
  */
 function landingHeader(p) {
   const c = p.navCta ?? DEFAULT_CTA;
-  return `<header class="site-header lp-header">
+  /* banda galbenă de deasupra header-ului; `ribbon` e HTML de încredere, din pages.mjs */
+  const ribbon = p.ribbon ? `<div class="lp-ribbon" role="note">
+  <div class="wrap">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M1 1l22 22"/></svg>
+    <span>${p.ribbon}</span>
+  </div>
+</div>
+` : '';
+  return `${ribbon}<header class="site-header lp-header">
   <div class="wrap nav">
     <span class="logo">
       <span class="mark"><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#growie-mark"/></svg></span>

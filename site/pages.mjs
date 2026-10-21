@@ -111,6 +111,7 @@ export const PAGE_DEFS = {
     js: ['/assets/js/page-parteneri.js'],
     landing: true,
     landingTag: 'Parteneri',
+    ribbon: '<strong>Pagină nelistată</strong> · strict pentru cluburi sportive și antrenori. Te rugăm să nu o distribui public.',
     navCta: { primary: { label: 'Programează discuția', icon: 'i-calendar', href: '#inscriere' } },
     mobileCta: { primary: { label: 'Vreau să devin partener', icon: 'i-handshake', href: '#inscriere' } },
   },

@@ -23,6 +23,18 @@
 /* reveal cu întârziere configurabilă din markup: style="--d:.1s" */
 .page-parteneri .reveal.in{transition-delay:var(--d,0s)}
 
+/* ---------------------------------------------------------------- banda galbenă */
+.lp-ribbon{background:#FFB020;color:#0C1730;position:relative;z-index:81}
+.lp-ribbon .wrap{
+  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+  padding-top:12px;padding-bottom:12px;text-align:center;font-size:.94rem;font-weight:600;line-height:1.45;
+}
+.lp-ribbon svg{flex:none}
+.lp-ribbon strong{font-weight:800}
+@media(max-width:560px){
+  .lp-ribbon .wrap{font-size:.8rem;gap:8px;padding-top:9px;padding-bottom:9px;flex-wrap:nowrap;text-align:left}
+}
+
 /* ---------------------------------------------------------------- header */
 .lp-header{background:rgba(10,31,69,.78);border-bottom-color:rgba(255,255,255,.08)}
 .lp-header .logo{color:#fff}
@@ -386,18 +398,53 @@
   background:var(--lp-navy);border-radius:40px;padding:88px 36px;
 }
 .lp-conf-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:22px 22px}
+/* haloul roșu din spatele lacătului și al ștampilei */
 .lp-conf-glow{
-  position:absolute;left:50%;top:20px;width:560px;height:560px;margin-left:-280px;border-radius:50%;
-  background:radial-gradient(circle,rgba(91,75,214,.5),rgba(56,182,255,.12) 45%,transparent 70%);animation:lpPulse 5s ease-in-out infinite;
+  position:absolute;left:50%;top:40px;width:760px;height:620px;margin-left:-380px;border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(255,77,94,.32),rgba(255,77,94,.1) 40%,transparent 68%);
+  animation:lpPulse 5s ease-in-out infinite;
 }
 .lp-conf>*:not(.lp-conf-dots):not(.lp-conf-glow){position:relative}
-.lp-lock{width:148px;height:148px;margin:0 auto;position:relative}
-.lp-lock-ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(#2FB673,#38b6ff,#5B4BD6,#FFB020,#2FB673);animation:lpSpin 9s linear infinite}
-.lp-lock-in{position:absolute;inset:6px;border-radius:50%;background:var(--lp-navy);display:grid;place-items:center;font-size:3.6rem}
-.lp-conf-k{margin-top:28px;font-size:.78rem;font-weight:800;letter-spacing:.32em;text-transform:uppercase;color:#ffd98a}
-.lp-conf h2{margin-top:10px;font-size:clamp(2rem,4.4vw,3.2rem);font-weight:900}
-.lp-conf-p{margin:20px auto 0;max-width:640px;font-size:1.15rem;line-height:1.65;color:#c2cbe0}
-.lp-conf-grid{margin:52px auto 0;max-width:980px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;text-align:left}
+
+/* lacătul: contur roșu într-un inel roșu → portocaliu care se rotește */
+.lp-lock{width:128px;height:128px;margin:0 auto;position:relative}
+.lp-lock-ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 200deg,#ff4d5e,#ff4d6d 35%,#ff8a4c 60%,#ff4d5e 85%);
+  box-shadow:0 0 34px rgba(255,77,94,.45);animation:lpSpin 7s linear infinite;
+}
+.lp-lock-in{position:absolute;inset:5px;border-radius:50%;background:var(--lp-navy);display:grid;place-items:center;color:#ff4d5e}
+.lp-lock-in svg{filter:drop-shadow(0 0 10px rgba(255,77,94,.55))}
+
+.lp-conf-k{margin-top:34px;font-size:.84rem;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:#aeb9d4}
+
+/* „CONFIDENȚIAL" ca o ștampilă: chenar, înclinare, strălucire roșie */
+.lp-stamp{margin:22px 0 0;display:flex;justify-content:center}
+.lp-stamp span{
+  display:inline-block;padding:.06em .32em .02em;
+  font-size:clamp(2rem,9.6vw,6rem);font-weight:900;line-height:1.05;letter-spacing:.015em;text-transform:uppercase;
+  color:#ff4d5e;border:.07em solid #ff4d5e;border-radius:.14em;
+  text-shadow:0 0 18px rgba(255,77,94,.55),0 0 42px rgba(255,77,94,.3);
+  box-shadow:0 0 26px rgba(255,77,94,.35),inset 0 0 22px rgba(255,77,94,.22);
+  transform:rotate(-3.5deg);
+}
+/* intrarea: ștampila „lovește" pagina când secțiunea apare pe ecran */
+.lp-conf.reveal .lp-stamp span{opacity:0;transform:rotate(-3.5deg) scale(1.9)}
+.lp-conf.reveal.in .lp-stamp span{animation:lpStamp .55s .35s cubic-bezier(.3,1.5,.5,1) forwards}
+@keyframes lpStamp{
+  0%{opacity:0;transform:rotate(-3.5deg) scale(1.9)}
+  60%{opacity:1;transform:rotate(-3.5deg) scale(.94)}
+  100%{opacity:1;transform:rotate(-3.5deg) scale(1)}
+}
+.no-js .lp-conf .lp-stamp span{opacity:1;transform:rotate(-3.5deg)}
+@media(prefers-reduced-motion:reduce){
+  .lp-conf.reveal .lp-stamp span,.lp-conf.reveal.in .lp-stamp span{opacity:1;transform:rotate(-3.5deg);animation:none}
+}
+
+.lp-conf-p{margin:30px auto 0;max-width:600px;font-size:1.15rem;line-height:1.65;color:#c2cbe0}
+.lp-conf-grid{margin:52px auto 0;max-width:1000px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:left}
+.lp-conf-grid>div.lp-conf-alert{background:rgba(255,77,94,.07);border-color:rgba(255,77,94,.35)}
+.lp-conf-grid>div.lp-conf-alert .icon{color:#ff4d5e}
 .lp-conf-grid>div{
   background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:22px;padding:26px 24px;
   transition:background .3s,transform .3s var(--lp-ease);
@@ -581,7 +628,7 @@
   .lp-feat.rev-dir .lp-feat-ill{order:0}
   .lp-feat-ill{max-width:560px;margin:0 auto}
   .lp-form-in{grid-template-columns:1fr;gap:40px}
-  .lp-conf-grid{grid-template-columns:1fr}
+  .lp-conf-grid{grid-template-columns:repeat(2,1fr)}
   .lp-final-card{flex-wrap:wrap;text-align:center;justify-content:center}
   .lp-final-card .btn{margin:0 auto}
 }
@@ -614,6 +661,7 @@
   .lp-result{padding:30px 24px}
   .lp-recur{padding:36px 22px;border-radius:28px}
   .lp-conf{padding:64px 20px;border-radius:30px}
+  .lp-conf-grid{grid-template-columns:1fr}
   .lp-form-card{padding:26px 18px;border-radius:26px}
   .lp-row{grid-template-columns:1fr}
   .lp-done-mascot{width:70px}

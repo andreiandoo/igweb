@@ -25,7 +25,16 @@
  *
  * Binding-uri (recomandat):
  *   LEADS   KV Namespace — copie de siguranță a înscrierilor + limitare pe IP
+ *
+ * Meta Conversions API: la succes, dacă vizitatorul a acceptat cookie-urile,
+ * pleacă evenimentul formularului (CompleteRegistration / Lead) și, la plan
+ * plătit, InitiateCheckout. Răspunsul le întoarce în `meta`, ca site.js să le
+ * pună în dataLayer cu același event_id. Variabilele: vezi lib/meta.js.
  */
+
+import {
+  readIdentity, hashUser, buildEvent, sendEvents, later, planPrice, signToken,
+} from '../../lib/meta.js';
 
 /* ---------------------------------------------------------------- utilitare */
 
@@ -103,6 +112,13 @@ const FORMS = {
     }),
     /** id-ul pe care îl cere /plan-checkout */
     athleteId: (res) => res?.child?.id,
+    meta: {
+      event: 'CompleteRegistration',
+      content: 'parinti',
+      /* doar datele părintelui — nimic despre copil nu pleacă la Meta */
+      user: (d) => ({ email: d.parent_email, phone: d.parent_phone, name: d.parent_name }),
+      custom: (d) => ({ plan: str(d.plan), billing_period: str(d.billing_period) || 'month', status: str(d.plan) === 'free' ? 'free' : 'paid' }),
+    },
   },
 
   athlete: {
@@ -147,6 +163,15 @@ const FORMS = {
       ...(str(d.ref) ? { ref: str(d.ref) } : {}),
     }),
     athleteId: (res) => res?.athlete?.id,
+    meta: {
+      event: 'CompleteRegistration',
+      content: 'sportivi',
+      /* sportiv minor: trimitem doar datele părintelui care și-a dat acordul */
+      user: (d) => (Number(d.age) < 18
+        ? { email: d.guardian_email, phone: d.guardian_phone, name: d.guardian_name }
+        : { email: d.email, firstName: d.first_name }),
+      custom: (d) => ({ plan: str(d.plan) || 'free', billing_period: str(d.billing_period) || 'month', status: (str(d.plan) || 'free') === 'free' ? 'free' : 'paid' }),
+    },
   },
 
   club: {
@@ -185,6 +210,12 @@ const FORMS = {
     }),
     /* cluburile nu trec prin /plan-checkout: facturarea e lunară, per sportiv */
     athleteId: () => null,
+    meta: {
+      event: 'CompleteRegistration',
+      content: 'cluburi',
+      user: (d) => ({ email: d.email, phone: d.phone, name: d.president_name, city: d.city }),
+      custom: (d) => ({ plan: ['demo', 'basic', 'premium'].includes(str(d.plan_code)) ? str(d.plan_code) : 'demo' }),
+    },
   },
 
   /* Antrenorii nu au încă endpoint în aplicație — se colectează ca lead. */
@@ -195,6 +226,12 @@ const FORMS = {
     check: (d) => (isEmail(d.email) ? null : ['Adresa de email nu pare validă.', ['email']]),
     payload: null,
     athleteId: () => null,
+    meta: {
+      event: 'Lead',
+      content: 'antrenori',
+      user: (d) => ({ email: d.email, phone: d.phone, name: d.full_name, city: d.city }),
+      custom: () => ({}),
+    },
   },
 
   /* Landing page-ul /parteneri: antrenori și cluburi care vor să recomande
@@ -214,6 +251,15 @@ const FORMS = {
     },
     payload: null,
     athleteId: () => null,
+    meta: {
+      event: 'Lead',
+      content: 'parteneri',
+      user: (d) => ({ email: d.email, phone: d.phone, name: d.full_name, city: d.city }),
+      custom: (d) => ({
+        role: str(d.role),
+        ...(Number(d.estimated_monthly) > 0 ? { estimated_monthly: Number(d.estimated_monthly) } : {}),
+      }),
+    },
   },
 };
 
@@ -313,7 +359,7 @@ async function callApi(env, path, needsKey, body) {
 
 /* ------------------------------------------------------------ handler */
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   let payload;
   try {
     payload = await request.json();
@@ -341,6 +387,26 @@ export async function onRequestPost({ request, env }) {
   }
   const problem = form.check(data);
   if (problem) return json({ ok: false, error: problem[0], fields: problem[1] }, 422);
+
+  /* --- Meta: evenimentele de conversie ---
+     Le adunăm pe parcurs (la plan plătit se adaugă InitiateCheckout) și le
+     trimitem doar pe ramurile de succes, prin success(). */
+  const identity = readIdentity(payload.meta);
+  const metaEvents = [{
+    name: form.meta.event,
+    id: identity.eventId,
+    custom: { content_name: form.meta.content, ...form.meta.custom(data) },
+  }];
+  const success = async (extra = {}) => {
+    const out = { ok: true, ...extra };
+    if (identity.consent) {
+      const user = await hashUser(form.meta.user(data));
+      const events = await Promise.all(metaEvents.map((e) => buildEvent({ ...e, request, identity, user })));
+      await later(waitUntil, sendEvents(env, events));
+      out.meta = { events: metaEvents, user };
+    }
+    return json(out);
+  };
 
   const ip = request.headers.get('CF-Connecting-IP') ?? '';
   if (await rateLimited(env, ip)) {
@@ -370,7 +436,7 @@ export async function onRequestPost({ request, env }) {
       : (form.endpoint ? 'colectat (forward oprit)' : 'colectat (fără endpoint în aplicație)');
     await store(env, lead);
     await notify(env, lead);
-    return json({ ok: true });
+    return success();
   }
 
   /* --- înregistrare în aplicație --- */
@@ -390,7 +456,7 @@ export async function onRequestPost({ request, env }) {
         error: 'Nu am putut finaliza înregistrarea acum. Încearcă din nou în câteva minute.',
       }, 503);
     }
-    return json({ ok: true });
+    return success();
   }
 
   if (reg.status >= 400) {
@@ -409,7 +475,7 @@ export async function onRequestPost({ request, env }) {
       }, reg.status === 409 ? 409 : (passes ? reg.status : 422));
     }
     /* 401/5xx: e problema noastră, nu a lui — confirmăm, avem datele salvate */
-    return json({ ok: true });
+    return success();
   }
 
   /* --- plan plătit: pornim Stripe Checkout ---
@@ -437,18 +503,36 @@ export async function onRequestPost({ request, env }) {
     payment.reason = 'lipsește id-ul sportivului în răspunsul de înregistrare';
   } else {
     payment.expected = true;
+    /* Valoarea planului și jetonul semnat pentru Purchase, care se trimite
+       când omul revine de la Stripe pe /cont-creat (vezi lib/meta.js). */
+    const planCode = planFromApi.code ?? str(data.plan);
+    const period = planFromApi.billing_period ?? (str(data.billing_period) || 'month');
+    const price = await planPrice(env, planCode, period);
+    const token = await signToken(env, {
+      id: `${identity.eventId}.p`, src: form.meta.content, plan: planCode, period,
+      ...(price ? { v: price.value, c: price.currency } : {}),
+    });
+    const m = token ? `m=${token}` : '';
     try {
       const co = await callApi(env, '/plan-checkout', true, {
         athlete_id: athleteId,
-        success_url: `${origin}/cont-creat`,
-        cancel_url: `${origin}/plata-anulata?a=${encodeURIComponent(athleteId)}`,
+        success_url: `${origin}/cont-creat${m ? `?${m}` : ''}`,
+        cancel_url: `${origin}/plata-anulata?a=${encodeURIComponent(athleteId)}${m ? `&${m}` : ''}`,
       });
       if (co.status === 200 && co.data?.url) {
         payment.started = true;
+        metaEvents.push({
+          name: 'InitiateCheckout',
+          id: `${identity.eventId}.c`,
+          custom: {
+            content_name: form.meta.content, content_ids: [planCode], content_type: 'product',
+            num_items: 1, billing_period: period, ...(price ?? {}),
+          },
+        });
         lead.status = 'cont creat + plată pornită';
         await store(env, lead);
         await notify(env, lead);
-        return json({ ok: true, checkout_url: co.data.url, payment });
+        return success({ checkout_url: co.data.url, payment });
       }
       payment.reason = `/plan-checkout a răspuns ${co.status}: ${co.data?.error ?? 'fără mesaj'}`;
     } catch (e) {
@@ -468,7 +552,7 @@ export async function onRequestPost({ request, env }) {
 
   await store(env, lead);
   await notify(env, lead);
-  return json({ ok: true, payment });
+  return success({ payment });
 }
 
 async function store(env, lead) {

@@ -84,6 +84,22 @@ footer-ului și a sitemap-ului; are header/footer minimale (`landing: true` în
 Formularul trimite și sursa reclamei (`utm_*`, `gclid`, `fbclid`, pagina de
 intrare) și estimarea din calculator — apar ca coloane în tabel.
 
+## Tracking: GTM și Meta Conversions API
+
+- **GTM** (`GTM-MG8JXJXP`, în `site/config.mjs`) e pe toate paginile, după Consent Mode v2
+  (implicit refuzat; bannerul din `site.js` actualizează acordul).
+- **Conversiile din formulare** → `form_submission_success` cu `form_id`
+  `form_parinti` / `form_parteneri` / `form_cluburi`, doar după succes.
+- **Meta**: fiecare eveniment intră în dataLayer ca `meta_event` (pentru Pixel-ul din GTM)
+  și pleacă și de pe server, prin Conversions API, cu același `event_id`.
+  Codul comun e în `lib/meta.js`; pagini → `functions/api/track.js`; formulare →
+  `functions/api/lead.js`. Nimic nu pleacă fără „Accept" în banner.
+- Variabile în Cloudflare: `META_PIXEL_ID`, `META_CAPI_TOKEN` (Encrypt), opțional
+  `META_TEST_EVENT_CODE` (doar pe durata testului) și `META_API_VERSION`.
+  Fără ele, Conversions API e oprit; restul site-ului merge normal.
+  `GET /api/track` arată dacă au ajuns la funcție.
+- Un tag nou de la alt furnizor trebuie permis și în CSP (`cloudflare/_headers`, `worker.js`).
+
 ## Întrebările frecvente
 
 Nu se scriu separat. Generatorul le citește direct din `<details>`-urile paginii și le

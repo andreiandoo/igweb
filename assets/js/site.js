@@ -180,6 +180,128 @@
     if (club) club.style.display = which === 'club' ? '' : 'none';
   };
 
+  /* --- Meta: Pixel (prin GTM) + Conversions API -----------------------
+     Fiecare eveniment ajunge in dataLayer ca `meta_event` (pentru Pixel-ul
+     configurat de marketing in GTM) si la /api/track (Conversions API), cu
+     ACELASI event_id — Meta le unifica. Conversiile formularelor le trimite
+     /api/lead de pe server; browserul doar le pune in dataLayer.
+     Nimic nu pleaca fara acordul pentru cookie-uri: pana la alegere,
+     evenimentele asteapta in coada; la „Refuz" se arunca. */
+  var CONSENT_KEY = 'ig-consent';
+  var metaQueue = [];
+
+  function consentState() {
+    try { return localStorage.getItem(CONSENT_KEY) || ''; } catch (e) { return ''; }
+  }
+  function newId() {
+    return (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+      : Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+  }
+  function getCookie(name) {
+    var m = doc.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+  function setCookie(name, value, days) {
+    doc.cookie = name + '=' + encodeURIComponent(value) + '; max-age=' + (days * 86400) + '; path=/; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
+  }
+
+  /* fbclid din reclama: il tinem pe durata sesiunii; devine cookie-ul _fbc
+     doar dupa acord (formatul cerut de Meta: fb.1.<ms>.<fbclid>) */
+  (function captureFbclid() {
+    try {
+      var id = new URLSearchParams(window.location.search).get('fbclid');
+      if (id) sessionStorage.setItem('ig-fbc', 'fb.1.' + Date.now() + '.' + id.slice(0, 400));
+    } catch (e) { /* fara sessionStorage: fara atribuire */ }
+  })();
+
+  /** Cookie-urile Meta (_fbp, _fbc), create de noi daca Pixel-ul n-a apucat inca. */
+  function ensureMetaCookies() {
+    if (!getCookie('_fbp')) setCookie('_fbp', 'fb.1.' + Date.now() + '.' + Math.floor(Math.random() * 1e10), 90);
+    var pending = '';
+    try { pending = sessionStorage.getItem('ig-fbc') || ''; } catch (e) { /* ignorat */ }
+    if (pending && getCookie('_fbc').split('.').slice(3).join('.') !== pending.split('.').slice(3).join('.')) {
+      setCookie('_fbc', pending, 90);
+    }
+  }
+  function visitorId() {
+    try {
+      var v = localStorage.getItem('ig-vid');
+      if (!v) { v = newId(); localStorage.setItem('ig-vid', v); }
+      return v;
+    } catch (e) { return ''; }
+  }
+
+  /** Ce trimitem serverului langa eveniment, ca Meta sa recunoasca vizitatorul. */
+  function metaIdentity(eventId) {
+    var granted = consentState() === 'granted';
+    if (granted) ensureMetaCookies();
+    return {
+      consent: granted,
+      event_id: eventId || newId(),
+      fbp: granted ? getCookie('_fbp') : '',
+      fbc: granted ? getCookie('_fbc') : '',
+      vid: granted ? visitorId() : '',
+      url: window.location.href
+    };
+  }
+
+  function metaDataLayer(ev) {
+    window.dataLayer = window.dataLayer || [];
+    /* GTM imbina obiectele intre push-uri; le golim ca sa nu ramana chei vechi */
+    window.dataLayer.push({ meta_custom_data: null, meta_user_data: null });
+    window.dataLayer.push({
+      event: 'meta_event',
+      meta_event_name: ev.name,
+      meta_event_id: ev.id,
+      meta_custom_data: ev.custom || {},
+      meta_user_data: ev.user || {}
+    });
+  }
+
+  function metaSend(ev) {
+    metaDataLayer(ev);
+    if (ev.server === false) return;
+    var payload = metaIdentity(ev.id);
+    payload.event = ev.name;
+    payload.custom_data = ev.custom || {};
+    if (ev.token) payload.token = ev.token;
+    var body = JSON.stringify(payload);
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon('/api/track', new Blob([body], { type: 'application/json' }))) return;
+    } catch (e) { /* trecem pe fetch */ }
+    fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true })
+      .catch(function () {});
+  }
+
+  /**
+   * Un eveniment Meta din pagina. opts: { id, server:false (doar dataLayer),
+   * user (date deja criptate), token (jetonul pentru Purchase) }.
+   */
+  window.igMeta = function (name, custom, opts) {
+    opts = opts || {};
+    var ev = { name: name, id: opts.id || newId(), custom: custom, server: opts.server, user: opts.user, token: opts.token };
+    var state = consentState();
+    if (state === 'granted') metaSend(ev);
+    else if (state !== 'denied') metaQueue.push(ev);
+    return ev.id;
+  };
+
+  /** Evenimentele deja trimise de server (raspunsul /api/lead, /api/checkout) → dataLayer. */
+  window.igMetaFromServer = function (meta) {
+    if (!meta || !meta.events) return;
+    meta.events.forEach(function (e) {
+      metaDataLayer({ name: e.name, id: e.id, custom: e.custom, user: meta.user });
+    });
+  };
+  window.igMetaIdentity = metaIdentity;
+
+  /** Apelat de bannerul de cookie-uri: trimite sau arunca ce astepta. */
+  function metaConsent(granted) {
+    var q = metaQueue;
+    metaQueue = [];
+    if (granted) q.forEach(metaSend);
+  }
+
   /* --- conversii in GTM ------------------------------------------------
      Formularele urmarite si form_id-ul cerut de marketing. Evenimentul pleaca
      o singura data, doar dupa raspunsul de succes de la /api/lead. */
@@ -238,13 +360,15 @@
     return fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: type, data: data })
+      body: JSON.stringify({ type: type, data: data, meta: metaIdentity() })
     })
       .then(function (r) { return r.json().catch(function () { return { ok: r.ok }; }); })
       .catch(function () {
         return { ok: false, error: 'Conexiune întreruptă. Încearcă din nou.' };
       })
       .then(function (res) {
+        /* evenimentele Meta intai, ca redirectul care asteapta `tracked` sa le prinda si pe ele */
+        if (res && res.ok) window.igMetaFromServer(res.meta);
         if (res && res.ok && TRACKED_FORMS[type]) res.tracked = trackSuccess(TRACKED_FORMS[type]);
         return res;
       });
@@ -387,6 +511,7 @@
               ad_storage: v, ad_user_data: v, ad_personalization: v, analytics_storage: v
             });
           }
+          metaConsent(v === 'granted');
           banner.hidden = true;
         });
       });
@@ -394,6 +519,66 @@
       $$('.ck-open').forEach(function (b) {
         on(b, 'click', function () { banner.hidden = false; });
       });
+    })();
+
+    /* --- evenimente Meta din pagina (vezi igMeta mai sus) --- */
+    (function () {
+      var page = (doc.body.className.match(/\bpage-([\w-]+)/) || [])[1] || '';
+      var CONTENT = { parinti: 'parinti', sportivi: 'sportivi', cluburi: 'cluburi', antrenori: 'antrenori', parteneri: 'parteneri' };
+
+      window.igMeta('PageView', {});
+      if (CONTENT[page]) window.igMeta('ViewContent', { content_name: CONTENT[page], content_type: 'product' });
+
+      /* a inceput inscrierea: deschide modalul, sau intra in formularul de pe /parteneri */
+      var started = false;
+      function startRegistration() {
+        if (started) return;
+        started = true;
+        window.igMeta('StartRegistration', { content_name: CONTENT[page] || page });
+      }
+      /* apelat din openReg (aici si in page-sportivi.js) */
+      window.igStartRegistration = startRegistration;
+      on(doc.getElementById('partnerForm'), 'focusin', startRegistration);
+
+      /* a ajuns la preturi (jumatate din sectiune pe ecran) */
+      var pricing = doc.getElementById('preturi');
+      if (pricing && 'IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          if (!entries[0].isIntersecting) return;
+          io.disconnect();
+          window.igMeta('ViewPricing', { content_name: CONTENT[page] || page });
+        }, { threshold: 0.5 });
+        io.observe(pricing);
+      }
+
+      /* click-uri: telefon / email, magazinele de aplicatii, intrarea in cont */
+      on(doc, 'click', function (e) {
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a) return;
+        var href = a.getAttribute('href') || '';
+        if (/^tel:/.test(href)) window.igMeta('Contact', { content_name: 'telefon' });
+        else if (/^mailto:/.test(href)) window.igMeta('Contact', { content_name: 'email' });
+        else if (/apps\.apple\.com/.test(href)) window.igMeta('ClickAppDownload', { content_name: 'app_store' });
+        else if (/play\.google\.com/.test(href)) window.igMeta('ClickAppDownload', { content_name: 'google_play' });
+        else if (/\/login\b/.test(href) && window.IG && href.indexOf(window.IG.app) === 0) window.igMeta('ClickLogin', {});
+      }, true);
+
+      /* intors de la Stripe dupa plata: ?m=<jeton semnat de /api/lead> */
+      var m = new URLSearchParams(window.location.search).get('m');
+      if (page === 'cont-creat' && m) {
+        try {
+          var t = JSON.parse(atob(m.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')));
+          var seen = false;
+          try { seen = sessionStorage.getItem('ig-purchase') === t.id; } catch (e2) { /* ignorat */ }
+          if (!seen && t.id) {
+            window.igMeta('Purchase', {
+              content_name: t.src, content_ids: [t.plan], content_type: 'product', num_items: 1,
+              billing_period: t.period, value: t.v, currency: t.c
+            }, { id: t.id, token: m });
+            try { sessionStorage.setItem('ig-purchase', t.id); } catch (e3) { /* ignorat */ }
+          }
+        } catch (e) { /* jeton stricat: fara Purchase */ }
+      }
     })();
 
     /* --- bara de progres --- */
@@ -573,6 +758,7 @@
 
       window.openReg = function (e) {
         if (e && e.preventDefault) e.preventDefault();
+        if (window.igStartRegistration) window.igStartRegistration();
         opener = doc.activeElement;
         step = 1;
         render();

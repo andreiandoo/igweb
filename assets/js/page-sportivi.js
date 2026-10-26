@@ -79,6 +79,7 @@
 
     window.openReg = function (e) {
       if (e && e.preventDefault) e.preventDefault();
+      if (window.igStartRegistration) window.igStartRegistration();
       opener = doc.activeElement;
       idx = 0;
       rebuildFlow();

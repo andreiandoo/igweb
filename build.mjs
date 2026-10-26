@@ -231,7 +231,8 @@ ${s.resume ? `    <p class="reg-error" id="resumeError" style="margin:20px auto 
     <script>
     /* Butonul apare doar daca /plata-anulata a primit ?a=<id> de la Stripe. */
     (function () {
-      var id = new URLSearchParams(location.search).get('a');
+      var qs = new URLSearchParams(location.search);
+      var id = qs.get('a');
       var btn = document.getElementById('resumePay');
       var err = document.getElementById('resumeError');
       if (!id || !btn) return;
@@ -244,11 +245,21 @@ ${s.resume ? `    <p class="reg-error" id="resumeError" style="margin:20px auto 
         fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ athlete_id: id })
+          /* m = jetonul pentru Purchase; meta = identitatea pentru Conversions API */
+          body: JSON.stringify({
+            athlete_id: id,
+            m: qs.get('m') || '',
+            meta: window.igMetaIdentity ? window.igMetaIdentity() : null
+          })
         })
           .then(function (r) { return r.json(); })
           .then(function (res) {
-            if (res && res.ok && res.url) { location.assign(res.url); return; }
+            if (res && res.ok && res.url) {
+              if (window.igMetaFromServer) window.igMetaFromServer(res.meta);
+              /* o clipa pentru GTM, inainte sa plecam spre Stripe */
+              setTimeout(function () { location.assign(res.url); }, res.meta ? 600 : 0);
+              return;
+            }
             throw new Error((res && res.error) || 'Nu am putut porni plata.');
           })
           .catch(function (e) {

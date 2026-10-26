@@ -7,6 +7,7 @@
  * Dacă în dashboard ajungi în fluxul nou („Deploy command", „Protect with
  * Cloudflare Access"), atunci se creează un **Worker**, iar acest fișier preia:
  *   - ruta /api/lead        → aceeași logică din functions/api/lead.js
+ *   - ruta /api/track       → functions/api/track.js (Meta Conversions API)
  *   - restul cererilor      → fișierele statice din dist/ (binding-ul ASSETS)
  *   - antetele de securitate şi cache  (în locul lui _headers)
  *   - redirectul www → apex (în locul lui _redirects)
@@ -15,6 +16,7 @@
  */
 
 import { onRequestPost, onRequestGet } from './functions/api/lead.js';
+import * as track from './functions/api/track.js';
 
 /* Aceleaşi antete ca în cloudflare/_headers (inclusiv domeniile GTM/Ads/Meta din CSP). */
 const SECURITY = {
@@ -34,7 +36,8 @@ const SECURITY = {
 };
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
+    const waitUntil = (p) => ctx.waitUntil(p);
     const url = new URL(request.url);
 
     /* www → fără www, 301, cu păstrarea căii şi a parametrilor */
@@ -45,8 +48,14 @@ export default {
 
     /* endpoint-ul formularelor */
     if (url.pathname === '/api/lead') {
-      if (request.method === 'POST') return onRequestPost({ request, env });
+      if (request.method === 'POST') return onRequestPost({ request, env, waitUntil });
       return onRequestGet({ request, env });
+    }
+
+    /* evenimentele Meta din pagini (Conversions API) */
+    if (url.pathname === '/api/track') {
+      if (request.method === 'POST') return track.onRequestPost({ request, env, waitUntil });
+      return track.onRequestGet({ request, env });
     }
 
     /* fişiere statice; html_handling din wrangler.jsonc face URL-urile curate */

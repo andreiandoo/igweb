@@ -267,7 +267,7 @@
         done.focus({ preventScroll: true });
         done.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
         confetti();
-        /* conversia (form_submission_success / form_cluburi) o trimite
+        /* conversia (form_submission_success / form_parteneri) o trimite
            igSubmitLead din site.js; Ads și Meta se configurează în GTM */
       });
     });

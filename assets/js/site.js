@@ -183,7 +183,7 @@
   /* --- conversii in GTM ------------------------------------------------
      Formularele urmarite si form_id-ul cerut de marketing. Evenimentul pleaca
      o singura data, doar dupa raspunsul de succes de la /api/lead. */
-  var TRACKED_FORMS = { parent: 'form_parinti', partner: 'form_cluburi' };
+  var TRACKED_FORMS = { parent: 'form_parinti', partner: 'form_parteneri', club: 'form_cluburi' };
 
   /**
    * Trimite form_submission_success in dataLayer. Intoarce o promisiune care

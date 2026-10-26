@@ -72,6 +72,7 @@ function landingFooter(p) {
         <a href="tel:${esc(SITE.phone)}">${esc(SITE.phoneHuman)}</a>
         <a href="${esc(pageUrl('confidentialitate'))}" target="_blank" rel="noopener">Confidențialitate</a>
         <a href="${esc(pageUrl('termeni'))}" target="_blank" rel="noopener">Termeni</a>
+        <button type="button" class="ck-open">Setări cookies</button>
       </span>
       <span>© ${new Date().getUTCFullYear()} ${esc(SITE.brand)} · ${esc(SITE.address.city)}, România</span>
     </div>
@@ -210,12 +211,56 @@ ${pages}
         <a href="${esc(pageUrl('termeni'))}">Termeni</a>
         <a href="${esc(pageUrl('confidentialitate'))}">Confidențialitate</a>
         <a href="${esc(pageUrl('cookies'))}">Cookies</a>
+        <button type="button" class="ck-open">Setări cookies</button>
       </span>
       <span>Făcut cu grijă pentru copiii din România 🇷🇴</span>
     </div>
   </div>
 </footer>
 ${mobileCta}`;
+}
+
+/**
+ * Google Tag Manager, precedat de Consent Mode v2.
+ * Implicit totul e refuzat; dacă omul a acceptat deja (ig-consent în
+ * localStorage, scris de bannerul din site.js), consimțământul se reface
+ * ÎNAINTE de încărcarea containerului, ca primele tag-uri să-l vadă.
+ */
+function gtmHead() {
+  if (!SITE.gtm) return '';
+  return `<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent', 'default', {ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied', analytics_storage:'denied', wait_for_update:500});
+try { if (localStorage.getItem('ig-consent') === 'granted') gtag('consent', 'update', {ad_storage:'granted', ad_user_data:'granted', ad_personalization:'granted', analytics_storage:'granted'}); } catch (e) {}
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${esc(SITE.gtm)}');</script>
+<!-- End Google Tag Manager -->`;
+}
+
+function gtmBody() {
+  if (!SITE.gtm) return '';
+  return `<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=${esc(SITE.gtm)}"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->`;
+}
+
+/** Bannerul de consimțământ; îl afișează site.js doar dacă omul n-a ales încă. */
+function cookieBanner() {
+  if (!SITE.gtm) return '';
+  return `<div class="ck-banner" id="ckBanner" role="dialog" aria-live="polite" aria-label="Cookie-uri" hidden>
+  <p>Folosim cookie-uri ca să măsurăm traficul și eficiența reclamelor. Le activăm doar dacă ești de acord. <a href="${esc(pageUrl('cookies'))}">Detalii</a></p>
+  <div class="ck-actions">
+    <button type="button" class="btn btn-ghost" data-consent="denied">Refuz</button>
+    <button type="button" class="btn btn-primary" data-consent="granted">Accept</button>
+  </div>
+</div>`;
 }
 
 /**
@@ -243,6 +288,8 @@ export function document(p, parts, ctx) {
 <head>
 ${headMeta(p, ctx.asset)}
 
+${gtmHead()}
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap">
@@ -260,6 +307,7 @@ ${js}
 ${jsonLd(p)}
 </head>
 <body class="page-${esc(p.key)}">
+${gtmBody()}
 
 <a class="skip-link" href="#continut">Sari la conținut</a>
 <div id="progress" aria-hidden="true"></div>
@@ -274,6 +322,7 @@ ${parts.body}
 
 ${footer(p, ctx.growie)}
 ${parts.overlay ?? ''}
+${cookieBanner()}
 </body>
 </html>
 `;

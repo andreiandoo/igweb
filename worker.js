@@ -16,7 +16,7 @@
 
 import { onRequestPost, onRequestGet } from './functions/api/lead.js';
 
-/* Aceleaşi antete ca în cloudflare/_headers. */
+/* Aceleaşi antete ca în cloudflare/_headers (inclusiv domeniile GTM/Ads/Meta din CSP). */
 const SECURITY = {
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -24,11 +24,12 @@ const SECURITY = {
   'Permissions-Policy': 'geolocation=(), microphone=(), camera=(), interest-cohort=()',
   'Content-Security-Policy': [
     "default-src 'self'", "base-uri 'self'", "object-src 'none'",
-    "frame-ancestors 'self'", "img-src 'self' data:", "media-src 'self'",
+    "frame-ancestors 'self'", "img-src 'self' data: https://*.googletagmanager.com https://*.google-analytics.com https://*.g.doubleclick.net https://www.google.com https://www.google.ro https://www.googleadservices.com https://www.facebook.com", "media-src 'self'",
     'font-src \'self\' https://fonts.gstatic.com',
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "script-src 'self' 'unsafe-inline'", "form-action 'self'",
-    "connect-src 'self'", 'upgrade-insecure-requests',
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://*.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com https://connect.facebook.net",
+    "frame-src https://www.googletagmanager.com https://td.doubleclick.net https://www.facebook.com", "form-action 'self'",
+    "connect-src 'self' https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://*.g.doubleclick.net https://www.google.com https://www.googleadservices.com https://www.facebook.com https://connect.facebook.net", 'upgrade-insecure-requests',
   ].join('; '),
 };
 

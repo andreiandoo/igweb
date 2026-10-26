@@ -16,6 +16,8 @@ export const SITE = {
   googlePlay: 'https://play.google.com/store/apps/details?id=com.sportiveducat.app',
   /** endpoint-ul Pages Function pentru formulare (vezi functions/api/lead.js) */
   lead:     '/api/lead',
+  /** containerul Google Tag Manager — Ads/Meta le configurează marketingul din GTM */
+  gtm:      'GTM-MG8JXJXP',
 
   /**
    * Facturarea anuală în formularul de înscriere.

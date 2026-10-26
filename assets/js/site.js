@@ -180,10 +180,39 @@
     if (club) club.style.display = which === 'club' ? '' : 'none';
   };
 
+  /* --- conversii in GTM ------------------------------------------------
+     Formularele urmarite si form_id-ul cerut de marketing. Evenimentul pleaca
+     o singura data, doar dupa raspunsul de succes de la /api/lead. */
+  var TRACKED_FORMS = { parent: 'form_parinti', partner: 'form_cluburi' };
+
+  /**
+   * Trimite form_submission_success in dataLayer. Intoarce o promisiune care
+   * se rezolva cand GTM a procesat evenimentul (eventCallback) sau dupa 2 s —
+   * cu GTM blocat de un adblocker, callback-ul nu vine niciodata.
+   */
+  function trackSuccess(formId) {
+    return new Promise(function (resolve) {
+      var done = false;
+      /* eventCallback ramane in modelul GTM si poate fi reapelat la
+         evenimente ulterioare — de aici garda */
+      function finish() { if (!done) { done = true; resolve(); } }
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'form_submission_success',
+        form_id: formId,
+        eventCallback: finish,
+        eventTimeout: 2000
+      });
+      setTimeout(finish, 2000);
+    });
+  }
+
   /**
    * Trimite formularul catre /api/lead (Cloudflare Pages Function).
    * Emite si evenimentul `ig:lead`, util pentru analytics.
-   * Intoarce o promisiune cu { ok, error?, fields? }.
+   * Intoarce o promisiune cu { ok, error?, fields? }. La succes, pentru
+   * formularele din TRACKED_FORMS, `res.tracked` e promisiunea din trackSuccess
+   * — cine face redirect o asteapta, ca evenimentul sa nu se piarda.
    */
   window.igSubmitLead = function (form) {
     if (!form) return Promise.resolve({ ok: false, error: 'Formular indisponibil.' });
@@ -214,6 +243,10 @@
       .then(function (r) { return r.json().catch(function () { return { ok: r.ok }; }); })
       .catch(function () {
         return { ok: false, error: 'Conexiune întreruptă. Încearcă din nou.' };
+      })
+      .then(function (res) {
+        if (res && res.ok && TRACKED_FORMS[type]) res.tracked = trackSuccess(TRACKED_FORMS[type]);
+        return res;
       });
   };
 
@@ -333,6 +366,35 @@
      2. Initializari care depind de DOM si de datele din page-*.js
      ====================================================================== */
   onReady(function () {
+
+    /* --- consimtamant cookies (Consent Mode v2) ---
+       Valorile implicite („denied") le pune scriptul din <head>, inainte de GTM;
+       aici doar afisam bannerul si actualizam alegerea. */
+    (function () {
+      var banner = doc.getElementById('ckBanner');
+      if (!banner) return;
+      var KEY = 'ig-consent';
+      var saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (e) { /* fara storage: intrebam la fiecare vizita */ }
+      if (saved !== 'granted' && saved !== 'denied') banner.hidden = false;
+
+      $$('[data-consent]', banner).forEach(function (b) {
+        on(b, 'click', function () {
+          var v = b.getAttribute('data-consent');
+          try { localStorage.setItem(KEY, v); } catch (e) { /* alegerea tine doar pana la reincarcare */ }
+          if (typeof window.gtag === 'function') {
+            window.gtag('consent', 'update', {
+              ad_storage: v, ad_user_data: v, ad_personalization: v, analytics_storage: v
+            });
+          }
+          banner.hidden = true;
+        });
+      });
+
+      $$('.ck-open').forEach(function (b) {
+        on(b, 'click', function () { banner.hidden = false; });
+      });
+    })();
 
     /* --- bara de progres --- */
     (function () {
@@ -558,8 +620,12 @@
             /* la plan platit se face redirect spre Stripe — lasam butonul blocat */
             if (res && res.ok && res.checkout_url) {
               window.igShowRedirecting(modal);
-              /* o clipa, ca mesajul sa apuce sa fie vazut */
-              setTimeout(function () { window.location.assign(res.checkout_url); }, 900);
+              /* o clipa, ca mesajul sa apuce sa fie vazut — si cat ii trebuie
+                 lui GTM sa trimita conversia, altfel o pierdem la redirect */
+              Promise.all([
+                res.tracked,
+                new Promise(function (r) { setTimeout(r, 900); })
+              ]).then(function () { window.location.assign(res.checkout_url); });
               return;
             }
             sending = false;

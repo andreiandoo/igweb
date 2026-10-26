@@ -161,10 +161,10 @@ export const PAGE_DEFS = {
       h1: 'Politica de cookies',
       intro: 'Ce cookie-uri folosim pe sportiveducat.ro și cum le poți controla.',
       sections: [
-        ['Cookie-uri strict necesare', ['Site-ul de prezentare funcționează fără cookie-uri de urmărire. Folosim doar stocare locală în browser (sessionStorage) pentru a reține că ai închis notificarea din colț.']],
-        ['Cookie-uri de analiză', ['Dacă activăm un instrument de analiză a traficului, îl vom lista aici împreună cu durata de păstrare și vom cere consimțământul înainte de a-l încărca.']],
+        ['Cookie-uri strict necesare', ['Site-ul de prezentare folosește stocare locală în browser (sessionStorage și localStorage) pentru a reține că ai închis notificarea din colț, codul de recomandare cu care ai venit și alegerea ta privind cookie-urile.']],
+        ['Cookie-uri de analiză și marketing', ['Folosim Google Tag Manager pentru a încărca instrumente de măsurare a traficului și a eficienței reclamelor (Google Analytics, Google Ads, Meta Pixel). Aceste instrumente pot plasa cookie-uri proprii, de regulă păstrate până la 2 ani.', 'Le activăm doar dacă apeși „Accept” în bannerul de cookie-uri. Până atunci, și dacă refuzi, nu se plasează cookie-uri de analiză sau de marketing.']],
         ['Aplicația', ['Aplicația de la app.sportiveducat.ro folosește cookie-uri de autentificare, necesare pentru a te menține conectat.']],
-        ['Cum le controlezi', ['Poți șterge sau bloca stocarea locală și cookie-urile din setările browserului. Unele funcții ale aplicației nu vor mai funcționa fără cookie-urile de autentificare.']],
+        ['Cum le controlezi', ['Îți poți schimba oricând alegerea din linkul „Setări cookies” din subsolul paginii. Poți șterge sau bloca stocarea locală și cookie-urile și din setările browserului. Unele funcții ale aplicației nu vor mai funcționa fără cookie-urile de autentificare.']],
       ],
     },
   },

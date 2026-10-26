@@ -2,6 +2,10 @@
 # Echivalentul secțiunilor 5 și 7 din .htaccess (care nu se aplică pe Pages).
 # Se copiază în dist/ de către _tools/5-static.php.
 #
+# CSP: domeniile Google (GTM, Analytics, Ads) și Meta sunt permise pentru
+# tag-urile configurate în containerul GTM. Un tag nou de la alt furnizor
+# trebuie adăugat și aici, și în worker.js.
+#
 # Notă: HSTS nu se setează de aici, ci din zonă:
 #   Cloudflare → SSL/TLS → Edge Certificates → HTTP Strict Transport Security
 
@@ -10,7 +14,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; img-src 'self' data:; media-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; form-action 'self'; connect-src 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; img-src 'self' data: https://*.googletagmanager.com https://*.google-analytics.com https://*.g.doubleclick.net https://www.google.com https://www.google.ro https://www.googleadservices.com https://www.facebook.com; media-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://*.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com https://connect.facebook.net; frame-src https://www.googletagmanager.com https://td.doubleclick.net https://www.facebook.com; form-action 'self'; connect-src 'self' https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://*.g.doubleclick.net https://www.google.com https://www.googleadservices.com https://www.facebook.com https://connect.facebook.net; upgrade-insecure-requests
 
 # Asset-urile sunt versionate prin ?v=<mtime> din ig_asset(), deci pot fi
 # cache-uite pe termen lung. HTML-ul rămâne pe implicitul Pages

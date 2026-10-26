@@ -267,12 +267,8 @@
         done.focus({ preventScroll: true });
         done.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
         confetti();
-
-        /* conversia pentru instrumentele de analytics, dacă sunt încărcate */
-        var payload = { event: 'generate_lead', form: 'partner', value: Number(form.estimated_monthly.value) || 0, currency: 'EUR' };
-        if (window.dataLayer && window.dataLayer.push) window.dataLayer.push(payload);
-        if (typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: 'parteneri' });
-        if (typeof window.gtag === 'function') window.gtag('event', 'generate_lead', { form: 'partner' });
+        /* conversia (form_submission_success / form_cluburi) o trimite
+           igSubmitLead din site.js; Ads și Meta se configurează în GTM */
       });
     });
 

@@ -71,8 +71,10 @@ export async function onRequestPost({ request, env, waitUntil }) {
 
 /**
  * GET: spune dacă variabilele au ajuns la funcție (da/nu, niciodată valorile).
- * `?check=meta` verifică în plus că Meta acceptă token-ul pentru acest Pixel,
- * citind doar numele Pixel-ului — fără să trimită vreun eveniment.
+ * `?check=meta` verifică în plus că Meta acceptă token-ul pentru acest Pixel:
+ * trimite o listă GOALĂ de evenimente. Meta verifică întâi token-ul (eroare
+ * 190 dacă e greșit), apoi refuză lista goală — deci nu se înregistrează nimic.
+ * Token-urile din Events Manager nu pot citi detaliile Pixel-ului, doar trimite.
  */
 export async function onRequestGet({ request, env }) {
   const body = {
@@ -84,13 +86,18 @@ export async function onRequestGet({ request, env }) {
   if (new URL(request.url).searchParams.get('check') === 'meta' && metaConfigured(env)) {
     const version = env.META_API_VERSION || 'v25.0';
     try {
-      const res = await fetch(`https://graph.facebook.com/${version}/${encodeURIComponent(env.META_PIXEL_ID)}?fields=name`, {
-        headers: { Authorization: `Bearer ${env.META_CAPI_TOKEN}` },
+      const res = await fetch(`https://graph.facebook.com/${version}/${encodeURIComponent(env.META_PIXEL_ID)}/events`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: [], access_token: env.META_CAPI_TOKEN }),
       });
       const out = await res.json().catch(() => null);
-      body.meta = res.ok
-        ? { ok: true, pixel: out?.name ?? null }
-        : { ok: false, status: res.status, mesaj: out?.error?.message ?? 'fără mesaj' };
+      const err = out?.error;
+      /* 190 = token invalid/expirat; 10/200 = fără drept pe acest Pixel */
+      const authProblem = err && [190, 10, 200, 803].includes(err.code);
+      body.meta = authProblem
+        ? { ok: false, status: res.status, cod: err.code, mesaj: err.message }
+        : { ok: true, mesaj: 'Token-ul e acceptat pentru acest Pixel.', raspuns_meta: err?.message ?? 'ok' };
     } catch (e) {
       body.meta = { ok: false, mesaj: `Meta inaccesibil: ${String(e?.message ?? e)}` };
     }

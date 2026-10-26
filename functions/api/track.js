@@ -69,10 +69,34 @@ export async function onRequestPost({ request, env, waitUntil }) {
   return empty();
 }
 
-export function onRequestGet({ env }) {
-  return new Response(JSON.stringify({
+/**
+ * GET: spune dacă variabilele au ajuns la funcție (da/nu, niciodată valorile).
+ * `?check=meta` verifică în plus că Meta acceptă token-ul pentru acest Pixel,
+ * citind doar numele Pixel-ului — fără să trimită vreun eveniment.
+ */
+export async function onRequestGet({ request, env }) {
+  const body = {
     ok: false,
     error: 'Metodă neacceptată.',
     configurat: { pixel: Boolean(env.META_PIXEL_ID), token: Boolean(env.META_CAPI_TOKEN), test: Boolean(env.META_TEST_EVENT_CODE) },
-  }), { status: 405, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } });
+  };
+
+  if (new URL(request.url).searchParams.get('check') === 'meta' && metaConfigured(env)) {
+    const version = env.META_API_VERSION || 'v25.0';
+    try {
+      const res = await fetch(`https://graph.facebook.com/${version}/${encodeURIComponent(env.META_PIXEL_ID)}?fields=name`, {
+        headers: { Authorization: `Bearer ${env.META_CAPI_TOKEN}` },
+      });
+      const out = await res.json().catch(() => null);
+      body.meta = res.ok
+        ? { ok: true, pixel: out?.name ?? null }
+        : { ok: false, status: res.status, mesaj: out?.error?.message ?? 'fără mesaj' };
+    } catch (e) {
+      body.meta = { ok: false, mesaj: `Meta inaccesibil: ${String(e?.message ?? e)}` };
+    }
+  }
+
+  return new Response(JSON.stringify(body), {
+    status: 405, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+  });
 }
